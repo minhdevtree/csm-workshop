@@ -18,6 +18,8 @@ Giọng: kể chuyện cho đồng nghiệp nghe, không phải thuyết trình.
 - [ ] Mở `slides/index.html`, bấm `F` cho toàn màn hình.
 - [ ] Bấm `T` xem thử nền sáng. Phòng sáng thì dùng nền sáng. **Chốt trước, đừng đổi
       lúc đang đứng trên bục.**
+- [ ] Thử phím `L` một lần: nó bật con trỏ laser (chấm đỏ) và ẩn con trỏ chuột
+      thật. Bấm lại là tắt. Mặc định tắt.
 - [ ] Bấm `S` xem ghi chú có nằm ở màn hình của mình không. Chỉ có một màn hình thì
       đừng bấm, cầm bản in file này.
 - [ ] Kiểm tra GIF đã nằm trong `assets/`. Bỏ file vào là slide tự nhận, không cần
@@ -387,32 +389,28 @@ chạy. Đừng đọc hết gạch đầu dòng, chỉ nhấn 2 ý mỗi slide.
 > Cây file cũng tự mở tới file đang xem, y như cây session tự cuộn tới session đang
 > mở. Hai cây hành xử giống nhau, đó là chủ ý.
 
-**Slide 23. Chia sẻ session.** [Có GIF. **Nói phần an toàn ngay, đừng chờ bị hỏi.**]
+**Slide 23. Truy cập từ xa.** [Có GIF. **Nói phần an toàn ngay, đừng chờ bị hỏi.**]
 
-> [**Đừng gọi phần này là "mở bằng điện thoại".** Điện thoại chỉ là một đường vào.]
+> [**Đừng gọi phần này là "mở bằng điện thoại", cũng đừng gọi là "chia sẻ".** Nó là
+> cả hai.]
 >
-> Máy chạy CSM tự phục vụ giao diện của nó qua HTTP. Mỗi link chia sẻ là **một token
-> riêng**, tạo và thu hồi từng cái một.
+> Ý chính: **session không bị nhốt trong cái máy đang chạy nó.**
 >
-> Chọn được **toàn bộ, hoặc đúng một session**. Chọn được **chỉ đọc, hoặc gõ được**.
-> Hai cái ghép tự do.
+> Ý một, và đây là lý do tính năng này sinh ra: **mình, ở xa.** Máy công ty vẫn chạy,
+> ở nhà mở bằng app CSM trên máy khác. Không phải chép project sang, không phải
+> resume lại từ đầu, vẫn đúng session đó với đúng context đó. Có tunnel SSH thì app
+> tự dựng tunnel trước rồi mới nối.
 >
-> Và vào được bằng **trình duyệt, hoặc bằng chính app CSM**: bên kia mở Remote hosts,
-> thêm địa chỉ, là máy đó nằm trong app của họ như một cửa sổ riêng.
+> Ý hai, và đây là ý phòng thích nhất: **đưa tạm cho người khác.** Con này đang kẹt,
+> nhờ ông xem giúp. Tạo một link chỉ đọc giới hạn đúng session đó, gửi đi. Họ không
+> thấy repo khác, không gõ được gì. Xong việc thu hồi riêng link đó, mấy link khác
+> không ảnh hưởng.
 >
-> [Kể một hai tình huống, đừng kể cả ba.]
+> Ý ba: **từ điện thoại.** Quét QR là xong, khỏi gõ token.
 >
-> Tình huống hay dùng nhất: **nhờ đồng nghiệp xem giúp**. Con này đang kẹt, tạo một
-> link chỉ đọc giới hạn đúng session đó, gửi đi. Họ không thấy repo khác, không gõ
-> được gì. Xong việc thì thu hồi cái link đó thôi, mấy link khác không ảnh hưởng.
+> Ba mức ghép tự do: toàn bộ hay một session, chỉ đọc hay gõ được.
 >
-> Tình huống hai: **làm remote**. Máy ở công ty vẫn chạy, ở nhà mở bằng app CSM trên
-> máy khác. Có tunnel SSH thì app tự dựng tunnel trước rồi mới nối.
->
-> Tình huống ba: **rời bàn**. Quét QR, điện thoại thành cái để xem con nào đang chờ.
->
-> Và phần an toàn: **mặc định tắt**, mỗi link một token riêng, thu hồi từng cái, có
-> mức chỉ đọc.
+> Và phần an toàn: **mặc định tắt**, mỗi link một token riêng, thu hồi từng cái.
 
 **Slide 24. Hỏi thẳng app.** [Có GIF]
 

@@ -22,6 +22,7 @@ font ngoài, script ngoài hay ảnh ngoài nào.
 | `←` `→` `Space` | Chuyển slide |
 | `S` | Bật tắt ghi chú diễn giả |
 | `O` | Xem toàn bộ slide dạng lưới |
+| `L` | Con trỏ laser (chấm đỏ), ẩn con trỏ chuột thật. Bấm lại để tắt |
 | `T` | Đổi giữa nền tối và nền sáng |
 | `F` | Toàn màn hình |
 | `#12` trên URL | Nhảy thẳng tới slide 12 |

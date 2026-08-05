@@ -29,7 +29,7 @@ thiếu thì slide vẫn trình chiếu được, khung sẽ hiện tên file c�
 |---|---|---|---|
 | Bắt buộc | `demo-01-session-alive.gif` | 11 | Đóng tab một session đang chạy. Nó vẫn nằm trong sidebar, chấm vẫn nhảy. Mở lại thấy nguyên. |
 | Bắt buộc | `demo-02-attention.gif` | 13 | 3 session chạy, một con chuyển sang chờ, chấm đổi vàng, badge nhảy số, bấm badge nhảy tới đúng con đó. |
-| Bắt buộc | `demo-06-share.gif` | 23 | Tạo link chỉ đọc giới hạn một session, quét QR bằng điện thoại, bên kia thấy đúng session đó và không gõ được. |
+| Bắt buộc | `demo-06-remote.gif` | 23 | Tạo link chỉ đọc giới hạn một session, quét QR bằng điện thoại, bên kia thấy đúng session đó và không gõ được. |
 | Nên có | `demo-03-split-layout.gif` | 15 | Chia màn thành 3 ô, kéo một tab sang ô khác, lưu thành template, đóng hết rồi mở template ra lại. |
 | Nên có | `demo-04-worktree.gif` | 19 | Chuột phải lên project, tạo worktree, nó hiện lồng bên dưới, mở một session trong đó. |
 | Nên có | `demo-05-diff.gif` | 20 | Bấm ⇧⌘D, diff mở thành tab, chia đôi màn đặt cạnh file gốc. |
