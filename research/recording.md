@@ -37,14 +37,29 @@ tự duyệt nên không ra. Việc chắc chắn xin phép là **ghi file**: pr
 Một lượt như vậy mất khoảng 20 giây, phần lớn là màn hình đứng yên. Cắt bỏ đoạn
 giữa bằng `trim` + `concat` của ffmpeg, giữ lại lúc gửi prompt và lúc chấm đổi màu.
 
-## Bốn cái còn lại chưa quay
+## Ba cái suýt hỏng, và vì sao
 
-| File | Vì sao chưa xong |
-|---|---|
-| `demo-06-remote.gif` | Bật host mode xong thì nút QR và switch LAN vẫn `disabled` một lúc, script bấm quá sớm nên timeout. Cần chờ theo điều kiện thay vì chờ theo thời gian. |
-| `demo-07-help.gif` | Cần một lượt Claude thật trong hộp chat trợ giúp. Làm được, chỉ là chưa chạy. |
-| `demo-08-inbox.gif` | Cần hai session cùng ở trạng thái chờ, tức hai lượt Claude. Làm được, tốn thời gian gấp đôi demo-02. |
-| `demo-10-conversation.gif` | Transcript phải còn sống, nên phải chạy một lượt Claude rồi chuyển sang chế độ hội thoại **trong cùng một lần mở app**. |
+**State của lần quay trước dính sang lần sau.** Chế độ hội thoại, layout chia đôi
+và transcript chết đều được nhớ lại, nên demo quay ra sai màn hình. Phải reset
+`state.json` về baseline trước mỗi lần quay, và ép về chế độ terminal bằng nút
+"Show the terminal" vì cờ đó KHÔNG nằm trong `state.json`.
 
-Bốn cái này quay tay trong app thật nhanh hơn nhiều, vì ở đó Claude đã đăng nhập
-và thư mục đã trust sẵn.
+**Transcript không được ghi.** Harness chạy bên trong một phiên Claude Code, nên
+môi trường có sẵn `CLAUDECODE` và `CLAUDE_CODE_CHILD_SESSION`. Session do app đẻ
+ra thừa hưởng và tắt luôn việc ghi transcript, terminal in ra dòng "Transcript
+saving is off". Lọc mọi biến `CLAUDE_CODE_*` và `CLAUDECODE` trước khi truyền
+xuống là hết.
+
+**Chờ theo đồng hồ thì trượt.** Nút QR trong phần Remote còn `disabled` một lúc
+sau khi bật host mode. Phải chờ tới khi panel hiện URL rồi mới bấm, đừng
+`waitForTimeout` một con số đoán mò.
+
+## Cắt video
+
+Một lượt Claude thật mất 20 tới 100 giây, phần lớn là màn hình đứng yên. Hai cách
+đang dùng:
+
+- Cắt lấy N giây cuối bằng `ffmpeg -ss <dur - N>`, hợp với demo mà phần đáng xem
+  nằm ở cuối.
+- Cắt hai đoạn rồi nối bằng `trim` + `concat`, hợp với demo-02: giữ lúc gửi prompt
+  và lúc chấm đổi màu, bỏ đoạn giữa Claude đang nghĩ.
