@@ -63,3 +63,17 @@ Một lượt Claude thật mất 20 tới 100 giây, phần lớn là màn hìn
   nằm ở cuối.
 - Cắt hai đoạn rồi nối bằng `trim` + `concat`, hợp với demo-02: giữ lúc gửi prompt
   và lúc chấm đổi màu, bỏ đoạn giữa Claude đang nghĩ.
+
+## Quay phía client của chế độ remote
+
+Cần hai tiến trình: app làm host, và một trình duyệt làm client. Ba cái bẫy:
+
+1. **Cổng đụng nhau.** App thật đang chạy đã chiếm 4870. Harness phải đổi sang
+   cổng khác, nếu không nó không bind được và trình duyệt sẽ nói chuyện với app
+   THẬT bằng token của harness rồi bị từ chối. Bản thân app báo rất rõ chuyện này
+   trong panel Remote.
+2. **Token phải đọc SAU khi host chạy.** Đọc từ `state.json` của lần chạy trước
+   thì nhận "this link's token is invalid or was regenerated".
+3. **Ghép hai clip.** Quay host bằng `_electron.launch`, quay client bằng
+   `chromium.launch`, rồi nối bằng `concat` của ffmpeg. Phải chuẩn hoá cùng độ
+   phân giải trước khi nối.
