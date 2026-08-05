@@ -111,22 +111,28 @@ về năng suất.]
 **Slide 5.** [Slide trả lời cho slide vừa rồi. 90 giây.]
 
 > Vừa nói nhiều hơn không tự động tốt hơn, thì phải nói ngay: **vậy khi nào đúng là
-> cần nhiều session.** Mình có ba tình huống, và cả ba đều có lý do rõ ràng.
+> cần nhiều session.** Mình có bốn tình huống, và cả bốn đều có lý do rõ ràng.
 >
-> **Một, verify bằng context sạch.** Con session chính đã đọc cả đống file, và nó
+> **Một, và đây là ca dùng hằng ngày: làm nhiều việc cùng lúc trên một repo.** Ba
+> task không liên quan nhau, ví dụ một con sửa bug, một con làm tính năng mới, một
+> con viết test. Mỗi task một worktree một session, nên chúng nó không thấy thay đổi
+> của nhau và commit không lẫn vào nhau.
+>
+> **Hai, thử nhiều cách cho cùng một việc.** Cái này khác cái trên, và người nghe hay
+> lẫn: **trên là nhiều VIỆC khác nhau, đây là một việc nhưng nhiều CÁCH làm.** Xong
+> thì đọc cả hai, giữ cách gọn hơn, bỏ cách kia đi. Tức là ca trên giữ lại tất, ca
+> này bỏ đi gần hết.
+>
+> **Ba, verify bằng context sạch.** Con session chính đã đọc cả đống file, và nó
 > **dễ tin thứ nó vừa tự viết ra**. Mở một con mới tinh, hỏi lại đúng câu đó, xem có
 > ra cùng câu trả lời không. Đây là cách rẻ nhất để có ý kiến thứ hai.
 >
-> **Hai, hỏi vặt mà không làm bẩn việc chính.** Kiểu "hàm này gọi từ đâu", "repo này
+> **Bốn, hỏi vặt mà không làm bẩn việc chính.** Kiểu "hàm này gọi từ đâu", "repo này
 > deploy kiểu gì". Hỏi trong session chính thì nó ăn mất context của việc đang làm dở.
->
-> **Ba, thử nhiều cách cho cùng một tính năng.** Mỗi hướng một worktree, chạy song
-> song, rồi xem cách nào ra gọn hơn và bỏ mấy cách kia đi. Cái này lát nữa nói kỹ ở
-> phần git.
 >
 > [Câu chốt, đây là câu để mọi người mang về.]
 >
-> Ba cái này có điểm chung: **mỗi con có một lý do riêng để tồn tại.** Mở thêm
+> Bốn cái này có điểm chung: **mỗi con có một lý do riêng để tồn tại.** Mở thêm
 > session mà không nói được lý do thì đó là mở thừa.
 
 ---
@@ -343,10 +349,10 @@ chạy. Đừng đọc hết gạch đầu dòng, chỉ nhấn 2 ý mỗi slide.
 >
 > [Nhắc lại tình huống ba ở slide 5.]
 >
-> Chỗ worktree đáng giá nhất, với mình, là **thử nhiều cách cho cùng một tính năng**.
-> Mỗi hướng một worktree, giao cho mỗi con một hướng, chạy song song. Xong thì đọc cả
-> hai, giữ cách gọn hơn, xoá cách kia. Rẻ hơn nhiều so với làm một cách rồi mới nhận
-> ra hướng kia hay hơn.
+> Worktree phục vụ hai ca đã nói ở slide 5. Ca hằng ngày là **làm nhiều việc cùng
+> lúc**: mỗi việc một worktree, giữ lại tất. Ca thứ hai là **thử nhiều cách cho cùng
+> một việc**: giữ cách gọn hơn, xoá cách kia. Rẻ hơn nhiều so với làm một cách rồi
+> mới nhận ra hướng kia hay hơn.
 >
 > [Nói cho công bằng.]
 >

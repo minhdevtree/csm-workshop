@@ -125,6 +125,7 @@ code {
 /* Slide có khung demo: ảnh chụp app là hình rất rộng nên cột ảnh phải rộng hơn cột chữ. */
 .two-demo { display: grid; grid-template-columns: .82fr 1.18fr; gap: 34px; }
 .three { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+.four  { display: grid; grid-template-columns: 1fr 1fr; gap: 16px 20px; }
 .stack { display: flex; flex-direction: column; gap: 13px; }
 .mid   { justify-content: center; }
 .vcen  { display: flex; flex-direction: column; justify-content: center; }
@@ -431,29 +432,33 @@ html.laser-on, html.laser-on * { cursor: none !important; }
 <!-- 5 ─────────────────────────────────────────────────────────────────────── -->
 <section class="slide" data-t="Khi nào cần nhiều session">
   <h2>Vậy khi nào thì thật sự cần nhiều session</h2>
-  <div class="three grow" style="margin-top:24px;align-items:start">
+  <div class="four" style="margin-top:20px;align-items:start">
+    <div class="panel accent">
+      <h3>Làm nhiều việc cùng lúc trên một repo</h3>
+      <p>Đây là ca dùng nhiều nhất. Ba task không liên quan nhau: <strong>mỗi task một worktree, một session</strong>, chạy song song mà không giẫm chân nhau.</p>
+    </div>
+    <div class="panel">
+      <h3>Thử nhiều cách cho cùng một việc</h3>
+      <p>Khác cái bên trái: <strong>cùng một task</strong>, mỗi worktree một hướng làm. Xong thì đọc cả hai, giữ cách gọn hơn, bỏ cách kia.</p>
+    </div>
     <div class="panel">
       <h3>Verify bằng context sạch</h3>
-      <p>Session chính đã đọc cả đống file và <strong>dễ tin thứ nó vừa tự viết ra</strong>. Mở một con mới tinh, hỏi lại cùng câu đó, xem có ra cùng câu trả lời không.</p>
+      <p>Session chính đã đọc cả đống file và <strong>dễ tin thứ nó vừa tự viết ra</strong>. Mở một con mới tinh, hỏi lại cùng câu đó.</p>
     </div>
     <div class="panel">
       <h3>Hỏi vặt mà không làm bẩn việc chính</h3>
       <p>"Hàm này gọi từ đâu", "repo này deploy kiểu gì". Hỏi trong session chính thì <strong>ăn mất context</strong> của việc đang làm dở.</p>
     </div>
-    <div class="panel">
-      <h3>Thử nhiều cách cho một tính năng</h3>
-      <p>Mỗi worktree một hướng, chạy song song, rồi <strong>xem cách nào ra gọn hơn</strong> và bỏ mấy cách kia đi.</p>
-    </div>
   </div>
   <div class="panel accent" style="margin-top:auto">
-    <p>Ba cái này có điểm chung: <strong>mỗi con có một lý do riêng để tồn tại.</strong> Mở thêm session mà không nói được lý do thì đó là mở thừa.</p>
+    <p>Bốn cái này có điểm chung: <strong>mỗi con có một lý do riêng để tồn tại.</strong> Mở thêm session mà không nói được lý do thì đó là mở thừa.</p>
   </div>
   <div class="foot"><span>Phần 1</span><span class="pg"></span></div>
   <aside class="notes">
-    <p><strong>Đây là slide trả lời cho slide trước.</strong> Vừa nói "nhiều hơn không tự động tốt hơn" thì phải nói ngay "vậy khi nào thì đúng là cần".</p>
-    <p>Ô một là ô hay nhất, và ít người nghĩ tới: <strong>một con đã đọc code của chính nó viết ra thì không còn là người kiểm tra độc lập nữa.</strong> Context sạch là cách rẻ nhất để có ý kiến thứ hai.</p>
-    <p>Ô ba là chỗ worktree thật sự có giá trị, lát nữa nói lại ở phần git.</p>
-    <p>Câu chốt là câu để mọi người mang về: <strong>lý do trước, session sau.</strong> Không phải mở cho đủ số.</p>
+    <p><strong>Ô đầu tiên là ô quan trọng nhất, và là ca dùng hằng ngày.</strong> Ba task khác nhau trên cùng một repo: một con sửa bug, một con làm tính năng mới, một con viết test. Mỗi con một worktree nên chúng nó không thấy thay đổi của nhau, và mỗi con một nhánh nên commit không lẫn.</p>
+    <p>Phân biệt rõ ô một với ô hai, người nghe hay lẫn: <strong>ô một là nhiều VIỆC khác nhau, ô hai là một việc nhưng nhiều CÁCH làm.</strong> Ô hai xong thì bỏ đi gần hết, ô một thì giữ lại tất.</p>
+    <p>Ô ba là ô ít người nghĩ tới: một con đã đọc code của chính nó viết ra thì không còn là người kiểm tra độc lập nữa.</p>
+    <p>Câu chốt là câu để mọi người mang về: <strong>lý do trước, session sau.</strong></p>
   </aside>
 </section>
 
@@ -744,7 +749,7 @@ html.laser-on, html.laser-on * { cursor: none !important; }
       <h2 style="font-size:33px">Worktree đẻ ngay trong cây</h2>
       <p>Worktree là nhiều thư mục làm việc trên cùng một repo, mỗi thư mục một nhánh, dùng chung lịch sử git. Không phải clone lại.</p>
       <p>Chuột phải lên project, chọn tạo worktree, đặt tên nhánh. Nó hiện lồng ngay dưới project cha.</p>
-      <div class="panel accent"><p>Chỗ worktree đáng giá nhất: <strong>thử nhiều cách cho cùng một tính năng.</strong> Mỗi hướng một worktree, chạy song song, xem cách nào ra gọn hơn rồi bỏ mấy cách kia.</p></div>
+      <div class="panel accent"><p>Hai ca dùng chính: <strong>làm nhiều việc cùng lúc</strong> trên một repo (mỗi việc một worktree, giữ lại tất), và <strong>thử nhiều cách cho cùng một việc</strong> (giữ cách gọn hơn, bỏ cách kia).</p></div>
       <p class="sub">Repo đã có sẵn worktree thì bấm nhận diện, nó tự đưa vào cây.</p>
     </div>
     <figure class="demo">
