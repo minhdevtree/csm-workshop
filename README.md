@@ -48,7 +48,9 @@ assets/                    Chỗ bỏ GIF demo vào
 
 Bảy khung demo ở slide 11, 13, 15, 18, 19, 22 và 23 đang để trống có chủ đích, chờ
 GIF quay màn hình. Xem `script/demo-checklist.md` để biết cần quay gì và đặt tên file
-thế nào. Slide vẫn trình chiếu được khi chưa có, khung sẽ hiện tên file cần bỏ vào.
+thế nào. **Bỏ file vào `assets/` là slide tự nhận**, không phải chạy lệnh gì. Chưa
+có file thì khung ở nguyên và ghi rõ tên file cần bỏ vào, nên deck vẫn trình chiếu
+được bình thường.
 
 ## Ghi chú về tính trung thực
 

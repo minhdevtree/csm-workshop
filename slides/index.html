@@ -122,6 +122,8 @@ code {
 .two   { display: grid; grid-template-columns: 1fr 1fr; gap: 34px; }
 .two-a { display: grid; grid-template-columns: 1.1fr .9fr; gap: 38px; }
 .two-b { display: grid; grid-template-columns: .85fr 1.15fr; gap: 38px; }
+/* Slide có khung demo: ảnh chụp app là hình rất rộng nên cột ảnh phải rộng hơn cột chữ. */
+.two-demo { display: grid; grid-template-columns: .82fr 1.18fr; gap: 34px; }
 .three { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
 .stack { display: flex; flex-direction: column; gap: 13px; }
 .mid   { justify-content: center; }
@@ -208,7 +210,15 @@ tbody tr + tr td { border-top: 1px solid var(--line); }
 .demo-frame .lbl { font-family: var(--mono); font-size: 12px; letter-spacing: .14em; text-transform: uppercase; color: var(--ink-faint); }
 .demo-frame .file { font-family: var(--mono); font-size: 14.5px; color: var(--accent); }
 .demo figcaption { font-size: 14.5px; color: var(--ink-faint); }
-.demo img { width: 100%; height: 100%; object-fit: contain; border-radius: var(--r); }
+.demo img {
+  flex: 1;
+  min-height: 0;
+  width: 100%;
+  object-fit: contain;
+  border-radius: var(--r);
+  border: 1px solid var(--line);
+  background: var(--bg-sink);
+}
 
 .feat { display: grid; grid-template-columns: 22px 1fr; gap: 12px; align-items: start; }
 .feat .k { color: var(--accent); font-family: var(--mono); font-size: 14.5px; padding-top: 4px; }
@@ -482,7 +492,7 @@ tbody tr + tr td { border-top: 1px solid var(--line); }
 
 <!-- 10 ───────────────────────────────────────────────────────────────────── -->
 <section class="slide" data-t="Session sống độc lập">
-  <div class="two-a grow">
+  <div class="two-demo grow">
     <div class="vcen stack">
       <h2>Session không sống trong tab</h2>
       <p>Tiến trình <code>claude</code> chạy ở tiến trình chính của app. Cái tab chỉ là <strong>chỗ để nhìn vào nó</strong>.</p>
@@ -510,7 +520,7 @@ tbody tr + tr td { border-top: 1px solid var(--line); }
 
 <!-- 12 ───────────────────────────────────────────────────────────────────── -->
 <section class="slide" data-t="Nhóm 1: biết con nào chờ">
-  <div class="two-a grow">
+  <div class="two-demo grow">
     <div class="vcen stack">
       <p class="kicker">Nhóm 1 &nbsp;·&nbsp; biết con nào đang chờ</p>
       <h2 style="font-size:33px">Bốn đường báo, bật tắt riêng từng cái</h2>
@@ -552,7 +562,7 @@ tbody tr + tr td { border-top: 1px solid var(--line); }
 
 <!-- 14 ───────────────────────────────────────────────────────────────────── -->
 <section class="slide" data-t="Nhóm 2: chia màn hình">
-  <div class="two-a grow">
+  <div class="two-demo grow">
     <div class="vcen stack">
       <p class="kicker">Nhóm 2 &nbsp;·&nbsp; nhìn nhiều con cùng lúc</p>
       <h2 style="font-size:33px">Chia màn hình, kéo tab, lưu lại dùng lại</h2>
@@ -620,7 +630,7 @@ tbody tr + tr td { border-top: 1px solid var(--line); }
 
 <!-- 17 ───────────────────────────────────────────────────────────────────── -->
 <section class="slide" data-t="Nhóm 4: worktree">
-  <div class="two-a grow">
+  <div class="two-demo grow">
     <div class="vcen stack">
       <p class="kicker">Nhóm 4 &nbsp;·&nbsp; git</p>
       <h2 style="font-size:33px">Worktree đẻ ngay trong cây</h2>
@@ -643,7 +653,7 @@ tbody tr + tr td { border-top: 1px solid var(--line); }
 
 <!-- 18 ───────────────────────────────────────────────────────────────────── -->
 <section class="slide" data-t="Nhóm 4: diff">
-  <div class="two-a grow">
+  <div class="two-demo grow">
     <div class="vcen stack">
       <p class="kicker">Nhóm 4 &nbsp;·&nbsp; git</p>
       <h2 style="font-size:33px">Xem Claude vừa sửa gì, ngay trong app</h2>
@@ -715,7 +725,7 @@ tbody tr + tr td { border-top: 1px solid var(--line); }
 
 <!-- 21 ───────────────────────────────────────────────────────────────────── -->
 <section class="slide" data-t="Nhóm 6: điện thoại">
-  <div class="two-a grow">
+  <div class="two-demo grow">
     <div class="vcen stack">
       <p class="kicker">Nhóm 6 &nbsp;·&nbsp; rời khỏi máy</p>
       <h2 style="font-size:33px">Mở bằng điện thoại</h2>
@@ -736,7 +746,7 @@ tbody tr + tr td { border-top: 1px solid var(--line); }
 
 <!-- 22 ───────────────────────────────────────────────────────────────────── -->
 <section class="slide" data-t="Nhóm 7: hỏi app">
-  <div class="two-a grow">
+  <div class="two-demo grow">
     <div class="vcen stack">
       <p class="kicker">Nhóm 7 &nbsp;·&nbsp; linh tinh mà hay</p>
       <h2 style="font-size:33px">Hỏi thẳng app xem nó làm được gì</h2>
@@ -1065,6 +1075,25 @@ tbody tr + tr td { border-top: 1px solid var(--line); }
     var saved = localStorage.getItem('deck-theme');
     if (saved) document.documentElement.dataset.theme = saved;
   } catch (err) {}
+
+  /* Khung demo tự nhận ảnh.
+     Trước đây khung nét đứt là HTML tĩnh, phải chạy một lệnh riêng mới đổi thành
+     thẻ img. Bỏ file vào assets rồi mở slide thấy vẫn trống là phản xạ đúng, nên
+     giờ nó tự thử tải: tải được thì thay khung bằng ảnh, không có file thì khung
+     ở nguyên và vẫn ghi tên file cần bỏ vào. Chạy được cả trên http lẫn file://. */
+  Array.prototype.forEach.call(document.querySelectorAll('.demo-frame'), function (frame) {
+    var label = frame.querySelector('.file');
+    if (!label) return;
+    var src = '../' + label.textContent.trim();
+    var probe = new Image();
+    probe.onload = function () {
+      var img = document.createElement('img');
+      img.src = src;
+      img.alt = '';
+      frame.parentNode.replaceChild(img, frame);
+    };
+    probe.src = src;
+  });
 
   buildGrid();
   fit();

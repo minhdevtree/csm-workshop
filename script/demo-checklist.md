@@ -49,23 +49,11 @@ tốt hơn nhiều so với cắt cảnh, vì người xem thấy ngay là **cù
 
 ## Chèn vào slide
 
-Sau khi đủ bảy file, chạy trong thư mục gốc của repo này:
+**Không cần làm gì cả.** Bỏ file vào `assets/` đúng tên là xong. Slide tự thử tải
+ảnh khi mở: có file thì nó thay khung nét đứt bằng ảnh, chưa có thì khung ở nguyên
+và vẫn ghi tên file cần bỏ vào.
 
-```bash
-python3 - <<'PY'
-import re, pathlib
-p = pathlib.Path('slides/index.html')
-s = p.read_text()
-# Thay mỗi khung nét đứt bằng thẻ ảnh, giữ nguyên phần chú thích bên dưới.
-s = re.sub(
-    r'<div class="demo-frame"><span class="lbl">[^<]*</span><span class="file">([^<]+)</span></div>',
-    lambda m: '<img src="../%s" alt="">' % m.group(1),
-    s)
-p.write_text(s)
-print('đã chèn')
-PY
-```
+Ảnh không hiện thì kiểm tra hai thứ:
 
-Kiểm tra lại bằng cách mở `slides/index.html` và bấm tới slide 13. Nếu ảnh không
-hiện, kiểm tra đường dẫn: slide nằm trong `slides/` nên đường dẫn tới `assets/`
-phải bắt đầu bằng `../`.
+1. Tên file có đúng từng ký tự không, kể cả phần `.gif`.
+2. File có nằm thẳng trong `assets/` không, đừng để trong thư mục con.
