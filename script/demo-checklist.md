@@ -36,7 +36,7 @@ là slide tự nhận.
 | ✅ đã có Nên có | `demo-05-diff.gif` | 20 | Bấm ⇧⌘D, diff mở thành tab, chia đôi màn đặt cạnh file gốc. |
 | ✅ đã có Nên có | `demo-07-help.gif` | 24 | Bấm dấu hỏi ở header, hỏi "làm sao lưu cách chia màn hình", nhận câu trả lời kèm đúng phím tắt. |
 | ✅ đã có Có thì tốt | `demo-08-inbox.gif` | 14 | Bấm ⇧⌘A, danh sách hiện mọi session đang chờ từ nhiều dự án, chọn một cái là nhảy tới đó. |
-| ✅ đã có Có thì tốt | `demo-09-prompt.gif` | 16 | Gõ prompt vào ô nhập, đính một ảnh, gõ / để hiện slash command. |
+| ✅ đã có Có thì tốt | `demo-09-prompt.gif` | 16 | **Bật chế độ hội thoại trước**, rồi gõ prompt vào ô nhập và gửi. Ở chế độ terminal thì chữ hiện trong dòng nhập của Claude, nhìn không ra là có ô riêng. |
 | ✅ đã có Có thì tốt | `demo-10-conversation.gif` | 18 | Đổi từ terminal sang chế độ hội thoại, cuộn lại và tìm một câu Claude nói lúc nãy. |
 | ✅ đã có Có thì tốt | `demo-11-history.gif` | 21 | Bấm ⇧⌘H, gõ chữ vào ô tìm để lọc commit, chọn một commit rồi chọn file để xem thay đổi. |
 
