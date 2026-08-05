@@ -264,6 +264,47 @@ tbody tr + tr td { border-top: 1px solid var(--line); }
 #grid button:hover, #grid button:focus-visible { border-color: var(--accent); color: var(--ink); outline: none; }
 #grid button .gi { font-family: var(--mono); font-size: 11px; color: var(--ink-faint); }
 
+
+/* ── Motif terminal ──────────────────────────────────────────────────────────
+   Con trỏ khối nhấp nháy, đúng nhịp 1.06s của con trỏ terminal thật. Dùng ở
+   slide tiêu đề và mấy slide phân đoạn, để deck có cùng chất với cái app nó
+   đang nói tới. Nhấp nháy là thứ duy nhất chuyển động ở đó, nên nó không giành
+   sự chú ý với chữ. */
+.caret {
+  display: inline-block;
+  width: .58em;
+  height: 1.02em;
+  vertical-align: -.14em;
+  background: var(--accent);
+  margin-left: .12em;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .caret { animation: blink 1.06s steps(1) infinite; }
+  @keyframes blink { 0%, 50% { opacity: 1 } 50.01%, 100% { opacity: 0 } }
+}
+
+/* Dòng lệnh giả lập ở slide phân đoạn. Đây là motif trang trí có chủ đích, không
+   phải ảnh chụp giả: nó không giả vờ là output của lệnh nào cả. */
+.cmd {
+  font-family: var(--mono);
+  font-size: 17px;
+  color: var(--ink-faint);
+  letter-spacing: .02em;
+}
+.cmd .p { color: var(--accent); }
+.cmd .t { color: var(--ink-mute); }
+
+/* Ba chấm trạng thái chạy nền ở góc slide phân đoạn: nhắc lại ngôn ngữ của app
+   mà không chiếm chỗ của chữ. */
+.divider-dots {
+  position: absolute;
+  right: 74px;
+  bottom: 64px;
+  display: flex;
+  gap: 14px;
+  opacity: .5;
+}
+
 @page { size: 1280px 720px; margin: 0; }
 @media print {
   html, body { overflow: visible; background: #fff; height: auto; }
@@ -283,7 +324,7 @@ tbody tr + tr td { border-top: 1px solid var(--line); }
 <!-- 1 ────────────────────────────────────────────────────────────────────── -->
 <section class="slide title" data-t="Tiêu đề">
   <p class="kicker"><span class="dot working spin"></span> &nbsp;Claude Session Manager</p>
-  <h1>Một app để chạy nhiều Claude Code cùng lúc</h1>
+  <h1>Một app để chạy nhiều Claude Code cùng lúc<span class="caret"></span></h1>
   <p class="lead" style="margin-top:22px">Hôm nay kể xem nó có gì, nó hoạt động thế nào, và ai thì hợp kiểu này.</p>
   <!-- Ghi công: repo có nhiều hơn một người. Thay handle GitHub bằng tên thật
        trước khi trình chiếu. -->
@@ -390,6 +431,8 @@ tbody tr + tr td { border-top: 1px solid var(--line); }
 <section class="slide divider" data-t="Phần 2">
   <p class="n">PHẦN 2</p>
   <h2 style="margin-top:12px">CSM nhìn từ trên xuống</h2>
+  <p class="cmd" style="margin-top:26px"><span class="p">$</span> <span class="t">csm --explain structure</span><span class="caret"></span></p>
+  <div class="divider-dots"><span class="dot working spin"></span><span class="dot waiting spin"></span><span class="dot done spin"></span></div>
   <aside class="notes"><p>Chuyển: "Giờ mình chỉ cho mọi người app được xếp thế nào. Hiểu cái này rồi thì phần tính năng ở sau chỉ là chi tiết."</p></aside>
 </section>
 
@@ -520,6 +563,8 @@ tbody tr + tr td { border-top: 1px solid var(--line); }
 <section class="slide divider" data-t="Phần 3">
   <p class="n">PHẦN 3</p>
   <h2 style="margin-top:12px">Trong đó có gì</h2>
+  <p class="cmd" style="margin-top:26px"><span class="p">$</span> <span class="t">csm --list features</span><span class="caret"></span></p>
+  <div class="divider-dots"><span class="dot working spin"></span><span class="dot waiting spin"></span><span class="dot done spin"></span></div>
   <aside class="notes"><p>Chuyển: "Hiểu cấu trúc rồi thì phần này đi nhanh. Mình gom theo nhóm nhu cầu, không theo menu."</p></aside>
 </section>
 
@@ -549,7 +594,7 @@ tbody tr + tr td { border-top: 1px solid var(--line); }
 
 <!-- 13 ───────────────────────────────────────────────────────────────────── -->
 <section class="slide" data-t="Hộp thư chú ý">
-  <div class="two-b grow">
+  <div class="two-demo grow">
     <div class="vcen stack">
       <p class="kicker">Nhóm 1</p>
       <h2 style="font-size:33px">Hộp thư chú ý</h2>
@@ -560,6 +605,10 @@ tbody tr + tr td { border-top: 1px solid var(--line); }
       <p>Khác badge ở chỗ: badge chỉ nói <strong>có bao nhiêu</strong>, còn hộp thư nói <strong>là những con nào</strong>, kèm nó đang hỏi gì.</p>
       <div class="panel"><p>Con nào mình nhìn qua rồi thì nó tự đánh dấu, khỏi đếm lại lần hai. Bật tắt được trong Settings.</p></div>
     </div>
+    <figure class="demo">
+      <div class="demo-frame"><span class="lbl">Chèn GIF</span><span class="file">assets/demo-08-inbox.gif</span></div>
+      <figcaption>Quay: bấm ⇧⌘A, danh sách hiện mọi session đang chờ từ nhiều dự án, chọn một cái là nhảy tới đó.</figcaption>
+    </figure>
   </div>
   <div class="foot"><span>Phần 3 &nbsp;·&nbsp; Tính năng</span><span class="pg"></span></div>
   <aside class="notes"><p>Nếu đang chạy dưới 3 session thì cái này hơi thừa. Nói thẳng vậy. Nó chỉ có nghĩa từ khoảng 4 con trở lên.</p></aside>
@@ -591,33 +640,53 @@ tbody tr + tr td { border-top: 1px solid var(--line); }
 
 <!-- 15 ───────────────────────────────────────────────────────────────────── -->
 <section class="slide" data-t="Nhóm 3: ô nhập prompt">
-  <div class="two grow">
+  <div class="two-demo grow">
     <div class="vcen stack">
       <p class="kicker">Nhóm 3 &nbsp;·&nbsp; nói chuyện với Claude</p>
       <h2 style="font-size:33px">Có ô nhập riêng, không phải gõ thẳng vào terminal</h2>
-      <p>Gõ thẳng vào terminal thì hay mất chữ lúc Claude đang in ra, và không dán ảnh được. Ô nhập riêng lo cả hai.</p>
-      <div class="feat"><span class="k">◆</span><p><b>Dán hoặc chọn ảnh</b>, chạy được cả trên điện thoại.</p></div>
-      <div class="feat"><span class="k">◆</span><p><b>Slash command</b>: gõ <code>/</code> là hiện menu.</p></div>
-      <div class="feat"><span class="k">◆</span><p>Enter gửi, Shift+Enter xuống dòng.</p></div>
+      <p><strong>Nói rõ:</strong> gõ thẳng vào terminal vẫn dùng tốt, và Claude CLI dán ảnh thẳng vào terminal cũng được. Ô nhập riêng không phải để làm được thứ terminal không làm được.</p>
+      <div class="feat"><span class="k">◆</span><p><b>Trực quan hơn.</b> Ô nhập là ô nhập, không lẫn vào dòng chữ đang chạy.</p></div>
+      <div class="feat"><span class="k">◆</span><p><b>Không dính lỗi khi đổi cỡ.</b> Terminal co giãn trên nhiều tỉ lệ màn hình hay vỡ layout dòng nhập. Ô riêng thì không.</p></div>
+      <div class="feat"><span class="k">◆</span><p>Đính ảnh, slash command, Enter gửi, Shift+Enter xuống dòng.</p></div>
     </div>
-    <div class="vcen stack">
-      <p class="kicker">Và mấy thứ chỉ có ở đây</p>
-      <div class="panel"><h3>Xếp hàng nhiều prompt</h3><p>Viết sẵn 3 việc, xong cái này nó tự chạy cái kia.</p></div>
-      <div class="panel"><h3>Hẹn giờ</h3><p>Đặt giờ chạy một prompt. Sáng mai 8h tự chạy.</p></div>
-      <div class="panel"><h3>Thư viện prompt</h3><p>Prompt hay dùng thì lưu lại, gọi ra bằng tên.</p></div>
-      <div class="panel"><h3>Gửi một lượt cho nhiều session</h3><p>Kiểu "cả 4 con cùng chạy test đi".</p></div>
-    </div>
+    <figure class="demo">
+      <div class="demo-frame"><span class="lbl">Chèn GIF</span><span class="file">assets/demo-09-prompt.gif</span></div>
+      <figcaption>Quay: gõ prompt vào ô nhập, đính một ảnh, gõ / để hiện slash command.</figcaption>
+    </figure>
   </div>
   <div class="foot"><span>Phần 3 &nbsp;·&nbsp; Tính năng</span><span class="pg"></span></div>
   <aside class="notes">
-    <p>Cột phải hay gây "ồ" nhất. Nhấn <strong>xếp hàng prompt</strong> và <strong>hẹn giờ</strong>, hai cái đó ít app có.</p>
+    <p><strong>Đừng nói quá.</strong> Bản trước ghi "terminal không dán ảnh được", sai: Claude CLI dán ảnh thẳng vào terminal được. Nói đúng thì mới giữ được tín nhiệm cho mấy phần sau.</p>
+    <p>Giá trị thật của ô nhập riêng là trực quan và <strong>không vỡ khi đổi cỡ màn hình</strong>. Ai từng kéo terminal nhỏ lại rồi thấy dòng nhập nhảy lung tung sẽ hiểu ngay.</p>
+    <p>Cột phải mới là chỗ hay gây "ồ". Nhấn <strong>xếp hàng prompt</strong> và <strong>hẹn giờ</strong>.</p>
     <p>Ví dụ thật cho dễ hiểu: tối trước khi về xếp 3 việc, sáng ra đọc kết quả.</p>
   </aside>
 </section>
 
 <!-- 16 ───────────────────────────────────────────────────────────────────── -->
+<section class="slide" data-t="Prompt nâng cao">
+  <p class="kicker">Nhóm 3 &nbsp;·&nbsp; mấy thứ chỉ ô nhập mới làm được</p>
+  <h2>Bốn thứ terminal không làm thay được</h2>
+  <div class="two grow" style="margin-top:24px">
+    <div class="stack">
+      <div class="panel"><h3>Xếp hàng nhiều prompt</h3><p>Viết sẵn 3 việc, xong cái này nó tự chạy cái kia. Tối trước khi về xếp việc, sáng ra đọc kết quả.</p></div>
+      <div class="panel"><h3>Hẹn giờ</h3><p>Đặt giờ chạy một prompt. Sáng mai 8h tự chạy.</p></div>
+    </div>
+    <div class="stack">
+      <div class="panel"><h3>Thư viện prompt</h3><p>Prompt hay dùng thì lưu lại, gọi ra bằng tên. Dùng chung được giữa các máy.</p></div>
+      <div class="panel"><h3>Gửi một lượt cho nhiều session</h3><p>Kiểu "cả 4 con cùng chạy test đi". Chọn session nào nhận thì tick session đó.</p></div>
+    </div>
+  </div>
+  <div class="foot"><span>Phần 3 &nbsp;·&nbsp; Tính năng</span><span class="pg"></span></div>
+  <aside class="notes">
+    <p>Đây mới là chỗ hay gây "ồ". Bốn cái này terminal thuần không làm thay được, khác với chuyện dán ảnh ở slide trước.</p>
+    <p>Nhấn <strong>xếp hàng prompt</strong> và <strong>hẹn giờ</strong>. Ví dụ thật: tối trước khi về xếp 3 việc, sáng ra đọc kết quả.</p>
+    <p>Nói thật luôn: mấy cái này mình <strong>ít dùng hơn mình tưởng lúc làm</strong>. Slide 27 sẽ nhắc lại.</p>
+  </aside>
+</section>
+
 <section class="slide" data-t="Xem dạng hội thoại">
-  <div class="two-b grow">
+  <div class="two-demo grow">
     <div class="vcen stack">
       <p class="kicker">Nhóm 3</p>
       <h2 style="font-size:33px">Xem session dạng hội thoại</h2>
@@ -628,6 +697,10 @@ tbody tr + tr td { border-top: 1px solid var(--line); }
       <div class="panel"><p>Chat cũ vẫn đọc lại được kể cả khi session đã tắt, vì nó nằm trong file transcript trên máy chứ không phải trong bộ nhớ app.</p></div>
       <p class="sub">Đổi qua lại giữa hai chế độ bằng nút trên thanh tab.</p>
     </div>
+    <figure class="demo">
+      <div class="demo-frame"><span class="lbl">Chèn GIF</span><span class="file">assets/demo-10-conversation.gif</span></div>
+      <figcaption>Quay: đổi từ terminal sang chế độ hội thoại, cuộn lại và tìm một câu Claude nói lúc nãy.</figcaption>
+    </figure>
   </div>
   <div class="foot"><span>Phần 3 &nbsp;·&nbsp; Tính năng</span><span class="pg"></span></div>
   <aside class="notes"><p>Cái này hợp với người không sống trong terminal. Phòng toàn dev quen terminal thì lướt nhanh.</p></aside>
@@ -680,7 +753,7 @@ tbody tr + tr td { border-top: 1px solid var(--line); }
 
 <!-- 19 ───────────────────────────────────────────────────────────────────── -->
 <section class="slide" data-t="Nhóm 4: lịch sử">
-  <div class="two-b grow">
+  <div class="two-demo grow">
     <div class="vcen stack">
       <p class="kicker">Nhóm 4 &nbsp;·&nbsp; git</p>
       <h2 style="font-size:33px">Đọc lịch sử commit</h2>
@@ -693,6 +766,10 @@ tbody tr + tr td { border-top: 1px solid var(--line); }
       <div class="feat"><span class="k">◆</span><p><b>Đọc nhánh khác mà không cần checkout</b>, kể cả nhánh remote. Kiểu "trên origin/main có gì mà máy mình chưa có".</p></div>
       <p class="sub">Merge có đánh dấu riêng, và hiện đúng thứ nó mang vào.</p>
     </div>
+    <figure class="demo">
+      <div class="demo-frame"><span class="lbl">Chèn GIF</span><span class="file">assets/demo-11-history.gif</span></div>
+      <figcaption>Quay: bấm ⇧⌘H, gõ chữ vào ô tìm để lọc commit, chọn một commit rồi chọn file để xem thay đổi.</figcaption>
+    </figure>
   </div>
   <div class="foot"><span>Phần 3 &nbsp;·&nbsp; Tính năng</span><span class="pg"></span></div>
   <aside class="notes">
@@ -729,27 +806,33 @@ tbody tr + tr td { border-top: 1px solid var(--line); }
 </section>
 
 <!-- 21 ───────────────────────────────────────────────────────────────────── -->
-<section class="slide" data-t="Nhóm 6: điện thoại">
+<section class="slide" data-t="Nhóm 6: chia sẻ session">
   <div class="two-demo grow">
     <div class="vcen stack">
-      <p class="kicker">Nhóm 6 &nbsp;·&nbsp; rời khỏi máy</p>
-      <h2 style="font-size:33px">Mở bằng điện thoại</h2>
-      <p>Máy chạy CSM tự phục vụ luôn giao diện của nó qua HTTP cho thiết bị khác trong mạng. Điện thoại mở trình duyệt là thấy đủ trạng thái và trả lời được.</p>
-      <div class="panel"><p><strong>Mặc định tắt.</strong> Chỉ trong mạng nội bộ, có token, và có mức token <strong>chỉ đọc</strong> cho trường hợp muốn cho người khác xem mà không cho gõ.</p></div>
+      <p class="kicker">Nhóm 6 &nbsp;·&nbsp; chia sẻ</p>
+      <h2 style="font-size:33px">Đưa session cho người khác xem, hoặc cho họ gõ luôn</h2>
+      <p>Máy chạy CSM tự phục vụ giao diện của nó qua HTTP. Mỗi link chia sẻ là một token riêng, tạo và <strong>thu hồi từng cái một</strong>.</p>
+      <div class="feat"><span class="k">◆</span><p><b>Toàn bộ, hoặc đúng một session.</b> Nhờ người khác xem giúp một con thì không phải mở cả máy cho họ.</p></div>
+      <div class="feat"><span class="k">◆</span><p><b>Chỉ đọc, hoặc gõ được.</b> Hai cái ghép tự do, ví dụ chỉ đọc và chỉ một session.</p></div>
+      <div class="feat"><span class="k">◆</span><p><b>Vào bằng trình duyệt, hoặc bằng chính app CSM.</b> Bên kia mở Remote hosts, thêm địa chỉ, là máy đó nằm trong app của họ như một cửa sổ riêng.</p></div>
+      <p class="sub">Mặc định tắt. Bật rồi thì quét QR là xong, khỏi gõ token.</p>
     </div>
     <figure class="demo">
-      <div class="demo-frame"><span class="lbl">Chèn GIF hoặc quay màn hình điện thoại</span><span class="file">assets/demo-06-mobile.gif</span></div>
-      <figcaption>Quay: điện thoại mở địa chỉ máy bàn, thấy danh sách session, một con đang chờ, gõ trả lời và máy bàn nhận được.</figcaption>
+      <div class="demo-frame"><span class="lbl">Chèn GIF</span><span class="file">assets/demo-06-share.gif</span></div>
+      <figcaption>Quay: tạo một link chỉ đọc giới hạn một session, quét QR bằng điện thoại, bên kia thấy đúng session đó và không gõ được.</figcaption>
     </figure>
   </div>
   <div class="foot"><span>Phần 3 &nbsp;·&nbsp; Tính năng</span><span class="pg"></span></div>
   <aside class="notes">
-    <p>Cái này gây ấn tượng nhất, nhưng <strong>phải nói phần bảo mật ngay</strong>, đừng chờ bị hỏi. Nói trước thì mình chủ động.</p>
-    <p>Đây cũng là nhu cầu khiến mình không dùng được mấy app có sẵn. Nhắc lại ở phần 5.</p>
+    <p><strong>Đừng gọi phần này là "mở bằng điện thoại".</strong> Điện thoại chỉ là một đường vào. Cái thật sự là <strong>chia sẻ session có kiểm soát</strong>.</p>
+    <p>Ba tình huống nên kể, chọn một hai cái:</p>
+    <p>Một, <strong>nhờ đồng nghiệp xem giúp</strong>: con này đang kẹt, tạo link chỉ đọc giới hạn đúng session đó, gửi đi, xong việc thì thu hồi. Họ không thấy repo khác, không gõ được gì.</p>
+    <p>Hai, <strong>làm remote</strong>: máy ở công ty vẫn chạy, ở nhà mở bằng app CSM trên máy khác, có tunnel SSH thì app tự dựng tunnel trước rồi mới nối.</p>
+    <p>Ba, <strong>rời bàn</strong>: quét QR, điện thoại thành cái để xem con nào đang chờ và trả lời nhanh.</p>
+    <p>Nói phần an toàn ngay, đừng chờ bị hỏi: mặc định tắt, mỗi link một token riêng, thu hồi từng cái, và có mức chỉ đọc.</p>
   </aside>
 </section>
 
-<!-- 22 ───────────────────────────────────────────────────────────────────── -->
 <section class="slide" data-t="Nhóm 7: hỏi app">
   <div class="two-demo grow">
     <div class="vcen stack">
@@ -828,6 +911,8 @@ tbody tr + tr td { border-top: 1px solid var(--line); }
 <section class="slide divider" data-t="Phần 4">
   <p class="n">PHẦN 4</p>
   <h2 style="margin-top:12px">Một ngày mình dùng nó ra sao</h2>
+  <p class="cmd" style="margin-top:26px"><span class="p">$</span> <span class="t">csm --day-in-the-life</span><span class="caret"></span></p>
+  <div class="divider-dots"><span class="dot working spin"></span><span class="dot waiting spin"></span><span class="dot done spin"></span></div>
   <aside class="notes"><p>Chuyển: "Liệt kê tính năng thì khô. Kể một ngày thật cho dễ hình dung hơn."</p></aside>
 </section>
 
@@ -877,6 +962,8 @@ tbody tr + tr td { border-top: 1px solid var(--line); }
 <section class="slide divider" data-t="Phần 5">
   <p class="n">PHẦN 5</p>
   <h2 style="margin-top:12px">Ai thì hợp kiểu này</h2>
+  <p class="cmd" style="margin-top:26px"><span class="p">$</span> <span class="t">csm --should-i</span><span class="caret"></span></p>
+  <div class="divider-dots"><span class="dot working spin"></span><span class="dot waiting spin"></span><span class="dot done spin"></span></div>
   <aside class="notes"><p>Chuyển: "Phần cuối, và là phần mình nghĩ đáng nghe nhất kể cả khi bạn không định cài gì."</p></aside>
 </section>
 

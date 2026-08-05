@@ -36,7 +36,7 @@ không phải lúc đang đứng trên bục.
 ## Trong repo có gì
 
 ```
-slides/index.html          Deck 35 slide, tự chứa, có ghi chú diễn giả
+slides/index.html          Deck 36 slide, tự chứa, có ghi chú diễn giả
 script/script-vi.md        Kịch bản nói chi tiết, có mốc thời gian và chỉ dẫn sân khấu
 script/demo-checklist.md   Sáu đoạn demo cần quay, và cách chèn vào slide
 context/                   Bối cảnh về app được lấy làm case study
@@ -46,8 +46,7 @@ assets/                    Chỗ bỏ GIF demo vào
 
 ## Còn thiếu
 
-Bảy khung demo ở slide 11, 13, 15, 18, 19, 22 và 23 đang để trống có chủ đích, chờ
-GIF quay màn hình. Xem `script/demo-checklist.md` để biết cần quay gì và đặt tên file
+Mười một khung demo đang để trống có chủ đích, chờ GIF quay màn hình. Xem `script/demo-checklist.md` để biết cần quay gì và đặt tên file
 thế nào. **Bỏ file vào `assets/` là slide tự nhận**, không phải chạy lệnh gì. Chưa
 có file thì khung ở nguyên và ghi rõ tên file cần bỏ vào, nên deck vẫn trình chiếu
 được bình thường.

@@ -1,9 +1,8 @@
-# Bảy đoạn demo cần quay
+# GIF demo cần quay
 
-Slide 11, 13, 15, 18, 19, 22, 23 đang để khung nét đứt. Bỏ file vào `assets/` đúng tên dưới đây là
-slide tự hiện ảnh, không cần sửa gì trong HTML.
-
-Sau khi có đủ file, chạy lệnh ở cuối trang này để thay khung nét đứt bằng ảnh.
+Bỏ file vào `assets/` đúng tên là **slide tự nhận**, không cần chạy lệnh gì. Chưa có
+file thì khung nét đứt ở nguyên và ghi rõ tên file cần bỏ vào, nên deck vẫn trình
+chiếu được bình thường.
 
 ## Quy cách chung
 
@@ -21,19 +20,24 @@ Sau khi có đủ file, chạy lệnh ở cuối trang này để thay khung né
 
 ---
 
-## Bảy đoạn cần quay
+## Mười một đoạn, xếp theo ưu tiên
 
-| File | Slide | Quay cái gì |
-|---|---|---|
-| `demo-01-session-alive.gif` | 11 | Đóng tab một session đang chạy. Nó vẫn nằm trong sidebar, chấm vẫn nhảy. Mở lại thấy nguyên. |
-| `demo-02-attention.gif` | 13 | **Quan trọng nhất.** 3 session chạy, một con chuyển sang chờ, chấm đổi vàng, badge nhảy số, bấm badge nhảy tới đúng con đó. |
-| `demo-03-split-layout.gif` | 15 | Chia màn thành 3 ô, kéo một tab sang ô khác, lưu thành template, đóng hết rồi mở template ra lại. |
-| `demo-04-worktree.gif` | 18 | Chuột phải lên project, tạo worktree, nó hiện lồng bên dưới, mở một session trong đó. |
-| `demo-05-diff.gif` | 19 | Bấm ⇧⌘D, diff mở thành tab, chia đôi màn đặt cạnh file gốc. |
-| `demo-06-mobile.gif` | 22 | Điện thoại mở địa chỉ máy bàn, thấy một con đang chờ, gõ trả lời, máy bàn nhận được. |
-| `demo-07-help.gif` | 23 | Bấm dấu hỏi ở header, hỏi "làm sao lưu cách chia màn hình", nhận câu trả lời kèm đúng phím tắt. |
+Không cần quay đủ. **Ba cái "Bắt buộc" là đủ để buổi nói chạy tốt**, phần còn lại
+thiếu thì slide vẫn trình chiếu được, khung sẽ hiện tên file cần bỏ vào.
 
-Nếu chỉ kịp quay một cái thì quay `demo-02-attention.gif`.
+| Ưu tiên | File | Slide | Quay cái gì |
+|---|---|---|---|
+| Bắt buộc | `demo-01-session-alive.gif` | 11 | Đóng tab một session đang chạy. Nó vẫn nằm trong sidebar, chấm vẫn nhảy. Mở lại thấy nguyên. |
+| Bắt buộc | `demo-02-attention.gif` | 13 | 3 session chạy, một con chuyển sang chờ, chấm đổi vàng, badge nhảy số, bấm badge nhảy tới đúng con đó. |
+| Bắt buộc | `demo-06-share.gif` | 23 | Tạo link chỉ đọc giới hạn một session, quét QR bằng điện thoại, bên kia thấy đúng session đó và không gõ được. |
+| Nên có | `demo-03-split-layout.gif` | 15 | Chia màn thành 3 ô, kéo một tab sang ô khác, lưu thành template, đóng hết rồi mở template ra lại. |
+| Nên có | `demo-04-worktree.gif` | 19 | Chuột phải lên project, tạo worktree, nó hiện lồng bên dưới, mở một session trong đó. |
+| Nên có | `demo-05-diff.gif` | 20 | Bấm ⇧⌘D, diff mở thành tab, chia đôi màn đặt cạnh file gốc. |
+| Nên có | `demo-07-help.gif` | 24 | Bấm dấu hỏi ở header, hỏi "làm sao lưu cách chia màn hình", nhận câu trả lời kèm đúng phím tắt. |
+| Có thì tốt | `demo-08-inbox.gif` | 14 | Bấm ⇧⌘A, danh sách hiện mọi session đang chờ từ nhiều dự án, chọn một cái là nhảy tới đó. |
+| Có thì tốt | `demo-09-prompt.gif` | 16 | Gõ prompt vào ô nhập, đính một ảnh, gõ / để hiện slash command. |
+| Có thì tốt | `demo-10-conversation.gif` | 18 | Đổi từ terminal sang chế độ hội thoại, cuộn lại và tìm một câu Claude nói lúc nãy. |
+| Có thì tốt | `demo-11-history.gif` | 21 | Bấm ⇧⌘H, gõ chữ vào ô tìm để lọc commit, chọn một commit rồi chọn file để xem thay đổi. |
 
 ### Mẹo dựng cảnh cho demo-02
 

@@ -1,6 +1,6 @@
 # Kịch bản nói
 
-50 phút nói + 10 phút hỏi đáp. 35 slide.
+50 phút nói + 10 phút hỏi đáp. 36 slide.
 
 Cách dùng: cột thời gian là mốc tính từ lúc bắt đầu. Tới slide 12 mà đồng hồ đã quá
 18 phút thì lướt nhanh phần tính năng, bỏ slide 14, 17, 20.
@@ -20,10 +20,10 @@ Giọng: kể chuyện cho đồng nghiệp nghe, không phải thuyết trình.
       lúc đang đứng trên bục.**
 - [ ] Bấm `S` xem ghi chú có nằm ở màn hình của mình không. Chỉ có một màn hình thì
       đừng bấm, cầm bản in file này.
-- [ ] Kiểm tra 7 GIF đã nằm trong `assets/`, slide 11, 13, 15, 18, 19, 22, 23 hiện
-      ảnh chứ không phải khung nét đứt.
+- [ ] Kiểm tra GIF đã nằm trong `assets/`. Bỏ file vào là slide tự nhận, không cần
+      chạy lệnh gì. Xem `demo-checklist.md` để biết slide nào cần cái nào.
 - [ ] Mở sẵn một terminal ở tab khác, đã `cd` vào một repo thật, để chạy
-      `claude --help` ở slide 31.
+      `claude --help` ở slide 32.
 - [ ] Tắt thông báo trên máy. Buổi này nói về việc bị ngắt quãng, đừng để bị ngắt.
 
 ---
@@ -289,28 +289,49 @@ chạy. Đừng đọc hết gạch đầu dòng, chỉ nhấn 2 ý mỗi slide.
 >
 > Áp template **không bao giờ đóng hay xoá session nào**. Nó chỉ xếp lại thôi.
 
-**Slide 16. Ô nhập prompt.**
+**Slide 16. Ô nhập prompt.** [Có GIF]
 
-> Gõ thẳng vào terminal thì hay mất chữ lúc Claude đang in ra, và không dán ảnh được.
-> Nên có ô nhập riêng. Dán ảnh được, chạy cả trên điện thoại, gõ `/` là hiện slash
-> command.
+> [**Nói phần đính chính trước, đừng nói quá.**]
 >
-> [Cột phải, chỗ hay gây "ồ" nhất.]
+> Nói rõ luôn: **gõ thẳng vào terminal vẫn dùng tốt**, và Claude CLI dán ảnh thẳng
+> vào terminal cũng được. Ô nhập riêng **không phải** để làm được thứ terminal không
+> làm được.
 >
-> Và mấy thứ chỉ có ở ô này. **Xếp hàng nhiều prompt**: viết sẵn 3 việc, xong cái này
-> nó tự chạy cái kia. **Hẹn giờ**: đặt sáng mai 8h tự chạy. Thư viện prompt hay dùng.
-> Và gửi một lượt cho nhiều session, kiểu "cả 4 con cùng chạy test đi".
+> Giá trị của nó là hai chỗ khác. Một, **trực quan hơn**: ô nhập là ô nhập, không lẫn
+> vào dòng chữ đang chạy. Hai, và cái này ai từng bị sẽ gật ngay: **không vỡ khi đổi
+> cỡ màn hình**. Terminal co giãn trên nhiều tỉ lệ màn hình hay làm dòng nhập nhảy
+> lung tung. Ô riêng thì không.
 >
-> Ví dụ thật: tối trước khi về xếp 3 việc, sáng ra đọc kết quả.
+> Ngoài ra vẫn đính ảnh được, gõ `/` là hiện slash command, Enter gửi, Shift+Enter
+> xuống dòng.
 
-**Slide 17. Xem dạng hội thoại.** [Bỏ được nếu trễ giờ]
+**Slide 17. Prompt nâng cao.** [Slide hay gây "ồ" nhất phần này]
+
+> Còn đây mới là bốn thứ **terminal thuần không làm thay được**.
+>
+> **Xếp hàng nhiều prompt.** Viết sẵn 3 việc, xong cái này nó tự chạy cái kia. Ví dụ
+> thật: tối trước khi về xếp 3 việc, sáng ra đọc kết quả.
+>
+> **Hẹn giờ.** Đặt sáng mai 8h tự chạy một prompt.
+>
+> **Thư viện prompt.** Prompt hay dùng thì lưu lại, gọi ra bằng tên, dùng chung giữa
+> các máy.
+>
+> **Gửi một lượt cho nhiều session.** Kiểu "cả 4 con cùng chạy test đi", tick session
+> nào thì session đó nhận.
+>
+> [Nói thật.]
+>
+> Bốn cái này mình **ít dùng hơn lúc làm mình tưởng**. Lát nữa slide 29 nhắc lại.
+
+**Slide 18. Xem dạng hội thoại.** [Bỏ được nếu trễ giờ]
 
 > Terminal thô thì quen mắt với dân dev, nhưng cuộn ngược lại tìm một câu Claude nói
 > lúc nãy thì khổ. Bật chế độ hội thoại là nó hiện ra như một cuộc chat, tìm kiếm được.
 >
 > Chat cũ vẫn đọc lại được kể cả khi session đã tắt, vì nó nằm trong file trên máy.
 
-**Slide 18. Worktree.** [Có GIF]
+**Slide 19. Worktree.** [Có GIF]
 
 > Nhóm git. Worktree là nhiều thư mục làm việc trên cùng một repo, mỗi thư mục một
 > nhánh, **dùng chung lịch sử git**. Không phải clone lại, nên rẻ hơn nhiều.
@@ -330,7 +351,7 @@ chạy. Đừng đọc hết gạch đầu dòng, chỉ nhấn 2 ý mỗi slide.
 > Cái này `claude --worktree` cũng làm được mà không cần app nào. Thứ app thêm vào là
 > nó **nằm trong cây, nhìn thấy được**, và có session riêng.
 
-**Slide 19. Diff.** [Có GIF]
+**Slide 20. Diff.** [Có GIF]
 
 > `⇧⌘D`. Diff mở ra như một tab, ngồi cạnh chính file nó nói về, chia đôi màn được,
 > và ở nguyên đó trong lúc mình làm việc tiếp.
@@ -343,7 +364,7 @@ chạy. Đừng đọc hết gạch đầu dòng, chỉ nhấn 2 ý mỗi slide.
 > Nói thật là mình làm nó gần như sau cùng, sau khi alt-tab ra ngoài đủ nhiều lần.
 > Không phải làm vì "app nào cũng có diff".
 
-**Slide 20. Lịch sử commit.** [Bỏ được nếu trễ giờ]
+**Slide 21. Lịch sử commit.** [Bỏ được nếu trễ giờ]
 
 > `⇧⌘H`. Danh sách commit, chọn một cái để xem nó đổi file nào, chọn file để xem đổi
 > chỗ nào.
@@ -355,7 +376,7 @@ chạy. Đừng đọc hết gạch đầu dòng, chỉ nhấn 2 ý mỗi slide.
 > Không có đồ thị nhánh, và đó là cố ý. Vẽ đồ thị là một đống việc để trả lời câu hỏi
 > mà mình gần như không bao giờ hỏi.
 
-**Slide 21. Editor.**
+**Slide 22. Editor.**
 
 > Có editor bên trong, nhưng **không phải để thay VS Code**. Mục đích hẹp thôi: sửa
 > nhanh một dòng, đọc file Claude vừa nhắc tới, sửa `CLAUDE.md`.
@@ -366,19 +387,34 @@ chạy. Đừng đọc hết gạch đầu dòng, chỉ nhấn 2 ý mỗi slide.
 > Cây file cũng tự mở tới file đang xem, y như cây session tự cuộn tới session đang
 > mở. Hai cây hành xử giống nhau, đó là chủ ý.
 
-**Slide 22. Điện thoại.** [Có GIF. **Nói phần bảo mật ngay, đừng chờ bị hỏi.**]
+**Slide 23. Chia sẻ session.** [Có GIF. **Nói phần an toàn ngay, đừng chờ bị hỏi.**]
 
-> Máy chạy app tự phục vụ luôn giao diện của nó qua HTTP cho thiết bị khác trong mạng.
-> Điện thoại mở trình duyệt là thấy đủ trạng thái và trả lời được.
+> [**Đừng gọi phần này là "mở bằng điện thoại".** Điện thoại chỉ là một đường vào.]
 >
-> [Nói ngay, trước khi có người giơ tay.]
+> Máy chạy CSM tự phục vụ giao diện của nó qua HTTP. Mỗi link chia sẻ là **một token
+> riêng**, tạo và thu hồi từng cái một.
 >
-> Trước khi ai hỏi: cái này **mặc định tắt**, chỉ trong mạng nội bộ, có token, và có
-> mức token **chỉ đọc** cho trường hợp muốn cho người khác xem mà không cho gõ.
+> Chọn được **toàn bộ, hoặc đúng một session**. Chọn được **chỉ đọc, hoặc gõ được**.
+> Hai cái ghép tự do.
 >
-> Đây cũng là nhu cầu khiến mình không dùng được mấy app có sẵn. Lát nữa nói lại.
+> Và vào được bằng **trình duyệt, hoặc bằng chính app CSM**: bên kia mở Remote hosts,
+> thêm địa chỉ, là máy đó nằm trong app của họ như một cửa sổ riêng.
+>
+> [Kể một hai tình huống, đừng kể cả ba.]
+>
+> Tình huống hay dùng nhất: **nhờ đồng nghiệp xem giúp**. Con này đang kẹt, tạo một
+> link chỉ đọc giới hạn đúng session đó, gửi đi. Họ không thấy repo khác, không gõ
+> được gì. Xong việc thì thu hồi cái link đó thôi, mấy link khác không ảnh hưởng.
+>
+> Tình huống hai: **làm remote**. Máy ở công ty vẫn chạy, ở nhà mở bằng app CSM trên
+> máy khác. Có tunnel SSH thì app tự dựng tunnel trước rồi mới nối.
+>
+> Tình huống ba: **rời bàn**. Quét QR, điện thoại thành cái để xem con nào đang chờ.
+>
+> Và phần an toàn: **mặc định tắt**, mỗi link một token riêng, thu hồi từng cái, có
+> mức chỉ đọc.
 
-**Slide 23. Hỏi thẳng app.** [Có GIF]
+**Slide 24. Hỏi thẳng app.** [Có GIF]
 
 > App nhiều thứ quá, mình tự làm mà còn quên phím tắt. Nên có một chỗ chat để hỏi
 > "làm sao để...".
@@ -395,7 +431,7 @@ chạy. Đừng đọc hết gạch đầu dòng, chỉ nhấn 2 ý mỗi slide.
 >
 > Đó là cách bắt tài liệu không bị mục mà không cần ai đi nhắc.
 
-**Slide 24. Còn lại.** [Lướt nhanh, chỉ dừng 2 chỗ]
+**Slide 25. Còn lại.** [Lướt nhanh, chỉ dừng 2 chỗ]
 
 > Mấy thứ còn lại gom một slide. Ba bảng màu sáng tối. Tag và lọc. Xem usage token.
 > `⌘K` tìm mọi thứ.
@@ -411,7 +447,7 @@ chạy. Đừng đọc hết gạch đầu dòng, chỉ nhấn 2 ý mỗi slide.
 > Và có một con pet pixel trong sidebar. Nó chả có tác dụng gì cả. Đó là lý do nó ở
 > lại: app dùng cả ngày thì cần một chỗ không nghiêm túc.
 
-**Slide 25. Phím tắt.** [Để mọi người chụp màn hình]
+**Slide 26. Phím tắt.** [Để mọi người chụp màn hình]
 
 > Slide này để mọi người chụp lại. Mình chỉ nhấn ba cái hay nhất: `⌘K` bảng lệnh,
 > `⇧⌘A` hộp thư, `⇧⌘L` template.
@@ -423,11 +459,11 @@ chạy. Đừng đọc hết gạch đầu dòng, chỉ nhấn 2 ý mỗi slide.
 
 ## Phần 4: một ngày (0:41 → 0:46)
 
-**Slide 26.** [Phân đoạn]
+**Slide 27.** [Phân đoạn]
 
 > Liệt kê tính năng thì khô. Kể một ngày thật cho dễ hình dung hơn.
 
-**Slide 27.** [Kể như kể chuyện, đừng đọc bảng]
+**Slide 28.** [Kể như kể chuyện, đừng đọc bảng]
 
 > Mở máy: bấm `⇧⌘L`, mở template quen. Bên trái session chính của repo đang làm, bên
 > phải một con để hỏi vặt.
@@ -449,7 +485,7 @@ chạy. Đừng đọc hết gạch đầu dòng, chỉ nhấn 2 ý mỗi slide.
 > Cái dòng "đi pha cà phê" là cả điểm của app. Mọi thứ khác chỉ phục vụ để dòng đó
 > thành sự thật.
 
-**Slide 28.** [Slide mua tín nhiệm. Nói thẳng.]
+**Slide 29.** [Slide mua tín nhiệm. Nói thẳng.]
 
 > Nói thật cái nào mình dùng cái nào không.
 >
@@ -466,11 +502,11 @@ chạy. Đừng đọc hết gạch đầu dòng, chỉ nhấn 2 ý mỗi slide.
 
 ## Phần 5: ai thì hợp (0:46 → 0:54)
 
-**Slide 29.** [Phân đoạn]
+**Slide 30.** [Phân đoạn]
 
 > Phần cuối, và là phần mình nghĩ đáng nghe nhất kể cả khi bạn không định cài gì.
 
-**Slide 30.**
+**Slide 31.**
 
 > Bốn câu tự hỏi trước khi cài bất cứ thứ gì.
 >
@@ -490,7 +526,7 @@ chạy. Đừng đọc hết gạch đầu dòng, chỉ nhấn 2 ý mỗi slide.
 > Bốn: **bạn có hay rời khỏi máy không?** Câu này ít người hỏi, mà nó lại là câu quyết
 > định với mình. Chính vì nó mà mấy app có sẵn không vừa.
 
-**Slide 31.** [**Chạy `claude --help` ngay tại chỗ.** Slide này gây "ồ" to nhất buổi.]
+**Slide 32.** [**Chạy `claude --help` ngay tại chỗ.** Slide này gây "ồ" to nhất buổi.]
 
 > Trước khi cài thêm gì, kiểm tra thứ mình đã có. Claude Code tự nó đã kha khá.
 >
@@ -512,7 +548,7 @@ chạy. Đừng đọc hết gạch đầu dòng, chỉ nhấn 2 ý mỗi slide.
 > phát triển hồi tháng 2. Chọn công cụ trong thị trường mới thì cái mình chọn hôm nay
 > có thể biến mất.
 
-**Slide 32.** [Giữ cho cả buổi không thành quảng cáo. Nói thẳng, đừng làm nhẹ.]
+**Slide 33.** [Giữ cho cả buổi không thành quảng cáo. Nói thẳng, đừng làm nhẹ.]
 
 > Và cái giá của việc tự làm.
 >
@@ -529,7 +565,7 @@ chạy. Đừng đọc hết gạch đầu dòng, chỉ nhấn 2 ý mỗi slide.
 > Nên khuyên thật lòng: **đừng tự làm.** Dùng cái có sẵn, trừ khi nhu cầu của bạn
 > không có cái nào vừa, và bạn thấy việc làm công cụ tự nó đã vui.
 
-**Slide 33.**
+**Slide 34.**
 
 > Muốn thử thì làm theo thứ tự này.
 >
@@ -541,7 +577,7 @@ chạy. Đừng đọc hết gạch đầu dòng, chỉ nhấn 2 ý mỗi slide.
 >
 > Đừng đổi hai thứ cùng lúc, và đừng đánh giá bằng cảm giác ngày đầu tiên.
 
-**Slide 34.**
+**Slide 35.**
 
 > **Không có công cụ tốt nhất. Chỉ có công cụ vừa tay.**
 >
@@ -555,7 +591,7 @@ chạy. Đừng đọc hết gạch đầu dòng, chỉ nhấn 2 ý mỗi slide.
 
 ## Hỏi đáp (0:54 → 1:04)
 
-**Slide 35.**
+**Slide 36.**
 
 Đừng hỏi "có ai hỏi gì không", thường sẽ im. Mở bằng câu cụ thể:
 
@@ -608,8 +644,8 @@ người không cần hai thứ đó thì Conductor là lựa chọn hợp lý h
 
 | Đang ở | Đồng hồ | Làm gì |
 |---|---|---|
-| Slide 12 | quá 21 phút | Bỏ slide 14, 17, 20 |
-| Slide 26 | quá 43 phút | Bỏ slide 28, kể luôn vào phần 5 |
-| Slide 30 | quá 50 phút | Bỏ slide 33, nói kế hoạch 2 tuần bằng lời trong 20 giây |
+| Slide 12 | quá 21 phút | Bỏ slide 14, 18, 21 |
+| Slide 27 | quá 43 phút | Bỏ slide 29, kể luôn vào phần 5 |
+| Slide 31 | quá 50 phút | Bỏ slide 34, nói kế hoạch 2 tuần bằng lời trong 20 giây |
 
-Không bao giờ cắt: slide 2, 4, 5, 8, 9, 10, 13, 28, 30, 32.
+Không bao giờ cắt: slide 2, 4, 5, 8, 9, 10, 13, 29, 31, 33.
