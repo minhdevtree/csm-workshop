@@ -3,23 +3,18 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Chạy nhiều Claude Code cùng lúc mà không loạn</title>
+<title>CSM: chạy nhiều Claude Code cùng lúc</title>
 <style>
 /* ─────────────────────────────────────────────────────────────────────────────
-   Deck cho workshop nội bộ. Tự chứa hoàn toàn: không font ngoài, không script
-   ngoài, không ảnh ngoài. Mở bằng file:// vẫn chạy đủ.
+   Deck chia sẻ nội bộ về CSM. Tự chứa hoàn toàn: không font ngoài, không script
+   ngoài, không ảnh ngoài. Mở bằng file:// trong phòng mất mạng vẫn chạy.
 
-   Font là stack hệ thống chứ không phải webfont, và đó là lựa chọn có chủ đích:
-   deck phải chạy được khi phòng họp mất mạng. Trên máy Mac stack này giải ra
-   SF Pro, trên Windows là Segoe UI. Cả hai đều đọc tốt từ cuối phòng.
-
-   Một accent duy nhất cho cả deck: cam ấm. Không gradient, không glow.
+   Ngôn ngữ hình ảnh lấy thẳng từ CSM để slide và app nhìn như một nhà: cùng bảng
+   màu trạng thái, cùng con dấu ✻ quay, cùng kiểu cây thụt 16px có đường kẻ dẫn.
+   Mấy con số màu và nhịp quay bên dưới copy đúng từ globals.css của app.
    ───────────────────────────────────────────────────────────────────────────── */
 
 :root {
-  --slide-w: 1280px;
-  --slide-h: 720px;
-
   --bg:        #0e0e11;
   --bg-raise:  #16161b;
   --bg-sink:   #08080a;
@@ -29,12 +24,15 @@
   --line:      #26262e;
   --accent:    #e08b4c;
   --accent-dim:#7a4a24;
-  --good:      #56b586;
-  --warn:      #d9a441;
+
+  /* Đúng màu trạng thái của CSM */
+  --st-idle:    #8a93a6;
+  --st-working: #3b82f6;
+  --st-waiting: #f59e0b;
+  --st-done:    #22c55e;
 
   --sans: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
   --mono: ui-monospace, SFMono-Regular, "SF Mono", "JetBrains Mono", "Cascadia Mono", Menlo, Consolas, monospace;
-
   --r: 10px;
 }
 
@@ -48,8 +46,10 @@
   --line:      #e0dfda;
   --accent:    #b8611f;
   --accent-dim:#e8c9ae;
-  --good:      #2f7a55;
-  --warn:      #9a6f14;
+  --st-idle:    #767f92;
+  --st-working: #1d4ed8;
+  --st-waiting: #b45309;
+  --st-done:    #15803d;
 }
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -63,69 +63,48 @@ html, body {
   overflow: hidden;
 }
 
-/* ── Sân khấu ─────────────────────────────────────────────────────────────── */
-
-#stage {
-  position: fixed;
-  inset: 0;
-  display: grid;
-  place-items: center;
-}
-
-#scaler {
-  width: var(--slide-w);
-  height: var(--slide-h);
-  transform-origin: center center;
-  position: relative;
-}
+#stage { position: fixed; inset: 0; display: grid; place-items: center; }
+#scaler { width: 1280px; height: 720px; transform-origin: center center; position: relative; }
 
 .slide {
   position: absolute;
   inset: 0;
   background: var(--bg);
-  padding: 64px 80px 72px;
+  padding: 56px 74px 66px;
   flex-direction: column;
   overflow: hidden;
 }
-/* Ẩn theo kiểu loại trừ, không phải `display:none` trần. Một lớp tiện ích khai
-   báo sau (ví dụ .center, cũng đặt display:flex và cùng độ ưu tiên) sẽ đè được
-   `display:none` và làm slide đó hiện vĩnh viễn, phủ lên slide đang chiếu. Đã
-   xảy ra đúng như vậy. `:not()` đẩy độ ưu tiên lên nên không lặp lại được. */
+/* Ẩn theo kiểu loại trừ: một lớp tiện ích khai báo sau (cùng độ ưu tiên, có
+   display:flex) sẽ đè được display:none và làm slide hiện vĩnh viễn, phủ lên
+   slide đang chiếu. Đã dính đúng lỗi này một lần. */
 .slide:not(.is-current) { display: none; }
 .slide.is-current { display: flex; }
-
-/* Ghi chú của diễn giả sống trong chính slide, nhưng không bao giờ được vẽ ra
-   ở đó. Panel #notes bên dưới đọc nội dung này và hiển thị riêng. Thiếu dòng
-   này thì toàn bộ ghi chú in thẳng lên màn chiếu cho cả phòng đọc. */
 .slide .notes { display: none; }
 
 @media (prefers-reduced-motion: no-preference) {
-  .slide.is-current > * { animation: rise .34s cubic-bezier(.16,1,.3,1) both; }
+  .slide.is-current > * { animation: rise .3s cubic-bezier(.16,1,.3,1) both; }
   .slide.is-current > *:nth-child(2) { animation-delay: .04s; }
   .slide.is-current > *:nth-child(3) { animation-delay: .08s; }
   .slide.is-current > *:nth-child(4) { animation-delay: .12s; }
-  @keyframes rise { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+  @keyframes rise { from { opacity: 0; transform: translateY(9px); } to { opacity: 1; transform: none; } }
 }
 
-/* ── Kiểu chữ ─────────────────────────────────────────────────────────────── */
-
-h1 { font-size: 62px; line-height: 1.06; letter-spacing: -.028em; font-weight: 640; }
-h2 { font-size: 42px; line-height: 1.12; letter-spacing: -.022em; font-weight: 620; }
-h3 { font-size: 25px; line-height: 1.2;  letter-spacing: -.012em; font-weight: 600; }
-p, li { font-size: 21px; line-height: 1.52; color: var(--ink-mute); }
+h1 { font-size: 58px; line-height: 1.07; letter-spacing: -.028em; font-weight: 640; }
+h2 { font-size: 38px; line-height: 1.14; letter-spacing: -.022em; font-weight: 620; }
+h3 { font-size: 23px; line-height: 1.22; letter-spacing: -.012em; font-weight: 600; }
+p, li { font-size: 20px; line-height: 1.5; color: var(--ink-mute); }
 strong { color: var(--ink); font-weight: 620; }
-em { font-style: normal; color: var(--accent); }
 
-.lead { font-size: 25px; line-height: 1.5; max-width: 62ch; }
-.sub  { font-size: 19px; color: var(--ink-faint); }
+.lead { font-size: 23px; line-height: 1.48; max-width: 60ch; }
+.sub  { font-size: 17.5px; color: var(--ink-faint); }
 
 .kicker {
   font-family: var(--mono);
-  font-size: 13px;
+  font-size: 12.5px;
   letter-spacing: .16em;
   text-transform: uppercase;
   color: var(--accent);
-  margin-bottom: 18px;
+  margin-bottom: 12px;
 }
 
 code, .mono { font-family: var(--mono); font-size: .93em; }
@@ -135,248 +114,140 @@ code {
   border-radius: 5px;
   padding: 1px 6px;
   color: var(--ink);
+  white-space: nowrap;
 }
 
-/* ── Bố cục dùng lại ──────────────────────────────────────────────────────── */
-
-.slide > * + * { margin-top: 26px; }
+.slide > * + * { margin-top: 20px; }
 .grow { flex: 1; min-height: 0; }
+.two   { display: grid; grid-template-columns: 1fr 1fr; gap: 34px; }
+.two-a { display: grid; grid-template-columns: 1.1fr .9fr; gap: 38px; }
+.two-b { display: grid; grid-template-columns: .85fr 1.15fr; gap: 38px; }
+.three { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+.stack { display: flex; flex-direction: column; gap: 13px; }
+.mid   { justify-content: center; }
+.vcen  { display: flex; flex-direction: column; justify-content: center; }
 
-.two   { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; }
-.two-a { display: grid; grid-template-columns: 1.15fr .85fr; gap: 44px; }
-.two-b { display: grid; grid-template-columns: .8fr 1.2fr; gap: 44px; }
-.three { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
-
-.stack { display: flex; flex-direction: column; gap: 16px; }
-.center { display: flex; flex-direction: column; justify-content: center; }
-
-ul, ol { padding-left: 1.1em; }
-ul.plain { list-style: none; padding-left: 0; }
-ul li + li, ol li + li { margin-top: 12px; }
-
-/* ── Thành phần ───────────────────────────────────────────────────────────── */
+ul, ol { padding-left: 1.05em; }
+ul li + li, ol li + li { margin-top: 8px; }
 
 .panel {
   background: var(--bg-raise);
   border: 1px solid var(--line);
   border-radius: var(--r);
-  padding: 24px 26px;
+  padding: 18px 20px;
 }
-.panel h3 { margin-bottom: 10px; }
-.panel p { font-size: 19px; }
-
+.panel h3 { margin-bottom: 7px; }
+.panel p { font-size: 18px; }
 .panel.accent { border-color: var(--accent-dim); }
 
-.stat { display: flex; flex-direction: column; gap: 4px; }
-.stat .n {
-  font-family: var(--mono);
-  font-size: 54px;
-  line-height: 1;
-  letter-spacing: -.03em;
-  color: var(--ink);
-  font-weight: 600;
-}
+.stat { display: flex; flex-direction: column; gap: 3px; }
+.stat .n { font-family: var(--mono); font-size: 50px; line-height: 1; letter-spacing: -.03em; color: var(--ink); font-weight: 600; }
 .stat .n.hot { color: var(--accent); }
-.stat .l { font-size: 16px; color: var(--ink-faint); }
-
-.rule { height: 1px; background: var(--line); border: 0; }
+.stat .l { font-size: 15.5px; color: var(--ink-faint); }
 
 table { width: 100%; border-collapse: collapse; }
-th, td { text-align: left; padding: 17px 14px; font-size: 19.5px; vertical-align: top; }
-th {
-  font-family: var(--mono);
-  font-size: 13px;
-  letter-spacing: .1em;
-  text-transform: uppercase;
-  color: var(--ink-faint);
-  font-weight: 500;
-  border-bottom: 1px solid var(--line);
-}
+th, td { text-align: left; padding: 12px 12px; font-size: 18px; vertical-align: top; }
+th { font-family: var(--mono); font-size: 12px; letter-spacing: .1em; text-transform: uppercase; color: var(--ink-faint); font-weight: 500; border-bottom: 1px solid var(--line); }
 td { color: var(--ink-mute); }
-td:first-child { color: var(--ink); font-weight: 560; white-space: nowrap; }
+td:first-child { color: var(--ink); font-weight: 560; }
 tbody tr + tr td { border-top: 1px solid var(--line); }
 
-.q {
-  display: grid;
-  grid-template-columns: 44px 1fr;
-  gap: 18px;
-  align-items: start;
+/* ── Con dấu trạng thái, copy đúng từ CSM ────────────────────────────────────
+   Glyph ✻ đổi hình theo 6 bước, 0.9s một vòng, steps(1) nên nó nhảy chứ không
+   xoay mượt. Nhảy mới đúng: CLI của Claude Code cũng nhảy như vậy. */
+.dot { display: inline-block; width: 18px; height: 18px; vertical-align: -3px; }
+.dot::after {
+  content: "✻";
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 18px;
+  display: block;
+  text-align: center;
+  color: var(--st-idle);
+  transition: color .3s ease;
 }
-.q .i {
-  font-family: var(--mono);
-  font-size: 17px;
-  color: var(--accent);
-  padding-top: 3px;
+.dot.working::after { color: var(--st-working); }
+.dot.waiting::after { color: var(--st-waiting); }
+.dot.done::after    { color: var(--st-done); }
+.dot.ended::after   { content: "○"; color: var(--st-idle); opacity: .55; }
+@media (prefers-reduced-motion: no-preference) {
+  .dot.spin::after { animation: csmspin .9s steps(1) infinite; }
+  @keyframes csmspin { 0%{content:"✶"} 16%{content:"✳"} 33%{content:"✢"} 50%{content:"✻"} 66%{content:"✽"} 83%{content:"✺"} }
 }
-.q h3 { font-size: 22px; margin-bottom: 5px; }
-.q p { font-size: 18px; }
+.legend { display: flex; flex-direction: column; gap: 10px; }
+.legend .row { display: grid; grid-template-columns: 26px 104px 1fr; align-items: baseline; gap: 12px; }
+.legend .nm { font-family: var(--mono); font-size: 15.5px; color: var(--ink); }
+.legend .ds { font-size: 17px; color: var(--ink-mute); }
 
-.pain {
-  border-left: 2px solid var(--line);
-  padding-left: 22px;
-}
-.pain .t { font-size: 15px; font-family: var(--mono); letter-spacing: .08em; text-transform: uppercase; color: var(--ink-faint); margin-bottom: 8px; }
-.pain.fix { border-left-color: var(--accent); }
-.pain.fix .t { color: var(--accent); }
+/* ── Sơ đồ cây, dựng theo đúng kiểu cây của CSM ──────────────────────────────
+   Thụt 16px mỗi tầng, mỗi tầng cha để lại một đường kẻ dọc mảnh. Đây là SƠ ĐỒ
+   giải thích cấu trúc, không phải ảnh chụp giả: mỗi dòng là một tầng thật trong
+   mô hình dữ liệu, không có nội dung bịa cho giống ảnh. */
+.tree { font-family: var(--mono); font-size: 19.5px; line-height: 2.15; }
+.tree .r { position: relative; display: flex; align-items: center; gap: 8px; padding: 2px 6px; border-radius: 5px; white-space: nowrap; }
+.tree .r.on { background: color-mix(in oklab, var(--accent) 15%, transparent); }
+.tree .r .g { position: absolute; top: 0; bottom: 0; width: 1px; background: var(--line); }
+.tree .ic { width: 20px; text-align: center; color: var(--ink-faint); flex: none; }
+.tree .nm { color: var(--ink); }
+.tree .r.dim .nm { color: var(--ink-mute); }
+.tree .lvl { margin-left: auto; padding-left: 20px; font-size: 12.5px; letter-spacing: .1em; text-transform: uppercase; color: var(--accent); opacity: .85; }
 
-.quote {
-  font-size: 30px;
-  line-height: 1.32;
-  letter-spacing: -.014em;
-  color: var(--ink);
-  max-width: 26ch;
-}
-.cite { font-size: 16px; color: var(--ink-faint); font-family: var(--mono); }
+/* ── Sơ đồ bố cục cửa sổ. Khối có nhãn, không giả làm ảnh chụp. ───────────── */
+.win { display: grid; grid-template-columns: 180px 1fr; grid-template-rows: 32px 1fr; gap: 8px; height: 100%; min-height: 240px; }
+.win .b { border: 1px solid var(--line); border-radius: 8px; background: var(--bg-raise); display: flex; align-items: center; justify-content: center; text-align: center; padding: 10px; }
+.win .b span { font-family: var(--mono); font-size: 12.5px; color: var(--ink-faint); letter-spacing: .04em; line-height: 1.5; }
+.win .side { grid-row: 1 / 3; border-color: var(--accent-dim); }
+.win .side span { color: var(--accent); }
 
-/* Khung chờ chèn GIF. Cố tình để trống và ghi rõ tên file cần bỏ vào, thay vì
-   dựng một ảnh giả bằng div. */
-.demo { display: flex; flex-direction: column; gap: 12px; height: 100%; }
+.demo { display: flex; flex-direction: column; gap: 9px; height: 100%; }
 .demo-frame {
-  flex: 1;
-  min-height: 190px;
-  border: 2px dashed var(--line);
-  border-radius: var(--r);
-  background: var(--bg-sink);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
+  flex: 1; min-height: 160px;
+  border: 2px dashed var(--line); border-radius: var(--r); background: var(--bg-sink);
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px;
 }
-.demo-frame .lbl {
-  font-family: var(--mono);
-  font-size: 13px;
-  letter-spacing: .14em;
-  text-transform: uppercase;
-  color: var(--ink-faint);
-}
-.demo-frame .file { font-family: var(--mono); font-size: 16px; color: var(--accent); }
-.demo figcaption { font-size: 16px; color: var(--ink-faint); }
+.demo-frame .lbl { font-family: var(--mono); font-size: 12px; letter-spacing: .14em; text-transform: uppercase; color: var(--ink-faint); }
+.demo-frame .file { font-family: var(--mono); font-size: 14.5px; color: var(--accent); }
+.demo figcaption { font-size: 14.5px; color: var(--ink-faint); }
 .demo img { width: 100%; height: 100%; object-fit: contain; border-radius: var(--r); }
 
-.tag {
-  display: inline-block;
-  font-family: var(--mono);
-  font-size: 13px;
-  letter-spacing: .06em;
-  padding: 3px 9px;
-  border-radius: 999px;
-  border: 1px solid var(--line);
-  color: var(--ink-faint);
-}
-.tag.on { border-color: var(--accent-dim); color: var(--accent); }
+.feat { display: grid; grid-template-columns: 22px 1fr; gap: 12px; align-items: start; }
+.feat .k { color: var(--accent); font-family: var(--mono); font-size: 14.5px; padding-top: 4px; }
+.feat p { font-size: 18px; }
+.feat b { color: var(--ink); font-weight: 600; }
 
-/* ── Slide tiêu đề và slide phân đoạn ─────────────────────────────────────── */
+.keys { display: grid; grid-template-columns: 112px 1fr; gap: 8px 16px; align-items: baseline; }
+.keys .k { font-family: var(--mono); font-size: 15.5px; color: var(--accent); }
+.keys .v { font-size: 17.5px; color: var(--ink-mute); }
 
-.slide.mid { justify-content: center; }
-.slide.title { justify-content: center; background: var(--bg); }
-.slide.title h1 { font-size: 74px; max-width: 20ch; }
+.slide.title { justify-content: center; }
+.slide.title h1 { font-size: 66px; max-width: 19ch; }
 .slide.divider { justify-content: center; background: var(--bg-sink); }
-.slide.divider .n {
-  font-family: var(--mono);
-  font-size: 17px;
-  color: var(--accent);
-  letter-spacing: .18em;
-}
-.slide.divider h2 { font-size: 58px; max-width: 22ch; }
-
-/* ── Chân slide ───────────────────────────────────────────────────────────── */
+.slide.divider .n { font-family: var(--mono); font-size: 15.5px; color: var(--accent); letter-spacing: .18em; }
+.slide.divider h2 { font-size: 52px; max-width: 21ch; }
 
 .foot {
-  position: absolute;
-  left: 80px; right: 80px; bottom: 26px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  font-family: var(--mono);
-  font-size: 13px;
-  color: var(--ink-faint);
-  letter-spacing: .04em;
+  position: absolute; left: 74px; right: 74px; bottom: 22px;
+  display: flex; justify-content: space-between; align-items: center;
+  font-family: var(--mono); font-size: 12px; color: var(--ink-faint); letter-spacing: .04em;
 }
 .slide.title .foot, .slide.divider .foot { display: none; }
 
-/* ── Vỏ ngoài: tiến độ, ghi chú, tổng quan ───────────────────────────────── */
-
-#bar {
-  position: fixed;
-  left: 0; top: 0;
-  height: 2px;
-  background: var(--accent);
-  z-index: 40;
-  transition: width .22s ease;
-}
-
+#bar { position: fixed; left: 0; top: 0; height: 2px; background: var(--accent); z-index: 40; transition: width .22s ease; }
 #notes {
-  position: fixed;
-  left: 0; right: 0; bottom: 0;
-  max-height: 42vh;
-  overflow: auto;
-  background: var(--bg-raise);
-  border-top: 1px solid var(--line);
-  padding: 22px 28px;
-  z-index: 50;
-  display: none;
-  font-size: 16px;
-  line-height: 1.62;
-  color: var(--ink-mute);
+  position: fixed; left: 0; right: 0; bottom: 0; max-height: 42vh; overflow: auto;
+  background: var(--bg-raise); border-top: 1px solid var(--line); padding: 20px 26px;
+  z-index: 50; display: none; font-size: 15.5px; line-height: 1.6; color: var(--ink-mute);
 }
 #notes.on { display: block; }
-#notes h4 {
-  font-family: var(--mono);
-  font-size: 12px;
-  letter-spacing: .14em;
-  text-transform: uppercase;
-  color: var(--accent);
-  margin-bottom: 10px;
-  font-weight: 500;
-}
-#notes p + p { margin-top: 10px; }
+#notes h4 { font-family: var(--mono); font-size: 11.5px; letter-spacing: .14em; text-transform: uppercase; color: var(--accent); margin-bottom: 9px; font-weight: 500; }
+#notes p + p { margin-top: 9px; }
 #notes strong { color: var(--ink); }
-
-#help {
-  position: fixed;
-  right: 14px; bottom: 12px;
-  font-family: var(--mono);
-  font-size: 12px;
-  color: var(--ink-faint);
-  z-index: 45;
-  opacity: .55;
-}
-
-#grid {
-  position: fixed;
-  inset: 0;
-  background: var(--bg-sink);
-  z-index: 60;
-  display: none;
-  grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
-  gap: 14px;
-  padding: 22px;
-  overflow: auto;
-  align-content: start;
-}
+#help { position: fixed; right: 14px; bottom: 12px; font-family: var(--mono); font-size: 12px; color: var(--ink-faint); z-index: 45; opacity: .55; }
+#grid { position: fixed; inset: 0; background: var(--bg-sink); z-index: 60; display: none; grid-template-columns: repeat(auto-fill, minmax(196px, 1fr)); gap: 12px; padding: 20px; overflow: auto; align-content: start; }
 #grid.on { display: grid; }
-#grid button {
-  aspect-ratio: 16 / 9;
-  background: var(--bg);
-  border: 1px solid var(--line);
-  border-radius: 8px;
-  color: var(--ink-mute);
-  font-family: var(--sans);
-  font-size: 13px;
-  line-height: 1.35;
-  text-align: left;
-  padding: 12px;
-  cursor: pointer;
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
+#grid button { aspect-ratio: 16/9; background: var(--bg); border: 1px solid var(--line); border-radius: 8px; color: var(--ink-mute); font-family: var(--sans); font-size: 12.5px; line-height: 1.35; text-align: left; padding: 11px; cursor: pointer; overflow: hidden; display: flex; flex-direction: column; gap: 5px; }
 #grid button:hover, #grid button:focus-visible { border-color: var(--accent); color: var(--ink); outline: none; }
 #grid button .gi { font-family: var(--mono); font-size: 11px; color: var(--ink-faint); }
-
-/* ── In ra PDF: mỗi slide một trang ngang ────────────────────────────────── */
 
 @page { size: 1280px 720px; margin: 0; }
 @media print {
@@ -384,15 +255,7 @@ tbody tr + tr td { border-top: 1px solid var(--line); }
   #bar, #help, #grid, #notes { display: none !important; }
   #stage { position: static; display: block; }
   #scaler { width: 1280px; height: auto; transform: none !important; }
-  .slide {
-    position: static !important;
-    display: flex !important;
-    width: 1280px;
-    height: 720px;
-    page-break-after: always;
-    break-after: page;
-    animation: none !important;
-  }
+  .slide { position: static !important; display: flex !important; width: 1280px; height: 720px; page-break-after: always; break-after: page; animation: none !important; }
   .slide > * { animation: none !important; opacity: 1 !important; transform: none !important; }
 }
 </style>
@@ -402,599 +265,696 @@ tbody tr + tr td { border-top: 1px solid var(--line); }
 <div id="bar"></div>
 <div id="stage"><div id="scaler">
 
-<!-- 1 ─────────────────────────────────────────────────────────────────────── -->
+<!-- 1 ────────────────────────────────────────────────────────────────────── -->
 <section class="slide title" data-t="Tiêu đề">
-  <h1>Chạy nhiều Claude Code cùng lúc mà không loạn</h1>
-  <p class="lead" style="margin-top:28px">Chọn công cụ vừa tay bạn, không phải công cụ nhiều tính năng nhất.</p>
-  <p class="sub mono" style="margin-top:36px">Workshop nội bộ &nbsp;·&nbsp; 07/08/2026</p>
+  <p class="kicker"><span class="dot working spin"></span> &nbsp;Claude Session Manager</p>
+  <h1>Mình làm một app để chạy nhiều Claude Code cùng lúc</h1>
+  <p class="lead" style="margin-top:22px">Hôm nay kể xem nó có gì, nó hoạt động thế nào, và ai thì hợp kiểu này.</p>
+  <p class="sub mono" style="margin-top:30px">07/08/2026</p>
   <aside class="notes">
-    <p><strong>Mở bằng một câu hỏi giơ tay, không phải bằng slide.</strong> "Ai ở đây đang chạy từ hai phiên Claude Code trở lên cùng lúc?" Đếm tay. "Ai từng mất một phiên vì lỡ đóng terminal?" Đếm tiếp.</p>
-    <p>Hai câu đó làm hai việc: cho bạn biết phòng này đang ở đâu, và cho họ biết bài này nói về vấn đề của họ chứ không phải về một app.</p>
-    <p>Nếu phần lớn phòng chỉ chạy một phiên, đổi nhấn mạnh: phần 1 và phần 2 quan trọng hơn, phần case study rút ngắn.</p>
+    <p>Đừng đọc slide. Hỏi phòng trước, đếm tay: <strong>"Ai đang chạy từ 2 con Claude Code trở lên cùng lúc?"</strong> rồi <strong>"Ai từng đóng nhầm terminal rồi mất luôn cả cuộc chat?"</strong></p>
+    <p>Hai câu đó cho mình biết phòng đang ở đâu. Nếu đa số chỉ chạy 1 con thì lát nữa lướt nhanh phần tính năng nâng cao, tập trung vào phần cấu trúc cây và phần trạng thái.</p>
   </aside>
 </section>
 
-<!-- 2 ─────────────────────────────────────────────────────────────────────── -->
-<section class="slide" data-t="Buổi này không phải cái gì">
-  <h2>Trước khi bắt đầu, nói rõ buổi này không phải cái gì</h2>
-  <div class="two grow" style="margin-top:34px">
-    <div class="stack">
-      <p class="kicker">Không có ở đây</p>
-      <div class="panel"><p>Bảng so sánh công cụ nào nhiều tính năng hơn.</p></div>
-      <div class="panel"><p>Lời khuyên "hãy dùng cái tôi đang dùng".</p></div>
-      <div class="panel"><p>Quảng cáo một sản phẩm.</p></div>
-    </div>
-    <div class="stack">
-      <p class="kicker">Có ở đây</p>
-      <div class="panel accent"><p>Một cách tự hỏi để biết <strong>bạn</strong> cần gì.</p></div>
-      <div class="panel accent"><p>Bản đồ các <strong>hình dạng</strong> công cụ, không xếp hạng.</p></div>
-      <div class="panel accent"><p>Một case study thật, kể cả phần dở của nó.</p></div>
-    </div>
+<!-- 2 ────────────────────────────────────────────────────────────────────── -->
+<section class="slide" data-t="Mình làm nó vì">
+  <h2>Chuyện là thế này</h2>
+  <p class="lead" style="margin-top:18px">Mình hay chạy 3 tới 6 con Claude Code một lúc, trên mấy repo khác nhau. Nhanh hơn thật, nhưng đẻ ra ba cái phiền:</p>
+  <div class="three" style="margin-top:24px">
+    <div class="panel"><h3>Không biết con nào đang chờ</h3><p>Nó hỏi "cho chạy lệnh này không" từ 5 phút trước, mà mình đang nhìn tab khác.</p></div>
+    <div class="panel"><h3>Đóng tab là mất</h3><p>Lỡ tay đóng terminal, cả buổi sáng context đi theo.</p></div>
+    <div class="panel"><h3>Hai con giẫm chân nhau</h3><p>Cùng một thư mục, con này sửa file con kia đang đọc.</p></div>
   </div>
-  <div class="foot"><span>Chạy nhiều Claude Code cùng lúc</span><span class="pg"></span></div>
+  <div class="panel accent" style="margin-top:auto"><p>CSM sinh ra để xử ba cái đó. Mọi thứ khác trong app là thêm vào sau.</p></div>
+  <div class="foot"><span>CSM</span><span class="pg"></span></div>
   <aside class="notes">
-    <p><strong>Đây là slide quan trọng nhất về mặt kỳ vọng.</strong> Nói thẳng: "Tôi có làm một app riêng, và tôi sẽ nói về nó ở phần 4. Nhưng nếu cuối buổi các bạn về và không cài gì cả, mà biết rõ hơn mình cần gì, thì buổi này thành công."</p>
-    <p>Lý do phải nói trước: nếu không, khán giả sẽ nghe cả buổi với tâm thế "ông này đang bán hàng", và mọi số liệu bạn đưa ra đều bị chiết khấu.</p>
+    <p>Kể thật, đừng làm màu. Ai cũng dính ít nhất một trong ba cái này rồi.</p>
+    <p>Câu cuối quan trọng: nói trước rằng app có nhiều thứ, nhưng <strong>chỉ có 3 cái là lý do nó tồn tại</strong>. Phần còn lại là tiện thì thêm. Nói vậy để lát nữa lướt qua 20 tính năng người ta không bị ngợp.</p>
   </aside>
 </section>
 
-<!-- 3 ─────────────────────────────────────────────────────────────────────── -->
+<!-- 3 ────────────────────────────────────────────────────────────────────── -->
 <section class="slide" data-t="Chương trình">
-  <h2>Chương trình</h2>
-  <table style="margin-top:26px">
+  <h2>Buổi nay đi theo thứ tự này</h2>
+  <table style="margin-top:20px">
     <tbody>
-      <tr><td>1</td><td>Nút thắt đã đổi chỗ, và đổi đi đâu</td><td class="mono sub" style="text-align:right">8 phút</td></tr>
-      <tr><td>2</td><td>Sáu câu hỏi để biết bạn thật sự cần gì</td><td class="mono sub" style="text-align:right">8 phút</td></tr>
-      <tr><td>3</td><td>Bản đồ công cụ, theo hình dạng chứ không theo điểm</td><td class="mono sub" style="text-align:right">8 phút</td></tr>
-      <tr><td>4</td><td>Case study: tôi tự làm một cái, và nó dạy tôi gì</td><td class="mono sub" style="text-align:right">16 phút</td></tr>
-      <tr><td>5</td><td>Rút ra, và cách bắt đầu tuần sau</td><td class="mono sub" style="text-align:right">8 phút</td></tr>
+      <tr><td>1</td><td>Chạy nhiều con thì đau ở đâu</td><td class="mono sub" style="text-align:right">5 phút</td></tr>
+      <tr><td>2</td><td>CSM nhìn từ trên xuống: cửa sổ, cây, trạng thái</td><td class="mono sub" style="text-align:right">10 phút</td></tr>
+      <tr><td>3</td><td>Trong đó có gì, đi từng nhóm</td><td class="mono sub" style="text-align:right">22 phút</td></tr>
+      <tr><td>4</td><td>Một ngày mình dùng nó ra sao</td><td class="mono sub" style="text-align:right">5 phút</td></tr>
+      <tr><td>5</td><td>Ai thì hợp kiểu này, ai thì không</td><td class="mono sub" style="text-align:right">8 phút</td></tr>
       <tr><td>6</td><td>Hỏi đáp</td><td class="mono sub" style="text-align:right">10 phút</td></tr>
     </tbody>
   </table>
-  <div class="foot"><span>Chạy nhiều Claude Code cùng lúc</span><span class="pg"></span></div>
-  <aside class="notes">
-    <p>Lướt nhanh, đừng đọc từng dòng. Chỉ dừng ở phần 4 để nói: "phần này dài nhất và có demo, nên nếu buổi bị trễ thì tôi cắt phần 3 chứ không cắt phần 4."</p>
-  </aside>
+  <p class="sub" style="margin-top:auto">Phần 2 đáng nghe nhất kể cả khi bạn không định dùng app. Cấu trúc cây ở đó áp dụng được cho bất kỳ cách quản lý session nào.</p>
+  <div class="foot"><span>CSM</span><span class="pg"></span></div>
+  <aside class="notes"><p>Lướt nhanh. Chỉ dừng ở dòng cuối để nói: phần 2 là phần mang về được, kể cả khi không dùng app.</p></aside>
 </section>
 
-<!-- 4 ─────────────────────────────────────────────────────────────────────── -->
-<section class="slide divider" data-t="Phần 1">
-  <p class="n">PHẦN 1</p>
-  <h2 style="margin-top:16px">Nút thắt đã đổi chỗ</h2>
-  <aside class="notes"><p>Chuyển tiếp: "Bắt đầu bằng câu hỏi tại sao chúng ta lại cần bàn về chuyện này vào năm 2026, chứ không phải năm 2023."</p></aside>
-</section>
-
-<!-- 5 ─────────────────────────────────────────────────────────────────────── -->
-<section class="slide" data-t="Nút thắt cũ và mới">
-  <h2>Việc gõ code không còn là chỗ nghẽn</h2>
-  <div class="two grow" style="margin-top:36px">
-    <div class="stack">
-      <p class="kicker">Trước đây</p>
-      <p>Bạn nghĩ ra cách làm, rồi bỏ phần lớn thời gian để <strong>gõ nó ra</strong>. Tốc độ gõ, độ thuộc API, độ quen codebase quyết định bạn xong nhanh hay chậm.</p>
-    </div>
-    <div class="stack">
-      <p class="kicker">Bây giờ</p>
-      <p>Agent gõ hộ. Cái còn lại của bạn là <strong>ra đề bài</strong>, <strong>chờ</strong>, và <strong>kiểm tra lại</strong>. Ba việc đó có đặc tính hoàn toàn khác việc gõ.</p>
-    </div>
-  </div>
-  <div class="panel accent" style="margin-top:auto">
-    <p>Khi phần việc thay đổi, công cụ phục vụ phần việc cũ sẽ tối ưu nhầm chỗ.</p>
-  </div>
-  <div class="foot"><span>Phần 1 &nbsp;·&nbsp; Nút thắt đã đổi chỗ</span><span class="pg"></span></div>
-  <aside class="notes">
-    <p>Ví dụ cụ thể để phòng gật đầu: "Cái editor của bạn tối ưu cho việc gõ. Autocomplete, snippet, đa con trỏ. Toàn bộ những thứ đó phục vụ một việc mà bây giờ bạn làm ít đi rất nhiều."</p>
-    <p>Đừng nói "editor vô dụng". Nói "editor vẫn cần, nhưng nó không còn là nơi thời gian của bạn trôi đi".</p>
-  </aside>
-</section>
-
-<!-- 6 ─────────────────────────────────────────────────────────────────────── -->
-<section class="slide" data-t="Ba khoảng thời gian">
-  <h2>Thời gian của bạn giờ nằm ở ba chỗ</h2>
-  <div class="three grow" style="margin-top:36px">
-    <div class="panel">
-      <h3>Ra đề bài</h3>
-      <p>Mô tả cái cần làm, đủ rõ để agent không đoán sai. Đây là việc duy nhất trong ba việc mà bạn không thể ủy thác.</p>
-    </div>
-    <div class="panel accent">
-      <h3>Chờ</h3>
-      <p>Từ ba tới mười phút mỗi lượt. Đây là khoảng duy nhất mà công cụ có thể lấy lại cho bạn, và cũng là khoảng bị lãng phí nhiều nhất.</p>
-    </div>
-    <div class="panel">
-      <h3>Kiểm tra lại</h3>
-      <p>Đọc diff, chạy test, quyết định nhận hay bỏ. Càng chạy nhiều agent thì khoảng này càng phình.</p>
-    </div>
-  </div>
-  <p class="sub">Cả buổi hôm nay xoay quanh khoảng ở giữa, và cái giá mà khoảng thứ ba phải trả cho nó.</p>
-  <div class="foot"><span>Phần 1 &nbsp;·&nbsp; Nút thắt đã đổi chỗ</span><span class="pg"></span></div>
-  <aside class="notes">
-    <p>Hỏi phòng: "Trong lúc chờ, các bạn làm gì?" Câu trả lời thật thường là: xem điện thoại, đọc Slack, hoặc ngồi nhìn con trỏ nhấp nháy. Không ai thấy xấu hổ vì điều đó, nhưng ai cũng nhận ra khi được hỏi.</p>
-    <p><strong>Đừng bỏ qua khoảng thứ ba.</strong> Đó là cái bẫy của cả buổi: chạy song song làm khoảng thứ hai ngắn lại nhưng làm khoảng thứ ba dài ra. Slide DORA ngay sau đây là bằng chứng.</p>
-  </aside>
-</section>
-
-<!-- 7 ─────────────────────────────────────────────────────────────────────── -->
-<section class="slide" data-t="DORA 2025">
+<!-- 4 ────────────────────────────────────────────────────────────────────── -->
+<section class="slide" data-t="Chờ và bị ngắt">
   <div class="two-b grow">
-    <div class="center">
-      <p class="quote">AI không phải giải pháp đóng hộp. Nó là một cái khuếch đại.</p>
-      <p class="cite" style="margin-top:20px">DORA 2025<br>State of AI-assisted Software Development</p>
+    <div class="vcen">
+      <div class="stat"><span class="n hot" style="font-size:80px">23 phút</span><span class="l" style="font-size:16.5px">để quay lại đúng mạch sau MỘT lần bị ngắt</span></div>
+      <p class="sub mono" style="margin-top:14px">Gloria Mark, UC Irvine</p>
     </div>
-    <div class="center stack">
-      <div class="panel">
-        <h3 style="color:var(--good)">Đi lên</h3>
-        <p>Throughput giao hàng phần mềm tăng rõ rệt khi áp dụng AI.</p>
-      </div>
-      <div class="panel">
-        <h3 style="color:var(--warn)">Cũng đi lên</h3>
-        <p>Bất ổn định: nhiều thay đổi hỏng hơn, nhiều việc làm lại hơn, thời gian khắc phục dài hơn.</p>
-      </div>
-      <p class="sub">Khảo sát gần 5.000 người làm công nghệ. Nút thắt bị đẩy xuống hạ nguồn: kiểm thử, review, QA.</p>
+    <div class="vcen stack">
+      <p>Mỗi lượt Claude chạy 3 tới 10 phút. Trong lúc đó làm gì cũng được, trừ một việc: <strong>ngồi canh nó</strong>.</p>
+      <p>Nhưng không canh thì phải có cái gọi mình về. Không có thì cứ vài phút lại tự đi kiểm tra, mà mỗi lần đi kiểm tra là một lần tự ngắt mình.</p>
+      <div class="panel accent"><p><strong>Chạy song song mà không có cái gọi mình về thì không phải làm được nhiều việc hơn. Chỉ là tự ngắt mình nhiều hơn.</strong></p></div>
     </div>
   </div>
-  <div class="foot"><span>Phần 1 &nbsp;·&nbsp; Nút thắt đã đổi chỗ</span><span class="pg"></span></div>
+  <div class="foot"><span>Phần 1</span><span class="pg"></span></div>
   <aside class="notes">
-    <p>Cách diễn đạt gọn nhất: <strong>"Nền tốt thì AI tăng tốc. Nền lộn xộn thì AI làm bạn lộn xộn nhanh hơn."</strong></p>
-    <p>Áp vào chủ đề hôm nay: chạy mười agent song song trên một repo không có test là cách nhanh nhất để tạo ra mười thứ phải sửa. Song song là bộ khuếch đại, không phải cái loa.</p>
-    <p>Nguồn để trong research/sources.md, có link DORA của Google Cloud.</p>
+    <p>Kể chuyện thật cho gần: buổi chiều mở 3 terminal, cứ vài phút alt-tab qua từng cái xem xong chưa. Cuối buổi 3 con đều xong việc, còn mình thì chả làm được gì ra hồn.</p>
+    <p>Slide này dẫn thẳng vào phần trạng thái ở sau. Nói xong câu in đậm là chuyển.</p>
   </aside>
 </section>
 
-<!-- 8 ─────────────────────────────────────────────────────────────────────── -->
-<section class="slide" data-t="METR">
-  <h2>Và một con số làm mọi người khó chịu</h2>
-  <div class="three" style="margin-top:38px">
-    <div class="stat"><span class="n">+24%</span><span class="l">Lập trình viên <strong>dự đoán</strong> mình sẽ nhanh hơn nhờ AI</span></div>
-    <div class="stat"><span class="n hot">-19%</span><span class="l">Thực tế đo được: họ <strong>chậm hơn</strong></span></div>
-    <div class="stat"><span class="n">+20%</span><span class="l">Sau khi xong, họ <strong>vẫn tin</strong> mình đã nhanh hơn</span></div>
-  </div>
-  <hr class="rule" style="margin-top:34px">
-  <p style="margin-top:24px">METR, 07/2025. Thử nghiệm ngẫu nhiên có đối chứng, 16 lập trình viên mã nguồn mở giàu kinh nghiệm, 246 tác vụ, trên chính repo của họ.</p>
-  <div class="panel" style="margin-top:auto">
-    <p><strong>Phải nói kèm:</strong> METR hiện gắn nhãn kết quả này là lịch sử. Công cụ trong nghiên cứu là Cursor với Claude 3.5 và 3.7, tức trước thời agent chạy dài. Đừng dùng slide này để kết luận AI vô dụng.</p>
-  </div>
-  <div class="foot"><span>Phần 1 &nbsp;·&nbsp; Nút thắt đã đổi chỗ</span><span class="pg"></span></div>
-  <aside class="notes">
-    <p>Đây là slide dễ bị trích dẫn sai nhất. <strong>Bắt buộc nói câu cảnh báo ở dưới.</strong> Nếu bạn chỉ khoe con số -19% rồi đi tiếp, bạn đang làm đúng cái việc mà bài này phê phán.</p>
-    <p>Bài học thật nằm ở khoảng cách giữa cột 2 và cột 3, không phải ở cột 2: <strong>cảm giác nhanh và nhanh thật là hai đại lượng khác nhau, và con người rất tệ trong việc phân biệt.</strong></p>
-    <p>Chốt: "Nên nếu tối nay các bạn về, cài một công cụ mới, và thấy sướng, thì cái cảm giác sướng đó không phải bằng chứng. Cuối bài tôi sẽ nói cách đo thay cho cách cảm."</p>
-  </aside>
-</section>
-
-<!-- 9 ─────────────────────────────────────────────────────────────────────── -->
-<section class="slide" data-t="Chi phí chuyển ngữ cảnh">
-  <div class="two-a grow">
-    <div class="center">
-      <p class="kicker">Chi phí một lần bị ngắt</p>
-      <div class="stat"><span class="n hot" style="font-size:96px">23 phút</span><span class="l" style="font-size:18px">để quay lại đúng mạch việc ban đầu</span></div>
-      <p style="margin-top:26px">Gloria Mark, UC Irvine. Nghiên cứu quan sát tại chỗ, được trích dẫn nhiều nhất về công việc bị ngắt quãng. Trung bình có hai việc khác xen vào trước khi người ta quay lại việc cũ.</p>
+<!-- 5 ────────────────────────────────────────────────────────────────────── -->
+<section class="slide" data-t="Cái bẫy">
+  <h2>Nhưng có một cái bẫy, nói luôn cho sòng phẳng</h2>
+  <div class="two grow" style="margin-top:22px">
+    <div class="stack">
+      <div class="panel"><p>Báo cáo DORA 2025, khảo sát gần 5.000 người: dùng AI thì <strong style="color:var(--st-done)">throughput tăng</strong>, nhưng <strong style="color:var(--st-waiting)">tỉ lệ hỏng và phải làm lại cũng tăng</strong>.</p></div>
+      <div class="panel"><p>Câu chốt của họ: <strong>AI không phải giải pháp đóng hộp, nó là cái khuếch đại.</strong> Nền tốt thì nhanh hơn. Nền lộn xộn thì lộn xộn nhanh hơn.</p></div>
     </div>
-    <div class="center stack">
-      <div class="panel accent">
-        <h3>Vì sao nó liên quan</h3>
-        <p>Chạy nhiều agent song song <strong>là</strong> tự tạo ra chuỗi ngắt quãng cho chính mình. Mỗi lần một agent gọi bạn là một lần ngắt.</p>
-      </div>
-      <div class="panel">
-        <p>Nếu bạn không biết agent gọi lúc nào, bạn sẽ tự đi kiểm tra. Tự kiểm tra cũng là ngắt, mà lại là ngắt vô ích khi chưa có gì để xem.</p>
-      </div>
+    <div class="vcen">
+      <p>Áp vào chuyện hôm nay: chạy 10 con song song trên repo không có test là cách nhanh nhất để tạo ra 10 thứ phải sửa.</p>
+      <p style="margin-top:14px">Chạy nhiều làm phần <strong>chờ</strong> ngắn lại, nhưng làm phần <strong>kiểm tra lại</strong> dài ra. Lát nữa có mấy tính năng sinh ra chỉ để lo phần đó.</p>
     </div>
   </div>
-  <div class="foot"><span>Phần 1 &nbsp;·&nbsp; Nút thắt đã đổi chỗ</span><span class="pg"></span></div>
+  <div class="foot"><span>Phần 1</span><span class="pg"></span></div>
   <aside class="notes">
-    <p>Chỗ này nên kể một câu chuyện thật của chính bạn, ngắn thôi: lần bạn mở ba terminal, cứ vài phút lại alt-tab qua từng cái xem xong chưa, và cuối buổi chiều nhận ra mình chẳng làm được việc gì tử tế ở giữa.</p>
-    <p>Điểm cần đọng lại: <strong>song song mà không có cách điều hướng chú ý thì không phải làm nhiều việc, mà là tự ngắt quãng mình liên tục.</strong></p>
+    <p>Đừng biến slide này thành bài giảng. Nói 30 giây rồi đi. Ý duy nhất cần đọng: <strong>song song không miễn phí, cái giá là review nhiều hơn.</strong></p>
+    <p>Ai hỏi kỹ về DORA thì có link trong repo, file research/sources.md.</p>
   </aside>
 </section>
 
-<!-- 10 ────────────────────────────────────────────────────────────────────── -->
-<section class="slide mid" data-t="Chốt phần 1">
-  <h2 style="max-width:24ch">Vậy câu hỏi đúng không phải là "công cụ nào mạnh nhất"</h2>
-  <p class="lead" style="margin-top:28px">Mà là: <em>trong ba khoảng thời gian của tôi, khoảng nào đang đau nhất, và công cụ nào chạm được vào đúng khoảng đó.</em></p>
-  <div class="foot"><span>Phần 1 &nbsp;·&nbsp; Nút thắt đã đổi chỗ</span><span class="pg"></span></div>
-  <aside class="notes">
-    <p>Dừng một nhịp ở đây. Đây là bản lề của cả bài. Nếu chỉ có một câu được nhớ sau buổi này thì là câu này.</p>
-  </aside>
-</section>
-
-<!-- 11 ────────────────────────────────────────────────────────────────────── -->
+<!-- 6 ────────────────────────────────────────────────────────────────────── -->
 <section class="slide divider" data-t="Phần 2">
   <p class="n">PHẦN 2</p>
-  <h2 style="margin-top:16px">Sáu câu hỏi để biết bạn cần gì</h2>
-  <aside class="notes"><p>Chuyển: "Giờ tới phần thực tế. Sáu câu hỏi, trả lời thật lòng, không cần nói ra."</p></aside>
+  <h2 style="margin-top:12px">CSM nhìn từ trên xuống</h2>
+  <aside class="notes"><p>Chuyển: "Giờ mình chỉ cho mọi người app được xếp thế nào. Hiểu cái này rồi thì phần tính năng ở sau chỉ là chi tiết."</p></aside>
 </section>
 
-<!-- 12 ────────────────────────────────────────────────────────────────────── -->
-<section class="slide" data-t="Sáu câu hỏi">
-  <h2>Trả lời sáu câu này trước khi cài bất cứ thứ gì</h2>
-  <div class="two grow" style="margin-top:32px;gap:32px 48px">
-    <div class="stack">
-      <div class="q"><span class="i">01</span><div><h3>Bạn chạy mấy agent một lúc?</h3><p>Nếu câu trả lời là một, dừng lại. Bạn không cần công cụ nào cả.</p></div></div>
-      <div class="q"><span class="i">02</span><div><h3>Trong lúc chờ, bạn làm gì?</h3><p>Ngồi nhìn, làm việc khác, hay chạy agent khác. Ba câu trả lời dẫn tới ba loại công cụ khác nhau.</p></div></div>
-      <div class="q"><span class="i">03</span><div><h3>Bạn cần biết agent gọi sau bao lâu?</h3><p>Vài giây, vài phút, hay không quan trọng.</p></div></div>
+<!-- 7 ────────────────────────────────────────────────────────────────────── -->
+<section class="slide" data-t="Bố cục cửa sổ">
+  <h2>Cửa sổ chia làm ba phần</h2>
+  <div class="two-b grow" style="margin-top:18px">
+    <div class="win">
+      <div class="b side"><span>SIDEBAR<br>cây dự án và session</span></div>
+      <div class="b"><span>THANH TAB</span></div>
+      <div class="b"><span>NỘI DUNG<br>terminal, hoặc editor, hoặc diff<br>chia đôi chia ba tuỳ ý</span></div>
     </div>
-    <div class="stack">
-      <div class="q"><span class="i">04</span><div><h3>Bạn đọc thay đổi kiểu gì?</h3><p>Đọc thẳng trong terminal, cần diff riêng, hay chỉ xem trên PR.</p></div></div>
-      <div class="q"><span class="i">05</span><div><h3>Việc của bạn có chia nhánh không?</h3><p>Một nhánh một lúc, hay nhiều nhánh song song trên cùng repo.</p></div></div>
-      <div class="q"><span class="i">06</span><div><h3>Bạn có rời khỏi máy không?</h3><p>Luôn ngồi trước máy, hay hay đi lại và cần theo dõi từ chỗ khác.</p></div></div>
+    <div class="vcen stack">
+      <p><strong>Sidebar</strong> là chỗ đáng nói nhất, và khác các app khác nhiều nhất. Slide sau nói riêng về nó.</p>
+      <p><strong>Thanh tab</strong> giống trình duyệt. Mỗi tab là một session, hoặc một file, hoặc một cái diff.</p>
+      <p><strong>Phần nội dung</strong> chia được nhiều ô. Kéo tab từ ô này sang ô kia được.</p>
+      <p class="sub">Bấm <code>⌘B</code> là giấu sidebar cho terminal rộng ra.</p>
     </div>
   </div>
-  <div class="foot"><span>Phần 2 &nbsp;·&nbsp; Bạn cần gì</span><span class="pg"></span></div>
+  <div class="foot"><span>Phần 2 &nbsp;·&nbsp; Cấu trúc</span><span class="pg"></span></div>
+  <aside class="notes"><p>Slide này chỉ để định vị, 30 giây. Đây là sơ đồ chứ không phải ảnh chụp, nên đừng chỉ trỏ chi tiết, lát nữa có GIF thật.</p></aside>
+</section>
+
+<!-- 8 ────────────────────────────────────────────────────────────────────── -->
+<section class="slide" data-t="Cây bốn tầng">
+  <h2>Cây trong sidebar có bốn tầng</h2>
+  <div class="two-a grow" style="margin-top:16px">
+    <div class="tree vcen">
+      <div class="r"><span class="ic">▾</span><span class="ic">▣</span><span class="nm">Công ty</span><span class="lvl">Folder</span></div>
+      <div class="r" style="margin-left:16px"><span class="g" style="left:-6px"></span><span class="ic">▾</span><span class="ic">◫</span><span class="nm">seo</span><span class="lvl">Project</span></div>
+      <div class="r dim" style="margin-left:32px"><span class="g" style="left:-22px"></span><span class="g" style="left:-6px"></span><span class="ic"><span class="dot idle"></span></span><span class="nm">claude 1</span><span class="lvl">Session</span></div>
+      <div class="r on" style="margin-left:32px"><span class="g" style="left:-22px"></span><span class="g" style="left:-6px"></span><span class="ic"><span class="dot waiting spin"></span></span><span class="nm">fix bug alt text</span><span class="lvl">Session</span></div>
+      <div class="r" style="margin-left:32px"><span class="g" style="left:-22px"></span><span class="g" style="left:-6px"></span><span class="ic">▾</span><span class="ic">⎇</span><span class="nm">feat/schema</span><span class="lvl">Worktree</span></div>
+      <div class="r dim" style="margin-left:48px"><span class="g" style="left:-38px"></span><span class="g" style="left:-22px"></span><span class="g" style="left:-6px"></span><span class="ic"><span class="dot working spin"></span></span><span class="nm">claude 1</span><span class="lvl">Session</span></div>
+      <div class="r" style="margin-left:16px"><span class="g" style="left:-6px"></span><span class="ic">▸</span><span class="ic">◫</span><span class="nm">blogs</span><span class="lvl">Project</span></div>
+    </div>
+    <div class="vcen stack" style="gap:20px">
+      <div class="feat"><span class="k">1</span><p><b>Folder</b> là thư mục ảo để gom dự án. Không liên quan gì tới thư mục trên ổ cứng, chỉ để xếp cho gọn.</p></div>
+      <div class="feat"><span class="k">2</span><p><b>Project</b> là một thư mục thật trên máy. Nó nhớ riêng bộ cờ chạy <code>claude</code> của nó.</p></div>
+      <div class="feat"><span class="k">3</span><p><b>Worktree</b> nằm lồng dưới project cha. Cùng repo, khác nhánh, khác thư mục làm việc.</p></div>
+      <div class="feat"><span class="k">4</span><p><b>Session</b> là một tiến trình <code>claude</code> đang chạy. Nhiều session trong cùng một project là chuyện bình thường.</p></div>
+    </div>
+  </div>
+  <div class="foot"><span>Phần 2 &nbsp;·&nbsp; Cấu trúc</span><span class="pg"></span></div>
   <aside class="notes">
-    <p>Đọc lướt cả sáu câu, rồi quay lại đào sâu ba câu ở slide sau. Đừng giải thích từng câu ở đây, sẽ lặp.</p>
-    <p>Nhấn mạnh câu 01 bằng giọng thật: <strong>"Nếu bạn chạy một agent và thấy ổn, bài này không có gì cho bạn cả, và đó là một kết luận hợp lệ."</strong> Câu này mua được rất nhiều tín nhiệm cho phần còn lại.</p>
+    <p><strong>Đây là slide quan trọng nhất phần 2, đứng lại lâu.</strong> Chỉ vào cây bên trái, đi từ trên xuống.</p>
+    <p>Mấy cái chấm bên trái session đang chạy thật trên slide: con vàng là đang chờ mình, con xanh là đang làm. Chỉ vào cho mọi người thấy nó nhảy.</p>
+    <p>Nói rõ chỗ hay nhầm: <strong>folder không phải thư mục trên máy</strong>. Nó chỉ là cái hộp để xếp, kéo thả tuỳ ý.</p>
   </aside>
 </section>
 
-<!-- 13 ────────────────────────────────────────────────────────────────────── -->
-<section class="slide" data-t="Câu 2 đào sâu">
-  <h2>Câu số 2 là câu phân loại mạnh nhất</h2>
-  <table style="margin-top:30px">
-    <thead><tr><th>Trong lúc chờ, bạn</th><th>Thì cái bạn thiếu là</th><th>Và bạn nên nhìn về phía</th></tr></thead>
-    <tbody>
-      <tr><td>Ngồi nhìn</td><td>Không thiếu gì cả</td><td>Đừng đổi gì. Thật.</td></tr>
-      <tr><td>Chuyển sang việc khác</td><td>Một tín hiệu gọi bạn về</td><td>Thông báo, badge, hộp thư chú ý</td></tr>
-      <tr><td>Chạy agent thứ hai</td><td>Cô lập, và cách biết cái nào đang chờ</td><td>Worktree, và một bảng điều hướng</td></tr>
-      <tr><td>Chạy năm agent</td><td>Cả hai thứ trên, cộng review nhanh</td><td>Diff tốt, và một quy trình nhận hay bỏ</td></tr>
-    </tbody>
-  </table>
-  <div class="panel" style="margin-top:auto">
-    <p>Để ý cột giữa: <strong>không có dòng nào cần "nhiều tính năng hơn".</strong> Mỗi dòng thiếu đúng một thứ.</p>
+<!-- 9 ────────────────────────────────────────────────────────────────────── -->
+<section class="slide" data-t="Vì sao bốn tầng">
+  <h2>Vì sao lại cần tới bốn tầng</h2>
+  <div class="two grow" style="margin-top:20px">
+    <div class="stack">
+      <p class="kicker">Phần lớn app quản lý agent</p>
+      <div class="panel"><p style="font-family:var(--mono);font-size:16.5px;color:var(--ink)">workspace → agent</p><p style="margin-top:9px">Hai tầng. Mỗi workspace một nhánh, mỗi nhánh một agent. Gọn, và hợp nếu bạn làm một việc một lúc.</p></div>
+      <p>Nhưng mình hay có <strong>ba session trong cùng một nhánh</strong>: một con viết code, một con viết test, một con đọc log. Chúng nó cùng thư mục, không cần tách nhánh.</p>
+    </div>
+    <div class="stack">
+      <p class="kicker">CSM</p>
+      <div class="panel accent"><p style="font-family:var(--mono);font-size:16.5px;color:var(--ink)">folder → project → worktree → session</p><p style="margin-top:9px">Tách <strong>chỗ làm việc</strong> ra khỏi <strong>số con đang chạy</strong>. Cần nhánh riêng thì đẻ worktree. Cần thêm một con trong cùng nhánh thì chỉ đẻ session.</p></div>
+      <p>Và vì có folder, hai chục repo vẫn xếp gọn: việc công ty một hộp, việc cá nhân một hộp.</p>
+    </div>
   </div>
-  <div class="foot"><span>Phần 2 &nbsp;·&nbsp; Bạn cần gì</span><span class="pg"></span></div>
+  <div class="foot"><span>Phần 2 &nbsp;·&nbsp; Cấu trúc</span><span class="pg"></span></div>
   <aside class="notes">
-    <p>Đây là slide đáng dừng lâu nhất trong phần 2. Đọc theo hàng, mỗi hàng một câu.</p>
-    <p>Nếu ai đó trong phòng nói "tôi ở dòng bốn", hỏi lại: "bạn review kiểu gì?" Câu trả lời hầu như luôn là "đọc PR trên GitLab", và đó chính là chỗ đau tiếp theo của họ.</p>
+    <p>Đây là chỗ CSM khác các app khác rõ nhất, nên nói kỹ. Ý cốt lõi: <strong>"cần nhánh riêng" và "cần thêm một con chạy" là hai nhu cầu khác nhau, không nên bắt dùng chung một cơ chế.</strong></p>
+    <p>Ví dụ cho dễ hình dung: đang sửa bug ở nhánh mr-2103, mở thêm một con trong cùng nhánh đó để nó đọc log production. Không cần worktree.</p>
+    <p>Cái này mang về được kể cả không dùng CSM: khi tự dựng tmux hay script, cũng nên tách hai khái niệm đó ra.</p>
   </aside>
 </section>
 
-<!-- 14 ────────────────────────────────────────────────────────────────────── -->
-<section class="slide" data-t="Câu 3 và 5 đào sâu">
-  <div class="two grow">
-    <div class="stack">
-      <p class="kicker">Câu 3 &nbsp;·&nbsp; độ trễ bạn chịu được</p>
-      <p>Đây là chỉ số duy nhất trong bài mà tôi khuyên các bạn <strong>đo thật</strong>. Cách đo: mở đồng hồ, chạy một agent, làm việc khác, ghi lại khoảng cách giữa lúc nó thật sự cần bạn và lúc bạn phát hiện ra.</p>
-      <p>Làm ba lần trong một buổi chiều là bạn có một con số. Con số đó chọn công cụ giúp bạn, chứ không phải bảng tính năng.</p>
+<!-- 10 ───────────────────────────────────────────────────────────────────── -->
+<section class="slide" data-t="Chấm trạng thái">
+  <div class="two-a grow">
+    <div class="vcen">
+      <h2 style="margin-bottom:22px">Cái chấm bên trái mỗi session</h2>
+      <div class="legend">
+        <div class="row"><span class="dot idle"></span><span class="nm">idle</span><span class="ds">đang chạy nhưng im</span></div>
+        <div class="row"><span class="dot working spin"></span><span class="nm">working</span><span class="ds">đang làm việc</span></div>
+        <div class="row"><span class="dot waiting spin"></span><span class="nm">waiting</span><span class="ds"><strong>đang chờ mình trả lời</strong></span></div>
+        <div class="row"><span class="dot done spin"></span><span class="nm">done</span><span class="ds">vừa xong, nháy rồi về idle</span></div>
+        <div class="row"><span class="dot ended"></span><span class="nm">ended</span><span class="ds">tiến trình đã thoát</span></div>
+      </div>
     </div>
-    <div class="stack">
-      <p class="kicker">Câu 5 &nbsp;·&nbsp; cô lập</p>
-      <p>Hai agent sửa cùng một thư mục làm việc sẽ giẫm lên nhau, và bạn sẽ mất nhiều thời gian gỡ hơn là số thời gian tiết kiệm được.</p>
-      <p><strong>Cô lập không phải là một tính năng để so sánh. Nó là điều kiện để song song có nghĩa.</strong> Nếu công cụ nào đó không có, nó chỉ phục vụ một agent.</p>
+    <div class="vcen stack">
+      <div class="panel accent">
+        <h3>Nó biết bằng cách nào</h3>
+        <p>Claude Code có cái gọi là <strong>hook</strong>: nó bắn ra ngoài ở từng mốc trong một lượt. CSM mở một cổng ở <code>127.0.0.1</code>, dựng file settings riêng cho từng session, rồi nghe.</p>
+      </div>
+      <p>Quan trọng ở chỗ: <strong>"đang chờ" là một sự kiện, không phải đoán mò.</strong></p>
+      <p>Nhìn chữ chạy trong terminal thì chỉ biết có chữ hay im. Mà im thì có thể là đang nghĩ, cũng có thể là đang chờ. Hook nói thẳng cái nào ra cái nấy.</p>
     </div>
   </div>
-  <div class="panel accent">
-    <p>Git worktree là câu trả lời chuẩn cho câu 5, và Claude Code đã có sẵn nó: <code>claude --worktree</code>.</p>
-  </div>
-  <div class="foot"><span>Phần 2 &nbsp;·&nbsp; Bạn cần gì</span><span class="pg"></span></div>
+  <div class="foot"><span>Phần 2 &nbsp;·&nbsp; Cấu trúc</span><span class="pg"></span></div>
   <aside class="notes">
-    <p>Phần đo ở cột trái là thứ khán giả có thể làm ngay chiều nay. Khuyến khích họ làm trước khi cài gì.</p>
-    <p>Cột phải, nếu phòng chưa quen worktree, giải thích một câu: "worktree là nhiều thư mục làm việc trên cùng một repo, mỗi thư mục một nhánh, dùng chung lịch sử git. Không phải clone lại."</p>
+    <p>Chỉ vào mấy cái chấm trên slide, chúng nó quay thật, đúng nhịp như trong app.</p>
+    <p>Phần hook là phần mang về được: <strong>ai định tự dựng công cụ thì bắt đầu từ hook, đừng parse output terminal.</strong> Parse output là ngõ cụt, vì im lặng không phân biệt được "đang nghĩ" với "đang chờ".</p>
   </aside>
 </section>
 
-<!-- 15 ────────────────────────────────────────────────────────────────────── -->
+<!-- 11 ───────────────────────────────────────────────────────────────────── -->
+<section class="slide" data-t="Session sống độc lập">
+  <div class="two-a grow">
+    <div class="vcen stack">
+      <h2>Session không sống trong tab</h2>
+      <p>Tiến trình <code>claude</code> chạy ở tiến trình chính của app. Cái tab chỉ là <strong>chỗ để nhìn vào nó</strong>.</p>
+      <p>Nên đóng tab thì session vẫn chạy, vẫn nằm trong sidebar, chấm vẫn nhảy. Mở lại là thấy nguyên vẹn.</p>
+      <div class="panel accent"><p>Kết thúc session hẳn là một hành động riêng, nằm ở menu chuột phải. Không ai đóng nhầm được.</p></div>
+    </div>
+    <figure class="demo">
+      <div class="demo-frame"><span class="lbl">Chèn GIF</span><span class="file">assets/demo-01-session-alive.gif</span></div>
+      <figcaption>Quay: đóng tab một session đang chạy, nó vẫn nằm trong sidebar và chấm vẫn nhảy, mở lại thấy nguyên.</figcaption>
+    </figure>
+  </div>
+  <div class="foot"><span>Phần 2 &nbsp;·&nbsp; Cấu trúc</span><span class="pg"></span></div>
+  <aside class="notes">
+    <p>Ý mang về được: <strong>đừng gắn vòng đời tiến trình vào vòng đời cái khung nhìn.</strong> Rất nhiều script tmux tự viết dính lỗi này.</p>
+    <p>Nói thêm: app tắt rồi bật lại thì lấy lại cuộc chat cũ bằng <code>--resume</code> của Claude Code, không phải phép màu gì.</p>
+  </aside>
+</section>
+
+<!-- 12 ───────────────────────────────────────────────────────────────────── -->
 <section class="slide divider" data-t="Phần 3">
   <p class="n">PHẦN 3</p>
-  <h2 style="margin-top:16px">Bản đồ công cụ, theo hình dạng</h2>
-  <aside class="notes"><p>Chuyển: "Có sáu câu trả lời rồi, giờ xem chúng dẫn tới đâu. Tôi sẽ không xếp hạng cái nào, chỉ nói mỗi hình dạng đánh đổi cái gì."</p></aside>
+  <h2 style="margin-top:12px">Trong đó có gì</h2>
+  <aside class="notes"><p>Chuyển: "Hiểu cấu trúc rồi thì phần này đi nhanh. Mình gom theo nhóm nhu cầu, không theo menu."</p></aside>
 </section>
 
-<!-- 16 ────────────────────────────────────────────────────────────────────── -->
-<section class="slide" data-t="Trước khi thêm công cụ">
-  <h2>Trước khi thêm gì, kiểm tra thứ bạn đã có</h2>
-  <p class="lead" style="margin-top:20px">Claude Code tự nó đã giải quyết một phần khá lớn của bài toán, và phần lớn người dùng không biết.</p>
-  <div class="two" style="margin-top:30px">
-    <div class="stack">
-      <div class="panel"><h3><code>--worktree</code></h3><p>Khởi động ngay trong một worktree cô lập. Kèm <code>--tmux</code> thì có luôn phiên tmux cho nó.</p></div>
-      <div class="panel"><h3><code>--resume</code></h3><p>Lấy lại đúng cuộc hội thoại cũ. Đóng terminal không còn là mất trắng.</p></div>
+<!-- 13 ───────────────────────────────────────────────────────────────────── -->
+<section class="slide" data-t="Nhóm 1: biết con nào chờ">
+  <div class="two-a grow">
+    <div class="vcen stack">
+      <p class="kicker">Nhóm 1 &nbsp;·&nbsp; biết con nào đang chờ</p>
+      <h2 style="font-size:33px">Bốn đường báo, bật tắt riêng từng cái</h2>
+      <div class="feat"><span class="k">◆</span><p><b>Chấm trong cây</b> đổi màu ngay tại chỗ.</p></div>
+      <div class="feat"><span class="k">◆</span><p><b>Badge ở header</b> đếm số con đang chờ. Bấm vào là nhảy tới con tiếp theo.</p></div>
+      <div class="feat"><span class="k">◆</span><p><b>Thông báo hệ điều hành</b>, bấm vào là mở đúng session đó.</p></div>
+      <div class="feat"><span class="k">◆</span><p><b>Tiếng chuông</b> ngắn, và badge trên dock.</p></div>
+      <p class="sub">Ai thấy phiền thì tắt từng cái trong Settings.</p>
     </div>
-    <div class="stack">
-      <div class="panel"><h3>Hooks</h3><p>Hơn ba mươi sự kiện trong vòng đời một lượt. Handler có thể là lệnh, HTTP endpoint, MCP tool, hoặc một agent.</p></div>
-      <div class="panel"><h3><code>--permission-mode</code></h3><p>Từ hỏi từng bước tới tự nhận sửa file. Chọn đúng mức là giảm hẳn số lần bị gọi.</p></div>
+    <figure class="demo">
+      <div class="demo-frame"><span class="lbl">Chèn GIF</span><span class="file">assets/demo-02-attention.gif</span></div>
+      <figcaption>Quay: 3 session chạy, một con chuyển sang chờ, chấm đổi màu, badge nhảy số, bấm badge nhảy tới đúng con đó.</figcaption>
+    </figure>
+  </div>
+  <div class="foot"><span>Phần 3 &nbsp;·&nbsp; Tính năng</span><span class="pg"></span></div>
+  <aside class="notes">
+    <p><strong>Nếu chỉ kịp chiếu một GIF thì chiếu cái này.</strong> Đây là lý do app tồn tại.</p>
+    <p>Nói cái tắt được: có người ghét chuông, có người ghét thông báo. Bật tắt riêng từng cái là chuyện phải có, không phải tính năng để khoe.</p>
+  </aside>
+</section>
+
+<!-- 14 ───────────────────────────────────────────────────────────────────── -->
+<section class="slide" data-t="Hộp thư chú ý">
+  <div class="two-b grow">
+    <div class="vcen stack">
+      <p class="kicker">Nhóm 1</p>
+      <h2 style="font-size:33px">Hộp thư chú ý</h2>
+      <p style="font-family:var(--mono);font-size:19px;color:var(--accent)">⇧⌘A</p>
+    </div>
+    <div class="vcen stack">
+      <p>Một danh sách, mọi session đang chờ mình, gom từ tất cả dự án. Chọn một cái là nhảy thẳng tới đó.</p>
+      <p>Khác badge ở chỗ: badge chỉ nói <strong>có bao nhiêu</strong>, còn hộp thư nói <strong>là những con nào</strong>, kèm nó đang hỏi gì.</p>
+      <div class="panel"><p>Con nào mình nhìn qua rồi thì nó tự đánh dấu, khỏi đếm lại lần hai. Bật tắt được trong Settings.</p></div>
     </div>
   </div>
-  <div class="foot"><span>Phần 3 &nbsp;·&nbsp; Bản đồ công cụ</span><span class="pg"></span></div>
-  <aside class="notes">
-    <p><strong>Slide này thường gây tiếng "ồ" to nhất trong cả buổi.</strong> Rất nhiều người dùng Claude Code hàng ngày mà chưa từng chạy <code>claude --help</code>.</p>
-    <p>Nếu có thời gian, mở terminal chạy <code>claude --help</code> ngay tại chỗ. Sống động hơn slide.</p>
-    <p>Nói rõ về hooks: đây là cái mà mọi công cụ quản lý phiên đều dựa vào để biết agent đang làm gì. Không có hooks thì chỉ còn cách đoán qua đầu ra terminal, và đoán thì không bao giờ biết chắc lúc nào agent đang chờ.</p>
-  </aside>
+  <div class="foot"><span>Phần 3 &nbsp;·&nbsp; Tính năng</span><span class="pg"></span></div>
+  <aside class="notes"><p>Nếu đang chạy dưới 3 session thì cái này hơi thừa. Nói thẳng vậy. Nó chỉ có nghĩa từ khoảng 4 con trở lên.</p></aside>
 </section>
 
-<!-- 17 ────────────────────────────────────────────────────────────────────── -->
-<section class="slide" data-t="Năm hình dạng">
-  <h2>Năm hình dạng công cụ</h2>
-  <table style="margin-top:24px">
-    <thead><tr><th>Hình dạng</th><th>Ví dụ</th><th>Hợp với ai</th><th>Đổi lại</th></tr></thead>
-    <tbody>
-      <tr><td>Không gì cả</td><td>Nhiều tab terminal</td><td>Một tới hai agent, luôn ngồi máy</td><td>Không có tín hiệu gọi</td></tr>
-      <tr><td>Multiplexer</td><td>tmux, zellij, Claude Squad</td><td>Người sống trong terminal, muốn tự script</td><td>Phải tự dựng, không có diff</td></tr>
-      <tr><td>Trong IDE</td><td>Claude Code cho VS Code, JetBrains</td><td>Muốn review ngay chỗ đang code</td><td>Nhiều agent thì chật</td></tr>
-      <tr><td>App quản lý</td><td>Conductor, và cái tôi tự làm</td><td>Nhiều agent, nhiều repo, cần điều hướng</td><td>Thêm một app phải học</td></tr>
-      <tr><td>Bảng việc</td><td>Vibe Kanban, agent trên cloud</td><td>Giao việc rồi đi, review qua PR</td><td>Vòng phản hồi dài</td></tr>
-    </tbody>
-  </table>
-  <p class="sub">Cột cuối là cột quan trọng nhất. Không có hình dạng nào không mất gì.</p>
-  <div class="foot"><span>Phần 3 &nbsp;·&nbsp; Bản đồ công cụ</span><span class="pg"></span></div>
-  <aside class="notes">
-    <p>Đi từ trên xuống, mỗi dòng một câu ngắn. <strong>Dừng lâu nhất ở cột cuối.</strong></p>
-    <p>Một ghi chú trung thực đáng nói: Crystal, một app Electron mã nguồn mở khá được ưa chuộng trong nhóm này, đã ngừng phát triển tháng 2/2026 và trỏ người dùng sang một sản phẩm đóng nguồn có phí. Đó là rủi ro thật của việc chọn công cụ trong một thị trường mới: cái bạn chọn hôm nay có thể biến mất.</p>
-    <p>Nếu ai hỏi "vậy cái nào tốt nhất", trả lời thẳng: "câu hỏi đó không có đáp án, và đó là lý do phần 2 có sáu câu hỏi."</p>
-  </aside>
-</section>
-
-<!-- 18 ────────────────────────────────────────────────────────────────────── -->
-<section class="slide" data-t="Cách chọn">
-  <h2>Cách đọc bản đồ này</h2>
-  <div class="stack grow" style="margin-top:32px">
-    <div class="pain fix"><div class="t">Quy tắc 1</div><p>Chọn hình dạng nhỏ nhất giải được vấn đề bạn đang có, <strong>không phải</strong> vấn đề bạn nghĩ mình sẽ có sau này.</p></div>
-    <div class="pain fix"><div class="t">Quy tắc 2</div><p>Nếu bạn chưa từng bị đau vì một vấn đề, đừng chọn công cụ vì nó giải vấn đề đó. Bạn sẽ trả giá bằng độ phức tạp mà không nhận lại gì.</p></div>
-    <div class="pain fix"><div class="t">Quy tắc 3</div><p>Đổi một thứ một lần. Đổi hai thứ cùng lúc thì bạn không bao giờ biết cái nào có tác dụng.</p></div>
+<!-- 15 ───────────────────────────────────────────────────────────────────── -->
+<section class="slide" data-t="Nhóm 2: chia màn hình">
+  <div class="two-a grow">
+    <div class="vcen stack">
+      <p class="kicker">Nhóm 2 &nbsp;·&nbsp; nhìn nhiều con cùng lúc</p>
+      <h2 style="font-size:33px">Chia màn hình, kéo tab, lưu lại dùng lại</h2>
+      <div class="feat"><span class="k">◆</span><p>Chia dọc chia ngang tuỳ ý, lồng nhau được.</p></div>
+      <div class="feat"><span class="k">◆</span><p>Kéo tab từ ô này sang ô kia.</p></div>
+      <div class="feat"><span class="k">◆</span><p><b>Lưu cách sắp xếp thành template</b>, mở lại lúc nào cũng được. <code>⇧⌘L</code></p></div>
+      <div class="feat"><span class="k">◆</span><p>Mỗi ô chọn được: luôn mở đúng session đó, hay hỏi lại mỗi lần dùng.</p></div>
+      <p class="sub">Cách sắp xếp sống qua tắt bật app.</p>
+    </div>
+    <figure class="demo">
+      <div class="demo-frame"><span class="lbl">Chèn GIF</span><span class="file">assets/demo-03-split-layout.gif</span></div>
+      <figcaption>Quay: chia màn thành 3 ô, kéo một tab sang ô khác, lưu thành template, đóng hết rồi mở template ra lại.</figcaption>
+    </figure>
   </div>
-  <div class="foot"><span>Phần 3 &nbsp;·&nbsp; Bản đồ công cụ</span><span class="pg"></span></div>
+  <div class="foot"><span>Phần 3 &nbsp;·&nbsp; Tính năng</span><span class="pg"></span></div>
   <aside class="notes">
-    <p>Quy tắc 2 là quy tắc bị vi phạm nhiều nhất, kể cả bởi chính tôi. Thú nhận luôn cho thật: kể một tính năng bạn từng làm vì "sau này sẽ cần" mà tới giờ vẫn chưa dùng tới lần nào.</p>
+    <p>Chỗ đáng nói: <strong>ô ghim session cố định</strong> hợp với mấy cái luôn mở, còn ô "hỏi lại" hợp với việc lặt vặt. Một template trộn cả hai kiểu được.</p>
+    <p>Áp template <strong>không bao giờ đóng hay xoá session nào</strong>. Nó chỉ xếp lại. Nói câu này để không ai sợ thử.</p>
   </aside>
 </section>
 
-<!-- 19 ────────────────────────────────────────────────────────────────────── -->
+<!-- 16 ───────────────────────────────────────────────────────────────────── -->
+<section class="slide" data-t="Nhóm 3: ô nhập prompt">
+  <div class="two grow">
+    <div class="vcen stack">
+      <p class="kicker">Nhóm 3 &nbsp;·&nbsp; nói chuyện với Claude</p>
+      <h2 style="font-size:33px">Có ô nhập riêng, không phải gõ thẳng vào terminal</h2>
+      <p>Gõ thẳng vào terminal thì hay mất chữ lúc Claude đang in ra, và không dán ảnh được. Ô nhập riêng lo cả hai.</p>
+      <div class="feat"><span class="k">◆</span><p><b>Dán hoặc chọn ảnh</b>, chạy được cả trên điện thoại.</p></div>
+      <div class="feat"><span class="k">◆</span><p><b>Slash command</b>: gõ <code>/</code> là hiện menu.</p></div>
+      <div class="feat"><span class="k">◆</span><p>Enter gửi, Shift+Enter xuống dòng.</p></div>
+    </div>
+    <div class="vcen stack">
+      <p class="kicker">Và mấy thứ chỉ có ở đây</p>
+      <div class="panel"><h3>Xếp hàng nhiều prompt</h3><p>Viết sẵn 3 việc, xong cái này nó tự chạy cái kia.</p></div>
+      <div class="panel"><h3>Hẹn giờ</h3><p>Đặt giờ chạy một prompt. Sáng mai 8h tự chạy.</p></div>
+      <div class="panel"><h3>Thư viện prompt</h3><p>Prompt hay dùng thì lưu lại, gọi ra bằng tên.</p></div>
+      <div class="panel"><h3>Gửi một lượt cho nhiều session</h3><p>Kiểu "cả 4 con cùng chạy test đi".</p></div>
+    </div>
+  </div>
+  <div class="foot"><span>Phần 3 &nbsp;·&nbsp; Tính năng</span><span class="pg"></span></div>
+  <aside class="notes">
+    <p>Cột phải hay gây "ồ" nhất. Nhấn <strong>xếp hàng prompt</strong> và <strong>hẹn giờ</strong>, hai cái đó ít app có.</p>
+    <p>Ví dụ thật cho dễ hiểu: tối trước khi về xếp 3 việc, sáng ra đọc kết quả.</p>
+  </aside>
+</section>
+
+<!-- 17 ───────────────────────────────────────────────────────────────────── -->
+<section class="slide" data-t="Xem dạng hội thoại">
+  <div class="two-b grow">
+    <div class="vcen stack">
+      <p class="kicker">Nhóm 3</p>
+      <h2 style="font-size:33px">Xem session dạng hội thoại</h2>
+    </div>
+    <div class="vcen stack">
+      <p>Terminal thô thì quen mắt với dân dev, nhưng cuộn ngược lại tìm một câu Claude nói lúc nãy thì khổ.</p>
+      <p>Bật chế độ hội thoại là nó hiện ra như một cuộc chat: từng lượt, từng khối, tìm kiếm được.</p>
+      <div class="panel"><p>Chat cũ vẫn đọc lại được kể cả khi session đã tắt, vì nó nằm trong file transcript trên máy chứ không phải trong bộ nhớ app.</p></div>
+      <p class="sub">Đổi qua lại giữa hai chế độ bằng nút trên thanh tab.</p>
+    </div>
+  </div>
+  <div class="foot"><span>Phần 3 &nbsp;·&nbsp; Tính năng</span><span class="pg"></span></div>
+  <aside class="notes"><p>Cái này hợp với người không sống trong terminal. Phòng toàn dev quen terminal thì lướt nhanh.</p></aside>
+</section>
+
+<!-- 18 ───────────────────────────────────────────────────────────────────── -->
+<section class="slide" data-t="Nhóm 4: worktree">
+  <div class="two-a grow">
+    <div class="vcen stack">
+      <p class="kicker">Nhóm 4 &nbsp;·&nbsp; git</p>
+      <h2 style="font-size:33px">Worktree đẻ ngay trong cây</h2>
+      <p>Worktree là nhiều thư mục làm việc trên cùng một repo, mỗi thư mục một nhánh, dùng chung lịch sử git. Không phải clone lại.</p>
+      <p>Chuột phải lên project, chọn tạo worktree, đặt tên nhánh. Nó hiện lồng ngay dưới project cha.</p>
+      <div class="panel accent"><p>Repo đã có sẵn worktree thì bấm nhận diện, nó tự đưa vào cây.</p></div>
+    </div>
+    <figure class="demo">
+      <div class="demo-frame"><span class="lbl">Chèn GIF</span><span class="file">assets/demo-04-worktree.gif</span></div>
+      <figcaption>Quay: chuột phải lên project, tạo worktree, nó hiện lồng bên dưới, mở một session trong đó.</figcaption>
+    </figure>
+  </div>
+  <div class="foot"><span>Phần 3 &nbsp;·&nbsp; Tính năng</span><span class="pg"></span></div>
+  <aside class="notes">
+    <p>Phòng chưa quen worktree thì đây là chỗ giải thích kỹ. Nhấn: <strong>rẻ hơn clone rất nhiều</strong>, vì dùng chung thư mục .git.</p>
+    <p>Nói luôn cho công bằng: <code>claude --worktree</code> làm được việc tương tự mà không cần app nào. Cái CSM thêm vào là nó nằm trong cây, nhìn thấy được, và có session riêng.</p>
+  </aside>
+</section>
+
+<!-- 19 ───────────────────────────────────────────────────────────────────── -->
+<section class="slide" data-t="Nhóm 4: diff">
+  <div class="two-a grow">
+    <div class="vcen stack">
+      <p class="kicker">Nhóm 4 &nbsp;·&nbsp; git</p>
+      <h2 style="font-size:33px">Xem Claude vừa sửa gì, ngay trong app</h2>
+      <p style="font-family:var(--mono);font-size:19px;color:var(--accent)">⇧⌘D</p>
+      <p>Diff mở ra như một tab, ngồi cạnh chính file nó nói về, chia đôi màn được, và ở nguyên đó trong lúc mình làm việc tiếp.</p>
+      <p class="sub">Trên điện thoại thì nó hiện dạng danh sách file, vì màn nhỏ không xem diff hai cột được.</p>
+    </div>
+    <figure class="demo">
+      <div class="demo-frame"><span class="lbl">Chèn GIF</span><span class="file">assets/demo-05-diff.gif</span></div>
+      <figcaption>Quay: bấm ⇧⌘D, diff mở thành tab, chia đôi màn đặt cạnh file gốc.</figcaption>
+    </figure>
+  </div>
+  <div class="foot"><span>Phần 3 &nbsp;·&nbsp; Tính năng</span><span class="pg"></span></div>
+  <aside class="notes">
+    <p>Nối lại với slide DORA: <strong>review là chỗ nghẽn mới</strong>. Cái này sinh ra đúng vì chỗ đó.</p>
+    <p>Nói thật: đây là tính năng mình làm gần như sau cùng, sau khi alt-tab ra ngoài đủ nhiều lần. Không phải làm vì "app nào cũng có diff".</p>
+  </aside>
+</section>
+
+<!-- 20 ───────────────────────────────────────────────────────────────────── -->
+<section class="slide" data-t="Nhóm 4: lịch sử">
+  <div class="two-b grow">
+    <div class="vcen stack">
+      <p class="kicker">Nhóm 4 &nbsp;·&nbsp; git</p>
+      <h2 style="font-size:33px">Đọc lịch sử commit</h2>
+      <p style="font-family:var(--mono);font-size:19px;color:var(--accent)">⇧⌘H</p>
+    </div>
+    <div class="vcen stack">
+      <div class="feat"><span class="k">◆</span><p>Danh sách commit: message, ai làm, lúc nào, nhánh và tag đang trỏ vào đó.</p></div>
+      <div class="feat"><span class="k">◆</span><p>Chọn một commit để xem nó đổi file nào, chọn file để xem đổi chỗ nào.</p></div>
+      <div class="feat"><span class="k">◆</span><p><b>Tìm commit theo message</b>, tìm cả lịch sử chứ không phải chỉ 100 dòng đang hiện.</p></div>
+      <div class="feat"><span class="k">◆</span><p><b>Đọc nhánh khác mà không cần checkout</b>, kể cả nhánh remote. Kiểu "trên origin/main có gì mà máy mình chưa có".</p></div>
+      <p class="sub">Merge có đánh dấu riêng, và hiện đúng thứ nó mang vào.</p>
+    </div>
+  </div>
+  <div class="foot"><span>Phần 3 &nbsp;·&nbsp; Tính năng</span><span class="pg"></span></div>
+  <aside class="notes">
+    <p>Cái đáng nói nhất ở đây là <strong>đọc nhánh khác không cần checkout</strong>. Ai hay phải trả lời "nhánh kia có cái đó chưa" sẽ thích.</p>
+    <p>Không có đồ thị nhánh, và đó là cố ý. Vẽ đồ thị là một đống việc để trả lời câu hỏi mà mình gần như không bao giờ hỏi.</p>
+  </aside>
+</section>
+
+<!-- 21 ───────────────────────────────────────────────────────────────────── -->
+<section class="slide" data-t="Nhóm 5: editor">
+  <div class="two grow">
+    <div class="vcen stack">
+      <p class="kicker">Nhóm 5 &nbsp;·&nbsp; editor</p>
+      <h2 style="font-size:33px">Có editor bên trong, đủ dùng chứ không thay IDE</h2>
+      <p>Mục đích hẹp thôi: sửa nhanh một dòng, đọc file Claude vừa nhắc tới, sửa <code>CLAUDE.md</code>. Không phải để thay VS Code.</p>
+      <div class="panel"><p>Cây file cũng tự mở tới file đang xem, y như cây session tự cuộn tới session đang mở. Hai cây hành xử giống nhau, đó là chủ ý.</p></div>
+    </div>
+    <div class="vcen">
+      <div class="keys">
+        <span class="k">⇧⌘E</span><span class="v">Đổi qua lại giữa session và editor</span>
+        <span class="k">⌘P</span><span class="v">Nhảy tới file theo tên</span>
+        <span class="k">⇧⌘F</span><span class="v">Tìm trong toàn bộ file của dự án</span>
+        <span class="k">⌘S</span><span class="v">Lưu</span>
+        <span class="k">⌘W</span><span class="v">Đóng tab đang mở</span>
+        <span class="k">⇧⌘T</span><span class="v">Mở lại tab vừa đóng</span>
+      </div>
+      <div class="panel" style="margin-top:20px"><p>Bôi đen một từ rồi bấm <code>⇧⌘F</code> là nó tìm luôn từ đó, khỏi copy paste.</p></div>
+    </div>
+  </div>
+  <div class="foot"><span>Phần 3 &nbsp;·&nbsp; Tính năng</span><span class="pg"></span></div>
+  <aside class="notes">
+    <p>Nói rõ giới hạn ngay từ đầu: <strong>không phải để thay IDE</strong>. Nói vậy thì không ai kỳ vọng sai rồi thất vọng.</p>
+  </aside>
+</section>
+
+<!-- 22 ───────────────────────────────────────────────────────────────────── -->
+<section class="slide" data-t="Nhóm 6: điện thoại">
+  <div class="two-a grow">
+    <div class="vcen stack">
+      <p class="kicker">Nhóm 6 &nbsp;·&nbsp; rời khỏi máy</p>
+      <h2 style="font-size:33px">Mở bằng điện thoại</h2>
+      <p>Máy chạy CSM tự phục vụ luôn giao diện của nó qua HTTP cho thiết bị khác trong mạng. Điện thoại mở trình duyệt là thấy đủ trạng thái và trả lời được.</p>
+      <div class="panel"><p><strong>Mặc định tắt.</strong> Chỉ trong mạng nội bộ, có token, và có mức token <strong>chỉ đọc</strong> cho trường hợp muốn cho người khác xem mà không cho gõ.</p></div>
+    </div>
+    <figure class="demo">
+      <div class="demo-frame"><span class="lbl">Chèn GIF hoặc quay màn hình điện thoại</span><span class="file">assets/demo-06-mobile.gif</span></div>
+      <figcaption>Quay: điện thoại mở địa chỉ máy bàn, thấy danh sách session, một con đang chờ, gõ trả lời và máy bàn nhận được.</figcaption>
+    </figure>
+  </div>
+  <div class="foot"><span>Phần 3 &nbsp;·&nbsp; Tính năng</span><span class="pg"></span></div>
+  <aside class="notes">
+    <p>Cái này gây ấn tượng nhất, nhưng <strong>phải nói phần bảo mật ngay</strong>, đừng chờ bị hỏi. Nói trước thì mình chủ động.</p>
+    <p>Đây cũng là nhu cầu khiến mình không dùng được mấy app có sẵn. Nhắc lại ở phần 5.</p>
+  </aside>
+</section>
+
+<!-- 23 ───────────────────────────────────────────────────────────────────── -->
+<section class="slide" data-t="Nhóm 7: hỏi app">
+  <div class="two-a grow">
+    <div class="vcen stack">
+      <p class="kicker">Nhóm 7 &nbsp;·&nbsp; linh tinh mà hay</p>
+      <h2 style="font-size:33px">Hỏi thẳng app xem nó làm được gì</h2>
+      <p>App nhiều thứ quá, mình tự làm mà còn quên phím tắt. Nên có một chỗ chat để hỏi "làm sao để...".</p>
+      <div class="panel accent"><p>Nó chạy với <strong>mọi công cụ bị tắt</strong>: không đọc file của bạn, không thấy session của bạn, không chạy được gì. Nó chỉ biết đúng một thứ là cách dùng app.</p></div>
+    </div>
+    <figure class="demo">
+      <div class="demo-frame"><span class="lbl">Chèn GIF</span><span class="file">assets/demo-07-help.gif</span></div>
+      <figcaption>Quay: bấm dấu hỏi ở header, hỏi "làm sao lưu cách chia màn hình", nhận câu trả lời kèm đúng phím tắt.</figcaption>
+    </figure>
+  </div>
+  <div class="foot"><span>Phần 3 &nbsp;·&nbsp; Tính năng</span><span class="pg"></span></div>
+  <aside class="notes">
+    <p>Chỗ này có một bài học hay: <strong>con bot chỉ biết đúng cái user guide.</strong> Nên trong repo có luật: PR nào đổi giao diện thì phải sửa user guide trong cùng PR đó.</p>
+    <p>Vì nếu không, con bot sẽ rất tự tin bảo người dùng là tính năng đó không tồn tại. Đó là cách bắt tài liệu không bị mục mà không cần ai đi nhắc.</p>
+  </aside>
+</section>
+
+<!-- 24 ───────────────────────────────────────────────────────────────────── -->
+<section class="slide" data-t="Nhóm 7: còn lại">
+  <h2>Mấy thứ còn lại, gom một slide</h2>
+  <div class="three grow" style="margin-top:22px">
+    <div class="stack">
+      <div class="panel"><h3>Giao diện</h3><p>Ba bảng màu, sáng và tối. Chọn font và cỡ chữ <strong>riêng cho terminal, editor và giao diện</strong>, vì ba chỗ đó đọc ở khoảng cách khác nhau.</p></div>
+      <div class="panel"><h3>Tag và màu</h3><p>Gắn tag cho dự án và session, tô màu folder, lọc cây theo tag.</p></div>
+    </div>
+    <div class="stack">
+      <div class="panel"><h3>Usage</h3><p>Xem đã xài bao nhiêu token, còn bao nhiêu trong gói.</p></div>
+      <div class="panel"><h3>Tìm mọi thứ</h3><p><code>⌘K</code> mở bảng lệnh: tìm session, dự án, hành động. <code>⌘F</code> tìm trong cây, hoặc tìm trong scrollback terminal, tuỳ đang đứng ở đâu.</p></div>
+      <div class="panel"><h3>Profile cờ</h3><p>Bộ cờ hay dùng lưu lại đặt tên, gán cho dự án bằng một cú bấm.</p></div>
+    </div>
+    <div class="stack">
+      <div class="panel"><h3>Danger shield</h3><p>Đánh dấu dự án nào là nguy hiểm, để không lỡ tay chạy <code>--dangerously-skip-permissions</code> ở đó.</p></div>
+      <div class="panel"><h3>Con pet và phòng nghỉ</h3><p>Có một con pet pixel trong sidebar. Không có tác dụng gì cả. Đó là chủ ý.</p></div>
+    </div>
+  </div>
+  <div class="foot"><span>Phần 3 &nbsp;·&nbsp; Tính năng</span><span class="pg"></span></div>
+  <aside class="notes">
+    <p>Lướt nhanh, đừng đọc hết. Dừng ở hai cái: <strong>font riêng cho từng vùng</strong> (ai mắt kém sẽ thích) và <strong>danger shield</strong>.</p>
+    <p>Con pet để cuối cho vui. Nói thật là nó chả có tác dụng gì, và đó là lý do nó ở lại: app dùng cả ngày thì cần một chỗ không nghiêm túc.</p>
+  </aside>
+</section>
+
+<!-- 25 ───────────────────────────────────────────────────────────────────── -->
+<section class="slide" data-t="Phím tắt">
+  <h2>Phím tắt hay dùng</h2>
+  <div class="two grow" style="margin-top:22px">
+    <div class="keys">
+      <span class="k">⌘K</span><span class="v">Bảng lệnh, tìm mọi thứ</span>
+      <span class="k">⇧⌘A</span><span class="v">Hộp thư chú ý</span>
+      <span class="k">⇧⌘L</span><span class="v">Template chia màn hình</span>
+      <span class="k">⇧⌘E</span><span class="v">Đổi giữa session và editor</span>
+      <span class="k">⌘B</span><span class="v">Giấu sidebar</span>
+      <span class="k">⌘E</span><span class="v">Đổi tên session đang mở</span>
+    </div>
+    <div class="keys">
+      <span class="k">⌘P</span><span class="v">Nhảy tới file</span>
+      <span class="k">⇧⌘F</span><span class="v">Tìm trong toàn bộ file</span>
+      <span class="k">⇧⌘D</span><span class="v">Xem thay đổi</span>
+      <span class="k">⇧⌘H</span><span class="v">Lịch sử commit</span>
+      <span class="k">⌘W</span><span class="v">Đóng tab</span>
+      <span class="k">⇧⌘T</span><span class="v">Mở lại tab vừa đóng</span>
+    </div>
+  </div>
+  <p class="sub" style="margin-top:auto">Windows và Linux đổi ⌘ thành Ctrl. Danh sách đầy đủ nằm trong Settings, hoặc hỏi con bot.</p>
+  <div class="foot"><span>Phần 3 &nbsp;·&nbsp; Tính năng</span><span class="pg"></span></div>
+  <aside class="notes">
+    <p>Slide này để mọi người chụp màn hình. Nói chậm, đừng đọc hết, chỉ nhấn 3 cái hay nhất: <code>⌘K</code>, <code>⇧⌘A</code>, <code>⇧⌘L</code>.</p>
+    <p>Có một nguyên tắc đáng nói: phím nào shell đang dùng thì app không lấy. Ví dụ Ctrl+W trên Windows vẫn là xoá từ trong terminal, app không đụng vào.</p>
+  </aside>
+</section>
+
+<!-- 26 ───────────────────────────────────────────────────────────────────── -->
 <section class="slide divider" data-t="Phần 4">
   <p class="n">PHẦN 4</p>
-  <h2 style="margin-top:16px">Case study: tôi tự làm một cái</h2>
-  <aside class="notes"><p>Chuyển: "Giờ tới phần tôi kể chuyện của mình. Nghe với tâm thế một ca bệnh, không phải một lời khuyên."</p></aside>
+  <h2 style="margin-top:12px">Một ngày mình dùng nó ra sao</h2>
+  <aside class="notes"><p>Chuyển: "Liệt kê tính năng thì khô. Kể một ngày thật cho dễ hình dung hơn."</p></aside>
 </section>
 
-<!-- 20 ────────────────────────────────────────────────────────────────────── -->
-<section class="slide" data-t="Nhu cầu của tôi">
-  <h2>Sáu câu hỏi đó, trả lời cho trường hợp của tôi</h2>
-  <table style="margin-top:26px">
+<!-- 27 ───────────────────────────────────────────────────────────────────── -->
+<section class="slide" data-t="Một buổi sáng">
+  <h2>Một buổi sáng điển hình</h2>
+  <table style="margin-top:16px">
     <tbody>
-      <tr><td>Mấy agent</td><td>Ba tới sáu, trên nhiều repo khác nhau cùng lúc</td></tr>
-      <tr><td>Lúc chờ</td><td>Chạy agent khác, hoặc review cái vừa xong</td></tr>
-      <tr><td>Độ trễ chịu được</td><td>Vài giây. Chờ lâu hơn là tôi mất mạch</td></tr>
-      <tr><td>Đọc thay đổi</td><td>Cần diff tử tế, và cần nó nằm cạnh file đang mở</td></tr>
-      <tr><td>Chia nhánh</td><td>Có, thường xuyên, nhiều nhánh cùng lúc trên một repo</td></tr>
-      <tr><td>Rời máy</td><td>Có. Muốn theo dõi và trả lời từ điện thoại</td></tr>
+      <tr><td style="white-space:nowrap">Mở máy</td><td>Bấm <code>⇧⌘L</code>, mở template quen: bên trái session chính của repo đang làm, bên phải một con để hỏi vặt.</td></tr>
+      <tr><td style="white-space:nowrap">Giao việc</td><td>Ra đề cho con chính. Trong lúc nó chạy, mở worktree mới cho một task khác rồi giao tiếp.</td></tr>
+      <tr><td style="white-space:nowrap">Đi pha cà phê</td><td>Không canh. Con nào cần thì nó tự gọi bằng thông báo.</td></tr>
+      <tr><td style="white-space:nowrap">Chuông kêu</td><td>Bấm badge, nhảy tới đúng con đang chờ, duyệt hoặc trả lời rồi quay lại việc cũ.</td></tr>
+      <tr><td style="white-space:nowrap">Xong một việc</td><td><code>⇧⌘D</code> xem nó sửa gì, đặt diff cạnh file gốc, đọc, rồi bảo nó commit.</td></tr>
+      <tr><td style="white-space:nowrap">Rời bàn</td><td>Mở điện thoại xem có con nào đứng chờ không, trả lời luôn từ đó.</td></tr>
     </tbody>
   </table>
-  <div class="panel accent" style="margin-top:auto">
-    <p>Sáu câu trả lời này chỉ vào ô "app quản lý" trong bản đồ. Tôi đã thử vài cái, và cuối cùng tự làm, vì lý do ở slide sau.</p>
-  </div>
-  <div class="foot"><span>Phần 4 &nbsp;·&nbsp; Case study</span><span class="pg"></span></div>
+  <div class="foot"><span>Phần 4</span><span class="pg"></span></div>
   <aside class="notes">
-    <p>Nhấn dòng cuối: nhu cầu "rời máy và trả lời từ điện thoại" là nhu cầu hiếm, và nó là lý do lớn nhất khiến các lựa chọn có sẵn không vừa. Đây là ví dụ sống của thông điệp cả buổi: <strong>nhu cầu riêng quyết định lựa chọn, không phải bảng tính năng.</strong></p>
+    <p>Kể như kể chuyện, đừng đọc bảng. Bảng chỉ để người ta bám theo.</p>
+    <p>Nhấn dòng "đi pha cà phê": <strong>không canh</strong> là cả điểm của app. Mọi thứ khác chỉ phục vụ để dòng đó thành sự thật.</p>
   </aside>
 </section>
 
-<!-- 21 ────────────────────────────────────────────────────────────────────── -->
-<section class="slide" data-t="Đau 1: không biết cái nào chờ">
-  <div class="two-a grow">
-    <div class="stack center">
-      <div class="pain"><div class="t">Cái đau</div><p>Ba phiên đang chạy. Một cái đã hỏi tôi "có cho phép chạy lệnh này không" từ bốn phút trước. Tôi không biết, vì nó nằm ở tab tôi không nhìn.</p></div>
-      <div class="pain fix"><div class="t">Cách giải</div><p>Trạng thái lấy từ <strong>hook của Claude Code</strong>, không phải đoán qua đầu ra terminal. Chấm màu trong cây, badge ở header, thông báo hệ điều hành, và một hộp thư liệt kê mọi phiên đang chờ.</p></div>
+<!-- 28 ───────────────────────────────────────────────────────────────────── -->
+<section class="slide" data-t="Dùng nhiều dùng ít">
+  <h2>Nói thật: cái nào mình dùng, cái nào không</h2>
+  <div class="two grow" style="margin-top:22px">
+    <div class="stack">
+      <p class="kicker">Ngày nào cũng dùng</p>
+      <div class="panel"><p>Chấm trạng thái và thông báo. Chia màn hình. Worktree. Diff. <code>⌘K</code>.</p></div>
+      <p class="sub">Năm cái này là app. Bỏ hết phần còn lại thì nó vẫn dùng được.</p>
     </div>
-    <figure class="demo">
-      <div class="demo-frame"><span class="lbl">Chèn GIF</span><span class="file">assets/demo-01-attention.gif</span></div>
-      <figcaption>Quay: ba phiên chạy, một cái chuyển sang chờ, chấm đổi màu, badge nhảy số, bấm badge nhảy tới đúng phiên đó.</figcaption>
-    </figure>
-  </div>
-  <div class="foot"><span>Phần 4 &nbsp;·&nbsp; Case study</span><span class="pg"></span></div>
-  <aside class="notes">
-    <p>Đây là tính năng đầu tiên và cũng là lý do app tồn tại. Nếu chỉ được demo một thứ thì demo cái này.</p>
-    <p>Điểm kỹ thuật đáng nói vì nó chuyển giao được: <strong>chờ là một sự kiện, không phải một suy đoán.</strong> Nhìn đầu ra terminal thì chỉ biết "có chữ chạy" hay "im lặng", mà im lặng có thể là đang nghĩ, cũng có thể là đang chờ. Hook nói thẳng cái nào là cái nào. Ai tự dựng công cụ cũng nên bắt đầu từ hook.</p>
-  </aside>
-</section>
-
-<!-- 22 ────────────────────────────────────────────────────────────────────── -->
-<section class="slide" data-t="Đau 2: mất phiên">
-  <div class="two-a grow">
-    <div class="stack center">
-      <div class="pain"><div class="t">Cái đau</div><p>Đóng nhầm tab terminal là mất cả cuộc hội thoại. Cả buổi sáng bối cảnh đi theo.</p></div>
-      <div class="pain fix"><div class="t">Cách giải</div><p>PTY sống ở tiến trình chính của app, không sống trong tab. Chuyển tab chỉ gắn hoặc gỡ phần hiển thị. Đóng tab không giết phiên, và khởi động lại app thì lấy lại hội thoại qua <code>--resume</code>.</p></div>
+    <div class="stack">
+      <p class="kicker">Làm xong rồi ít đụng</p>
+      <div class="panel"><p>Hẹn giờ chạy prompt. Gửi một lượt cho nhiều session. Thư viện prompt. Xem dạng hội thoại.</p></div>
+      <p class="sub">Mấy cái này mình làm vì nghĩ sẽ cần. Thực tế thì thỉnh thoảng mới dùng. Đó là bài học, nói ở phần sau.</p>
     </div>
-    <figure class="demo">
-      <div class="demo-frame"><span class="lbl">Chèn GIF</span><span class="file">assets/demo-02-session-alive.gif</span></div>
-      <figcaption>Quay: đóng tab của một phiên đang chạy, phiên vẫn ở trong sidebar và vẫn chạy, mở lại thấy nguyên vẹn.</figcaption>
-    </figure>
   </div>
-  <div class="foot"><span>Phần 4 &nbsp;·&nbsp; Case study</span><span class="pg"></span></div>
+  <div class="foot"><span>Phần 4</span><span class="pg"></span></div>
   <aside class="notes">
-    <p>Bài học chuyển giao được: <strong>vòng đời của tiến trình không nên gắn với vòng đời của cái khung nhìn.</strong> Đây là lỗi thiết kế mà rất nhiều công cụ tự dựng mắc phải, kể cả script tmux tự viết.</p>
+    <p>Slide này mua được rất nhiều tín nhiệm. Ai cũng biết một bài giới thiệu app mà cái gì cũng hay là bài quảng cáo.</p>
+    <p>Nói thẳng: <strong>mình làm mấy cái bên phải vì nghĩ sẽ cần, chứ không phải vì đã đau.</strong> Đó là lỗi, và lát nữa có một quy tắc rút ra từ nó.</p>
   </aside>
 </section>
 
-<!-- 23 ────────────────────────────────────────────────────────────────────── -->
-<section class="slide" data-t="Đau 3: nhánh giẫm nhau">
-  <div class="two-a grow">
-    <div class="stack center">
-      <div class="pain"><div class="t">Cái đau</div><p>Hai agent trên cùng một repo, cùng một thư mục. Cái này sửa file cái kia đang đọc. Kết quả là hai nhánh dở dang trộn vào nhau.</p></div>
-      <div class="pain fix"><div class="t">Cách giải</div><p>Tạo git worktree ngay trong cây dự án. Worktree nằm lồng dưới dự án cha, có nhánh riêng và phiên riêng. Repo đã có sẵn worktree thì nhận diện và đưa vào cây.</p></div>
-    </div>
-    <figure class="demo">
-      <div class="demo-frame"><span class="lbl">Chèn GIF</span><span class="file">assets/demo-03-worktree.gif</span></div>
-      <figcaption>Quay: tạo worktree mới từ menu chuột phải trên dự án, worktree hiện lồng bên dưới, mở phiên trong đó.</figcaption>
-    </figure>
-  </div>
-  <div class="foot"><span>Phần 4 &nbsp;·&nbsp; Case study</span><span class="pg"></span></div>
-  <aside class="notes">
-    <p>Nhắc lại câu ở phần 2: cô lập là điều kiện, không phải tính năng. Đây là chỗ nó thành hình.</p>
-    <p>Nếu phòng chưa quen worktree, đây là lúc giải thích kỹ hơn slide 14: cùng một <code>.git</code>, nhiều thư mục làm việc, mỗi thư mục một nhánh. Rẻ hơn clone rất nhiều.</p>
-  </aside>
-</section>
-
-<!-- 24 ────────────────────────────────────────────────────────────────────── -->
-<section class="slide" data-t="Đau 4: review">
-  <div class="two-a grow">
-    <div class="stack center">
-      <div class="pain"><div class="t">Cái đau</div><p>Agent xong. Giờ tôi phải nhảy ra ngoài, mở một app khác, để trả lời một câu duy nhất: nó vừa đổi cái gì.</p></div>
-      <div class="pain fix"><div class="t">Cách giải</div><p>Diff mở như một tab editor, ngồi cạnh chính file nó nói về, chia đôi màn hình được, và ở nguyên đó trong lúc bạn làm việc tiếp. Lịch sử commit cũng vậy, kèm tìm theo message và đọc bất kỳ nhánh nào mà không cần checkout.</p></div>
-    </div>
-    <figure class="demo">
-      <div class="demo-frame"><span class="lbl">Chèn GIF</span><span class="file">assets/demo-04-diff-history.gif</span></div>
-      <figcaption>Quay: mở diff bằng phím tắt, chia đôi màn hình đặt cạnh file, rồi mở lịch sử commit và tìm một commit theo chữ trong message.</figcaption>
-    </figure>
-  </div>
-  <div class="foot"><span>Phần 4 &nbsp;·&nbsp; Case study</span><span class="pg"></span></div>
-  <aside class="notes">
-    <p>Nối lại với DORA ở phần 1: <strong>kiểm tra lại là nút thắt mới.</strong> Đây là tính năng phục vụ đúng cái nút thắt đó, và cũng là tính năng tôi làm sau cùng, sau khi đã đau đủ lâu.</p>
-    <p>Đó cũng là ví dụ cho quy tắc 2 ở slide 18: tôi không làm nó vì "app quản lý nào cũng có diff", mà vì tôi đã alt-tab ra ngoài đủ nhiều lần.</p>
-  </aside>
-</section>
-
-<!-- 25 ────────────────────────────────────────────────────────────────────── -->
-<section class="slide" data-t="Đau 5: rời máy">
-  <div class="two-a grow">
-    <div class="stack center">
-      <div class="pain"><div class="t">Cái đau</div><p>Rời bàn mười lăm phút là mù hoàn toàn. Về tới nơi thì ba agent đã đứng chờ từ lâu, và thời gian đó mất trắng.</p></div>
-      <div class="pain fix"><div class="t">Cách giải</div><p>Máy chạy app tự phục vụ chính giao diện của nó qua HTTP cho thiết bị khác trong mạng. Điện thoại mở trình duyệt là thấy đủ trạng thái và trả lời được. Kênh nào đi qua được là một danh sách trắng khai báo tường minh, có mức token chỉ đọc.</p></div>
-    </div>
-    <figure class="demo">
-      <div class="demo-frame"><span class="lbl">Chèn GIF hoặc video quay màn hình điện thoại</span><span class="file">assets/demo-05-mobile.gif</span></div>
-      <figcaption>Quay: điện thoại mở địa chỉ máy bàn, thấy danh sách phiên, một phiên đang chờ, gõ trả lời từ điện thoại và thấy máy bàn nhận.</figcaption>
-    </figure>
-  </div>
-  <div class="foot"><span>Phần 4 &nbsp;·&nbsp; Case study</span><span class="pg"></span></div>
-  <aside class="notes">
-    <p>Đây là tính năng làm khán giả nhớ nhất, nhưng phải nói kèm phần bảo mật, nếu không sẽ có người hỏi ngay và bạn mất thế chủ động.</p>
-    <p>Nói trước: mặc định tắt, chỉ trong mạng nội bộ, có token, và có mức token chỉ đọc cho trường hợp muốn cho người khác xem mà không cho gõ.</p>
-  </aside>
-</section>
-
-<!-- 26 ────────────────────────────────────────────────────────────────────── -->
-<section class="slide" data-t="Đau 6: không nhớ app làm được gì">
-  <div class="two-a grow">
-    <div class="stack center">
-      <div class="pain"><div class="t">Cái đau</div><p>App có quá nhiều thứ. Tôi tự làm mà còn quên phím tắt và quên cả tính năng mình đã viết.</p></div>
-      <div class="pain fix"><div class="t">Cách giải</div><p>Một trợ lý ngay trong app trả lời "làm thế nào để..." bằng chính user guide của app. Nó chạy với mọi công cụ bị tắt: không đọc file của bạn, không thấy phiên của bạn, không chạy được gì. Nó chỉ biết cách dùng app.</p></div>
-    </div>
-    <figure class="demo">
-      <div class="demo-frame"><span class="lbl">Chèn GIF</span><span class="file">assets/demo-06-help.gif</span></div>
-      <figcaption>Quay: bấm dấu hỏi ở header, gõ một câu hỏi kiểu "làm sao lưu cách chia màn hình", nhận câu trả lời kèm đúng phím tắt.</figcaption>
-    </figure>
-  </div>
-  <div class="foot"><span>Phần 4 &nbsp;·&nbsp; Case study</span><span class="pg"></span></div>
-  <aside class="notes">
-    <p>Bài học chuyển giao được, và là bài học tôi thích nhất: <strong>tài liệu không phải thứ viết sau cho có. Nó là thứ duy nhất con bot biết.</strong> Trong repo có một luật: PR nào đổi giao diện thì phải cập nhật user guide trong cùng PR đó, vì nếu không, bot sẽ tự tin nói với người dùng rằng tính năng đó không tồn tại.</p>
-    <p>Đó là một cách buộc tài liệu không bị mục mà không cần ai nhắc.</p>
-  </aside>
-</section>
-
-<!-- 27 ────────────────────────────────────────────────────────────────────── -->
-<section class="slide" data-t="Số liệu dự án">
-  <h2>Dự án này, bằng số</h2>
-  <div class="three" style="margin-top:34px">
-    <div class="stat"><span class="n hot">48</span><span class="l">ngày, từ commit đầu tới hôm nay</span></div>
-    <div class="stat"><span class="n">727</span><span class="l">commit</span></div>
-    <div class="stat"><span class="n">72.212</span><span class="l">dòng TypeScript</span></div>
-  </div>
-  <div class="three" style="margin-top:34px">
-    <div class="stat"><span class="n">2.708</span><span class="l">test tự động</span></div>
-    <div class="stat"><span class="n">51</span><span class="l">phiên bản đã phát hành</span></div>
-    <div class="stat"><span class="n">3</span><span class="l">nền tảng chạy trong CI</span></div>
-  </div>
-  <p class="sub" style="margin-top:auto">Đo trực tiếp từ repo ngày 05/08/2026. Phần lớn mã do Claude Code viết, dưới điều hướng và kiểm tra.</p>
-  <div class="foot"><span>Phần 4 &nbsp;·&nbsp; Case study</span><span class="pg"></span></div>
-  <aside class="notes">
-    <p><strong>Đừng khoe.</strong> Nói con số rồi lập tức đóng khung nó lại, bằng chính slide sau.</p>
-    <p>Con số đáng nói nhất không phải 72 nghìn dòng, mà là <strong>2.708 test</strong>. Giải thích tại sao: khi agent viết phần lớn code, cái bạn cần không phải đọc từng dòng, mà là một cái lưới bắt được lúc nó sai. Test là hợp đồng bạn viết, code là thứ agent điền vào.</p>
-    <p>Nối thẳng về DORA: đây chính là "nền tốt thì AI tăng tốc". Không có cái lưới đó thì 727 commit trong 48 ngày là một thảm họa chứ không phải một thành tích.</p>
-  </aside>
-</section>
-
-<!-- 28 ────────────────────────────────────────────────────────────────────── -->
-<section class="slide" data-t="Cái giá phải trả">
-  <h2>Và đây là phần tôi không muốn kể</h2>
-  <div class="stack grow" style="margin-top:30px">
-    <div class="pain"><div class="t">Cái giá 1</div><p>Tự làm công cụ là <strong>một dự án thứ hai</strong>. Nó có bug, có CI hỏng, có việc bảo trì. Thời gian tôi tiết kiệm được ở việc chính, một phần không nhỏ chảy ngược vào đây.</p></div>
-      <div class="pain"><div class="t">Cái giá 2</div><p>Tôi là người dùng duy nhất. Mọi lựa chọn thiết kế đều vừa vặn với tôi, và đó vừa là điểm mạnh vừa là lý do nó có thể không hợp với bạn.</p></div>
-      <div class="pain"><div class="t">Cái giá 3</div><p>Con số 48 ngày nghe ấn tượng, nhưng nó không nói gì về việc <strong>công việc chính của tôi có nhanh hơn không</strong>. Đó là hai đại lượng khác nhau, và tôi chưa đo được cái thứ hai một cách tử tế.</p></div>
-  </div>
-  <div class="foot"><span>Phần 4 &nbsp;·&nbsp; Case study</span><span class="pg"></span></div>
-  <aside class="notes">
-    <p>Slide này quan trọng ngang slide số 2. Nó là thứ giữ cho cả bài không thành quảng cáo.</p>
-    <p>Cái giá 3 nối thẳng về METR ở phần 1: tôi cũng đang có đúng cái cảm giác mà nghiên cứu đó cảnh báo. Nói ra được điều đó về chính mình thì mọi thứ khác bạn nói đều đáng tin hơn.</p>
-    <p>Khuyến nghị thật lòng cho phòng: <strong>đừng tự làm.</strong> Hãy dùng cái có sẵn, trừ khi nhu cầu của bạn thật sự không có cái nào vừa, và bạn thấy việc làm công cụ tự nó đã vui.</p>
-  </aside>
-</section>
-
-<!-- 29 ────────────────────────────────────────────────────────────────────── -->
+<!-- 29 ───────────────────────────────────────────────────────────────────── -->
 <section class="slide divider" data-t="Phần 5">
   <p class="n">PHẦN 5</p>
-  <h2 style="margin-top:16px">Rút ra, và bắt đầu thế nào</h2>
-  <aside class="notes"><p>Chuyển: "Bỏ app của tôi sang một bên. Năm điều sau đúng với mọi lựa chọn."</p></aside>
+  <h2 style="margin-top:12px">Ai thì hợp kiểu này</h2>
+  <aside class="notes"><p>Chuyển: "Phần cuối, và là phần mình nghĩ đáng nghe nhất kể cả khi bạn không định cài gì."</p></aside>
 </section>
 
-<!-- 30 ────────────────────────────────────────────────────────────────────── -->
-<section class="slide" data-t="Năm điều rút ra">
-  <h2>Năm điều, không phụ thuộc công cụ nào</h2>
-  <div class="stack grow" style="margin-top:26px;gap:14px">
-    <div class="q"><span class="i">01</span><div><h3>Đo bằng độ trễ, không bằng số tính năng</h3><p>Chỉ số đáng theo dõi: bao lâu kể từ lúc agent cần bạn tới lúc bạn biết.</p></div></div>
-    <div class="q"><span class="i">02</span><div><h3>Song song chỉ có lãi khi có cách điều hướng chú ý</h3><p>Không có tín hiệu gọi thì song song chỉ là tự ngắt quãng mình nhiều hơn.</p></div></div>
-    <div class="q"><span class="i">03</span><div><h3>Cô lập là điều kiện, không phải tính năng</h3><p>Không có worktree hoặc tương đương thì công cụ đó chỉ phục vụ một agent.</p></div></div>
-    <div class="q"><span class="i">04</span><div><h3>Kiểm tra lại là nút thắt mới</h3><p>DORA đã đo. Công cụ nào rút ngắn được vòng review sẽ thắng công cụ nào chỉ chạy được nhiều agent hơn.</p></div></div>
-    <div class="q"><span class="i">05</span><div><h3>Công cụ tốt nhất là cái bạn còn dùng sau hai tuần</h3><p>Mọi thứ khác là cảm giác mới lạ, và cảm giác thì METR đã nói rồi.</p></div></div>
+<!-- 30 ───────────────────────────────────────────────────────────────────── -->
+<section class="slide" data-t="Bốn câu tự hỏi">
+  <h2>Bốn câu tự hỏi trước khi cài bất cứ thứ gì</h2>
+  <div class="stack grow" style="margin-top:20px;gap:15px">
+    <div class="feat"><span class="k">1</span><p><b>Bạn chạy mấy con một lúc?</b> Nếu là một, thì thôi, không cần gì cả. Đó là câu trả lời hợp lệ.</p></div>
+    <div class="feat"><span class="k">2</span><p><b>Trong lúc chờ bạn làm gì?</b> Ngồi canh thì không cần gì. Làm việc khác thì cần cái gọi mình về. Chạy con thứ hai thì cần thêm cô lập.</p></div>
+    <div class="feat"><span class="k">3</span><p><b>Bạn chịu được bao lâu mới biết nó gọi?</b> Vài giây, hay vài phút, hay không quan trọng.</p></div>
+    <div class="feat"><span class="k">4</span><p><b>Bạn có hay rời khỏi máy không?</b> Câu này ít người hỏi, mà nó lại là câu quyết định với mình.</p></div>
   </div>
-  <div class="foot"><span>Phần 5 &nbsp;·&nbsp; Rút ra</span><span class="pg"></span></div>
+  <div class="panel accent"><p>Bốn câu này quan trọng hơn mọi bảng so sánh tính năng.</p></div>
+  <div class="foot"><span>Phần 5</span><span class="pg"></span></div>
   <aside class="notes">
-    <p>Đây là slide để chụp màn hình. Nói chậm, mỗi ý một câu, đừng thêm ví dụ mới ở đây.</p>
+    <p>Nói câu 1 bằng giọng thật: <strong>"nếu bạn chạy một con và thấy ổn thì buổi nay không có gì cho bạn cả, và mình thấy vậy là tốt."</strong> Câu này mua được rất nhiều tín nhiệm.</p>
+    <p>Câu 4 dẫn sang slide sau: nó là lý do mình không dùng được mấy app có sẵn.</p>
   </aside>
 </section>
 
-<!-- 31 ────────────────────────────────────────────────────────────────────── -->
-<section class="slide" data-t="Bắt đầu thế nào">
-  <h2>Nếu muốn thử, làm theo thứ tự này</h2>
-  <div class="two grow" style="margin-top:32px">
+<!-- 31 ───────────────────────────────────────────────────────────────────── -->
+<section class="slide" data-t="Có sẵn gì rồi">
+  <h2>Có sẵn kha khá thứ, kiểm tra trước khi cài thêm</h2>
+  <div class="two grow" style="margin-top:20px">
     <div class="stack">
-      <div class="panel accent">
-        <h3>Tuần 1: không cài gì cả</h3>
-        <p>Chỉ dùng Claude Code với <code>--worktree</code>. Mỗi ngày ghi lại ba lần: agent cần bạn lúc mấy giờ, bạn biết lúc mấy giờ. Cuối tuần bạn có một con số thật.</p>
-      </div>
+      <p class="kicker">Claude Code tự nó đã có</p>
+      <div class="panel"><p><code>claude --worktree</code> khởi động ngay trong worktree cô lập. Thêm <code>--tmux</code> thì có luôn phiên tmux.</p></div>
+      <div class="panel"><p><code>--resume</code> lấy lại đúng cuộc chat cũ. <code>--permission-mode</code> chỉnh mức hỏi, chọn đúng là bớt hẳn số lần bị gọi.</p></div>
     </div>
     <div class="stack">
-      <div class="panel">
-        <h3>Tuần 2: thêm đúng một lớp</h3>
-        <p>Chọn một hình dạng từ bản đồ, dựa trên con số tuần 1. Đo lại đúng cách đó. Nếu con số không giảm, bỏ nó đi mà không tiếc.</p>
-      </div>
+      <p class="kicker">Và mấy hình dạng khác</p>
+      <table style="font-size:16.5px">
+        <tbody>
+          <tr><td>tmux, zellij</td><td>tự dựng, hợp người sống trong terminal</td></tr>
+          <tr><td>Claude Squad</td><td>quản lý session trong terminal</td></tr>
+          <tr><td>Conductor</td><td>app Mac, mỗi agent một worktree</td></tr>
+          <tr><td>Vibe Kanban</td><td>bảng việc, kéo thẻ thì agent nhận</td></tr>
+        </tbody>
+      </table>
     </div>
   </div>
-  <div class="panel" style="margin-top:auto">
-    <p>Đừng đổi hai thứ cùng lúc, và đừng đánh giá bằng cảm giác của ngày đầu tiên.</p>
-  </div>
-  <div class="foot"><span>Phần 5 &nbsp;·&nbsp; Rút ra</span><span class="pg"></span></div>
+  <div class="foot"><span>Phần 5</span><span class="pg"></span></div>
   <aside class="notes">
-    <p>Đây là phần hành động. Nếu ai đó chỉ làm được một việc sau buổi này, thì là việc ở tuần 1.</p>
-    <p>Nhắc: cách đo này rẻ tới mức không có lý do gì để không làm, và nó biến một cuộc tranh luận về sở thích thành một con số.</p>
+    <p><strong>Chạy <code>claude --help</code> ngay tại chỗ.</strong> Rất nhiều người dùng hàng ngày mà chưa từng mở cái đó ra. Slide này thường gây "ồ" to nhất buổi.</p>
+    <p>Nói một chuyện cho công bằng: Crystal, một app khá được ưa chuộng trong nhóm này, đã ngừng phát triển tháng 2/2026. Chọn công cụ trong thị trường mới thì có rủi ro đó.</p>
   </aside>
 </section>
 
-<!-- 32 ────────────────────────────────────────────────────────────────────── -->
+<!-- 32 ───────────────────────────────────────────────────────────────────── -->
+<section class="slide" data-t="Cái giá tự làm">
+  <h2>Và cái giá của việc tự làm</h2>
+  <div class="three grow" style="margin-top:22px">
+    <div class="panel"><h3>Nó là dự án thứ hai</h3><p>Có bug, có CI hỏng, có việc bảo trì. Thời gian tiết kiệm ở việc chính chảy ngược một phần vào đây.</p></div>
+    <div class="panel"><h3>Mình là người dùng duy nhất</h3><p>Mọi lựa chọn đều vừa vặn với mình. Vừa là điểm mạnh, vừa là lý do nó có thể không hợp với bạn.</p></div>
+    <div class="panel"><h3>Mình chưa đo được</h3><p>Không biết công việc chính có nhanh hơn thật không. Cảm giác thì có, số liệu thì chưa.</p></div>
+  </div>
+  <div class="panel accent" style="margin-top:auto"><p><strong>Nên khuyên thật lòng: đừng tự làm.</strong> Dùng cái có sẵn, trừ khi nhu cầu của bạn không có cái nào vừa, và bạn thấy việc làm công cụ tự nó đã vui.</p></div>
+  <div class="foot"><span>Phần 5</span><span class="pg"></span></div>
+  <aside class="notes">
+    <p>Slide này giữ cho cả buổi không thành quảng cáo. Nói thẳng, đừng làm nhẹ đi.</p>
+    <p>Ô thứ ba nối về slide 28: <strong>làm tính năng vì nghĩ sẽ cần là cái bẫy</strong>. Quy tắc rút ra: chưa đau thì chưa làm, và chưa đau thì cũng chưa cài.</p>
+  </aside>
+</section>
+
+<!-- 33 ───────────────────────────────────────────────────────────────────── -->
+<section class="slide" data-t="Muốn thử thì">
+  <h2>Muốn thử thì làm theo thứ tự này</h2>
+  <div class="two grow" style="margin-top:22px">
+    <div class="panel accent">
+      <h3>Tuần 1: không cài gì</h3>
+      <p>Chỉ dùng Claude Code với <code>--worktree</code>. Mỗi ngày ghi 3 lần: nó cần mình lúc mấy giờ, mình biết lúc mấy giờ. Cuối tuần có một con số thật.</p>
+    </div>
+    <div class="panel">
+      <h3>Tuần 2: thêm đúng một thứ</h3>
+      <p>Chọn một công cụ dựa trên con số tuần 1. Đo lại y hệt. Con số không giảm thì bỏ, đừng tiếc.</p>
+    </div>
+  </div>
+  <p style="margin-top:auto"><strong>Đừng đổi hai thứ cùng lúc</strong>, và đừng đánh giá bằng cảm giác của ngày đầu tiên.</p>
+  <div class="foot"><span>Phần 5</span><span class="pg"></span></div>
+  <aside class="notes">
+    <p>Ai chỉ làm được một việc sau buổi này thì là việc tuần 1. Nó rẻ tới mức không có lý do gì để không làm, và nó biến tranh luận sở thích thành một con số.</p>
+  </aside>
+</section>
+
+<!-- 34 ───────────────────────────────────────────────────────────────────── -->
 <section class="slide mid" data-t="Kết">
-  <h2 style="max-width:22ch">Không có công cụ tốt nhất. Chỉ có công cụ vừa tay.</h2>
-  <p class="lead" style="margin-top:26px">Sáu câu hỏi ở phần 2 quan trọng hơn toàn bộ phần còn lại của buổi này.</p>
-  <p class="sub mono" style="margin-top:44px">Slide và nguồn dẫn: minhdevtree.github.io/csm-workshop</p>
+  <h2 style="max-width:21ch">Không có công cụ tốt nhất. Chỉ có công cụ vừa tay.</h2>
+  <p class="lead" style="margin-top:22px">Bốn câu hỏi lúc nãy quan trọng hơn cả buổi nói này.</p>
+  <p class="sub mono" style="margin-top:36px">Slide và ghi chú: minhdevtree.github.io/csm-workshop</p>
   <aside class="notes">
-    <p>Dừng ở đây, đừng chuyển tiếp sang slide hỏi đáp ngay. Để câu này đứng một mình vài giây.</p>
-    <p>Rồi mở hỏi đáp bằng một câu mồi, đừng hỏi "có ai hỏi gì không" (thường sẽ im lặng). Hỏi thẳng: <strong>"Ai đang ở dòng thứ tư của cái bảng lúc nãy, chạy từ năm agent trở lên?"</strong> hoặc <strong>"Có ai vừa nhận ra mình đang ở dòng một mà lâu nay tưởng mình ở dòng ba không?"</strong></p>
+    <p>Để câu này đứng một mình vài giây rồi mới mở hỏi đáp.</p>
+    <p>Đừng hỏi "có ai hỏi gì không", thường sẽ im. Hỏi thẳng: <strong>"Ai đang chạy từ 4 con trở lên?"</strong> hoặc <strong>"Ai vừa nhận ra mình chỉ cần một con thôi?"</strong></p>
   </aside>
 </section>
 
-<!-- 33 ────────────────────────────────────────────────────────────────────── -->
+<!-- 35 ───────────────────────────────────────────────────────────────────── -->
 <section class="slide" data-t="Hỏi đáp">
   <h2>Hỏi đáp</h2>
-  <div class="two grow" style="margin-top:30px">
+  <div class="two grow" style="margin-top:20px">
     <div class="stack">
-      <p class="kicker">Câu hay được hỏi</p>
-      <div class="panel"><p><strong>Chạy nhiều agent có tốn nhiều token hơn không?</strong><br><span class="sub">Có. Song song không làm mỗi lượt rẻ đi, nó chỉ làm nhiều lượt xảy ra cùng lúc.</span></p></div>
-      <div class="panel"><p><strong>Bao nhiêu agent là quá nhiều?</strong><br><span class="sub">Khi hàng đợi review của bạn dài hơn thời gian bạn có để review. Con số đó khác nhau ở mỗi người.</span></p></div>
+      <p class="kicker">Hay được hỏi</p>
+      <div class="panel"><p><strong>Chạy nhiều con có tốn token hơn không?</strong><br><span class="sub">Có. Song song không làm mỗi lượt rẻ đi, chỉ làm nhiều lượt xảy ra cùng lúc.</span></p></div>
+      <div class="panel"><p><strong>Bao nhiêu con là quá nhiều?</strong><br><span class="sub">Khi hàng chờ review dài hơn thời gian mình có để review. Con số đó thấp hơn số con chạy được về mặt kỹ thuật nhiều.</span></p></div>
+      <div class="panel"><p><strong>Sao không xài tmux cho xong?</strong><br><span class="sub">Được chứ. Cái tmux không cho là tín hiệu "đang chờ" và cái diff. Không đau hai chỗ đó thì tmux là đủ.</span></p></div>
     </div>
     <div class="stack">
-      <p class="kicker">Chỗ tôi sẽ nói "tôi không biết"</p>
-      <div class="panel"><p><strong>Cách này có mở rộng cho cả team không?</strong><br><span class="sub">Tôi mới chỉ chạy một người. Mọi câu trả lời của tôi về quy mô team đều là suy đoán.</span></p></div>
-      <div class="panel"><p><strong>Nó có làm tôi làm việc nhanh hơn không?</strong><br><span class="sub">Tôi chưa đo được một cách tử tế. Xem lại slide 28.</span></p></div>
+      <p class="kicker">Chỗ mình sẽ nói không biết</p>
+      <div class="panel"><p><strong>Team dùng chung được không?</strong><br><span class="sub">Mới chạy một người. Nói gì về quy mô team cũng là đoán.</span></p></div>
+      <div class="panel"><p><strong>Nó làm mình nhanh hơn bao nhiêu?</strong><br><span class="sub">Chưa đo được tử tế. Xem lại slide 32.</span></p></div>
     </div>
   </div>
   <div class="foot"><span>Hỏi đáp</span><span class="pg"></span></div>
   <aside class="notes">
-    <p>Chuẩn bị sẵn hai ô bên phải là cách tốt nhất để giữ tín nhiệm. Khi bị hỏi thứ mình không biết, có sẵn câu trả lời "tôi không biết, và đây là lý do tôi không biết" nghe mạnh hơn nhiều so với việc ứng biến.</p>
-    <p>Nếu phòng im, quay lại slide 13 và hỏi từng dòng của bảng.</p>
+    <p>Chuẩn bị sẵn cột phải là cách giữ tín nhiệm tốt nhất. "Mình không biết, và đây là lý do" nghe mạnh hơn ứng biến nhiều.</p>
+    <p>Nếu phòng im thì quay lại slide 30 hỏi từng câu.</p>
   </aside>
 </section>
 
@@ -1007,18 +967,14 @@ tbody tr + tr td { border-top: 1px solid var(--line); }
 <script>
 (function () {
   'use strict';
-
   var slides  = Array.prototype.slice.call(document.querySelectorAll('.slide'));
   var scaler  = document.getElementById('scaler');
   var bar     = document.getElementById('bar');
   var notesEl = document.getElementById('notes');
   var gridEl  = document.getElementById('grid');
   var help    = document.getElementById('help');
-  var i = 0;
-  var notesOn = false;
+  var i = 0, notesOn = false;
 
-  /* Khớp khung 1280x720 vào cửa sổ bằng transform, nên mọi kích thước bên trong
-     slide là tuyệt đối và không phụ thuộc cỡ màn hình phòng họp. */
   function fit() {
     var pad = notesOn ? window.innerHeight * 0.42 : 0;
     var k = Math.min(window.innerWidth / 1280, (window.innerHeight - pad) / 720);
@@ -1073,8 +1029,6 @@ tbody tr + tr td { border-top: 1px solid var(--line); }
     else if (k === 'Escape') { gridEl.classList.remove('on'); }
   });
 
-  /* Bấm nửa phải để tiến, nửa trái để lùi. Dùng khi trình chiếu bằng chuột hoặc
-     khi mở trên máy tính bảng. */
   document.getElementById('stage').addEventListener('click', function (e) {
     show(e.clientX > window.innerWidth / 2 ? i + 1 : i - 1);
   });

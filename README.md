@@ -36,7 +36,7 @@ không phải lúc đang đứng trên bục.
 ## Trong repo có gì
 
 ```
-slides/index.html          Deck 33 slide, tự chứa, có ghi chú diễn giả
+slides/index.html          Deck 35 slide, tự chứa, có ghi chú diễn giả
 script/script-vi.md        Kịch bản nói chi tiết, có mốc thời gian và chỉ dẫn sân khấu
 script/demo-checklist.md   Sáu đoạn demo cần quay, và cách chèn vào slide
 context/                   Bối cảnh về app được lấy làm case study
@@ -46,16 +46,18 @@ assets/                    Chỗ bỏ GIF demo vào
 
 ## Còn thiếu
 
-Sáu khung demo ở slide 21 tới 26 đang để trống có chủ đích, chờ GIF quay màn hình.
-Xem `script/demo-checklist.md` để biết cần quay gì và đặt tên file thế nào. Slide
-vẫn trình chiếu được khi chưa có, khung sẽ hiện tên file cần bỏ vào.
+Bảy khung demo ở slide 11, 13, 15, 18, 19, 22 và 23 đang để trống có chủ đích, chờ
+GIF quay màn hình. Xem `script/demo-checklist.md` để biết cần quay gì và đặt tên file
+thế nào. Slide vẫn trình chiếu được khi chưa có, khung sẽ hiện tên file cần bỏ vào.
 
 ## Ghi chú về tính trung thực
 
 Mọi con số nói trên sân khấu đều có nguồn trong `research/sources.md`. Hai chỗ cần
 đặc biệt cẩn thận khi trình bày:
 
-1. **Nghiên cứu METR** (slide 8) đã được chính METR gắn nhãn là lịch sử. Kịch bản
-   bắt buộc phải nói kèm điều đó. Trích một nửa con số là trích sai.
-2. **Số liệu dự án** (slide 27) đo ngày 05/08/2026. Đo lại bằng lệnh trong
-   `context/04-numbers.md` trước ngày nói.
+1. **Báo cáo DORA** (slide 5) là số liệu duy nhất còn dẫn trong deck. Nguồn nằm ở
+   `research/sources.md`. Bản trước có thêm nghiên cứu METR, đã bỏ vì nó kéo buổi
+   chia sẻ thành một bài giảng về năng suất, và vì chính METR đã gắn nhãn kết quả đó
+   là lịch sử.
+2. **Số liệu dự án** trong `context/04-numbers.md` đo ngày 05/08/2026. Đo lại bằng
+   lệnh trong đó nếu định nhắc tới.

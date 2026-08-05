@@ -1,581 +1,568 @@
-# Kịch bản nói chi tiết
+# Kịch bản nói
 
-Workshop 50 phút nói + 10 phút hỏi đáp. Dev team. Tiếng Việt.
+50 phút nói + 10 phút hỏi đáp. 35 slide.
 
-Cách dùng file này: cột thời gian là mốc tích luỹ tính từ lúc bắt đầu. Nếu tới
-slide 19 mà đồng hồ đã quá 26 phút, cắt phần 3 xuống còn slide 16 và 17, bỏ slide
-18. Đừng cắt phần 4.
+Cách dùng: cột thời gian là mốc tính từ lúc bắt đầu. Tới slide 12 mà đồng hồ đã quá
+17 phút thì lướt nhanh phần tính năng, bỏ slide 14, 17, 20.
 
-Chữ **in đậm** là chỗ cần nhấn giọng. Chữ trong ngoặc vuông là chỉ dẫn sân khấu,
-không đọc ra.
+Chữ **in đậm** là chỗ nhấn giọng. Chữ trong ngoặc vuông là chỉ dẫn cho mình, không
+đọc ra.
+
+Giọng: kể chuyện cho đồng nghiệp nghe, không phải thuyết trình. Nói "mình" chứ đừng
+"tôi". Từ kỹ thuật cứ để tiếng Anh, đừng dịch: session, worktree, diff, tab, badge.
 
 ---
 
-## Trước khi vào phòng
+## Chuẩn bị trước khi vào phòng
 
-- [ ] Mở `slides/index.html` bằng trình duyệt, bấm `F` cho toàn màn hình.
-- [ ] Bấm `T` một lần để xem chế độ sáng. Phòng sáng thì dùng chế độ sáng.
-- [ ] Bấm `S` để bật ghi chú, kiểm tra nó nằm ở màn hình của bạn chứ không phải
-      màn chiếu (nếu chỉ có một màn hình thì tắt đi, cầm bản in file này).
-- [ ] Kiểm tra sáu GIF demo đã nằm trong `assets/` và slide 21 tới 26 hiện ảnh
-      chứ không phải khung nét đứt.
+- [ ] Mở `slides/index.html`, bấm `F` cho toàn màn hình.
+- [ ] Bấm `T` xem thử nền sáng. Phòng sáng thì dùng nền sáng. **Chốt trước, đừng đổi
+      lúc đang đứng trên bục.**
+- [ ] Bấm `S` xem ghi chú có nằm ở màn hình của mình không. Chỉ có một màn hình thì
+      đừng bấm, cầm bản in file này.
+- [ ] Kiểm tra 7 GIF đã nằm trong `assets/`, slide 11, 13, 15, 18, 19, 22, 23 hiện
+      ảnh chứ không phải khung nét đứt.
 - [ ] Mở sẵn một terminal ở tab khác, đã `cd` vào một repo thật, để chạy
-      `claude --help` ở slide 16.
-- [ ] Tắt thông báo trên máy. Trớ trêu thay, đây là buổi nói về việc bị ngắt quãng.
+      `claude --help` ở slide 31.
+- [ ] Tắt thông báo trên máy. Buổi này nói về việc bị ngắt quãng, đừng để bị ngắt.
 
 ---
 
-## Mở đầu (0:00 tới 0:03)
+## Mở đầu (0:00 → 0:04)
 
-**Slide 1.**
+**Slide 1.** [Đừng đọc slide. Hỏi trước.]
 
-[Không đọc slide. Đứng ra giữa, hỏi trước.]
-
-> Trước khi bắt đầu tôi hỏi hai câu, mọi người giơ tay giúp tôi.
+> Trước khi vào, mình hỏi hai câu, mọi người giơ tay giúp.
 >
-> Câu một: ai ở đây đang chạy **từ hai phiên Claude Code trở lên** cùng lúc?
+> Ai đang chạy **từ 2 con Claude Code trở lên** cùng lúc?
 >
-> [Đếm to. Ghi nhận.]
+> [Đếm to.]
 >
-> Câu hai: ai từng **mất một phiên** vì lỡ đóng terminal?
+> Ai từng **đóng nhầm terminal rồi mất luôn cả cuộc chat**?
 >
-> [Đếm. Thường sẽ có tiếng cười.]
-
-> Được rồi. Buổi hôm nay nói về đúng khoảng giữa hai câu hỏi đó.
-
-[Nếu phần lớn phòng chỉ chạy một phiên: nói thêm một câu, "Nếu bạn đang chạy một
-phiên và thấy ổn, phần đầu vẫn đáng nghe, còn phần sau bạn cứ coi như một ca bệnh
-để tham khảo." Rồi rút ngắn phần 4 xuống ba slide đau thay vì sáu.]
-
-**Slide 2.** [Chuyển slide]
-
-> Trước khi bắt đầu tôi muốn nói rõ buổi này **không phải** cái gì, vì tôi có làm
-> một cái app và tôi sẽ nói về nó ở phần bốn.
+> [Đếm. Thường có tiếng cười.]
 >
-> Không có bảng so sánh công cụ nào nhiều tính năng hơn. Không có lời khuyên
-> "hãy dùng cái tôi đang dùng". Đây không phải quảng cáo.
->
-> Cái có ở đây là một cách tự hỏi để biết **bạn** cần gì, một bản đồ các hình
-> dạng công cụ, và một case study thật, **kể cả phần dở của nó**.
->
-> Nếu cuối buổi các bạn về mà không cài gì cả, nhưng biết rõ hơn mình cần gì,
-> thì với tôi buổi này thành công.
+> Được rồi. Hôm nay mình kể về cái app mình làm để xử mấy chuyện đó.
 
-**Slide 3.** [Lướt nhanh, không đọc từng dòng]
+[Nếu đa số chỉ chạy 1 con: nói thêm "phần cấu trúc ở giữa vẫn đáng nghe kể cả khi
+bạn không định dùng app", rồi lát nữa lướt nhanh phần tính năng nâng cao.]
 
-> Sáu phần, năm mươi phút, mười phút hỏi đáp. Phần bốn dài nhất và có demo.
-> Nếu bị trễ tôi sẽ cắt phần ba chứ không cắt phần bốn.
+**Slide 2.**
+
+> Chuyện là thế này. Mình hay chạy 3 tới 6 con một lúc, trên mấy repo khác nhau.
+> Nhanh hơn thật, nhưng đẻ ra ba cái phiền.
+>
+> Một, **không biết con nào đang chờ mình**. Nó hỏi "cho chạy lệnh này không" từ 5
+> phút trước, mà mình đang nhìn tab khác.
+>
+> Hai, **đóng tab là mất**. Lỡ tay một cái, cả buổi sáng context đi theo.
+>
+> Ba, **hai con giẫm chân nhau**. Cùng một thư mục, con này sửa file con kia đang đọc.
+>
+> [Nhấn câu cuối.]
+>
+> App sinh ra để xử đúng ba cái đó. Lát nữa mình sẽ kể một đống tính năng khác,
+> nhưng **chỉ ba cái này là lý do nó tồn tại**. Phần còn lại là tiện thì thêm.
+
+**Slide 3.** [Lướt nhanh]
+
+> Đi theo thứ tự này. Phần 2 là phần mình nghĩ đáng nghe nhất, kể cả với người không
+> định cài gì, vì cái cấu trúc ở đó áp dụng được cho mọi cách quản lý session.
 
 ---
 
-## Phần 1: Nút thắt đã đổi chỗ (0:03 tới 0:11)
+## Phần 1: đau ở đâu (0:04 → 0:09)
 
-**Slide 4.** [Slide phân đoạn, chỉ một câu]
+**Slide 4.**
 
-> Bắt đầu bằng câu hỏi: tại sao chúng ta lại phải bàn chuyện này vào **năm 2026**,
-> chứ không phải năm 2023.
-
-**Slide 5.**
-
-> Trước đây, bạn nghĩ ra cách làm rồi bỏ phần lớn thời gian để **gõ nó ra**. Tốc
-> độ gõ, độ thuộc API, độ quen codebase quyết định bạn xong nhanh hay chậm.
+> Mỗi lượt Claude chạy 3 tới 10 phút. Trong lúc đó làm gì cũng được, **trừ một việc
+> là ngồi canh nó**.
 >
-> Bây giờ agent gõ hộ. Cái còn lại của bạn là **ra đề bài**, **chờ**, và **kiểm
-> tra lại**.
+> Nhưng không canh thì phải có cái gọi mình về. Không có thì cứ vài phút lại tự đi
+> kiểm tra. Mà mỗi lần đi kiểm tra là **một lần tự ngắt mình**.
 >
-> Nghĩ về cái editor của các bạn một giây. Autocomplete, snippet, đa con trỏ,
-> refactor tự động. Toàn bộ những thứ đó phục vụ **một việc mà bây giờ bạn làm ít
-> đi rất nhiều**.
->
-> Tôi không nói editor vô dụng. Tôi nói nó **không còn là nơi thời gian của bạn
-> trôi đi**. Và khi phần việc thay đổi mà công cụ không đổi, bạn sẽ tối ưu nhầm chỗ.
-
-**Slide 6.**
-
-> Thời gian của bạn giờ nằm ở ba chỗ.
->
-> **Ra đề bài.** Đây là việc duy nhất trong ba việc bạn không ủy thác được.
->
-> **Chờ.** Ba tới mười phút mỗi lượt.
->
-> **Kiểm tra lại.** Đọc diff, chạy test, quyết định nhận hay bỏ.
->
-> [Hỏi phòng] Trong lúc chờ, các bạn làm gì?
->
-> [Chờ vài câu trả lời. Câu thật thường là: xem điện thoại, đọc Slack, hoặc ngồi
-> nhìn con trỏ nhấp nháy.]
->
-> Cả buổi hôm nay xoay quanh **khoảng ở giữa**. Nhưng tôi sẽ nói trước cái bẫy,
-> vì nó là thứ làm nhiều người thất bại: **chạy song song làm khoảng thứ hai ngắn
-> lại, nhưng làm khoảng thứ ba dài ra.** Slide sau là bằng chứng.
-
-**Slide 7.**
-
-> DORA, báo cáo 2025 về phát triển phần mềm có AI hỗ trợ. Khảo sát gần năm nghìn
-> người làm công nghệ.
->
-> Kết luận một: áp dụng AI làm **throughput tăng**. Cái này ai cũng đoán được.
->
-> Kết luận hai, ít người nói tới: áp dụng AI cũng làm **bất ổn định tăng**. Nhiều
-> thay đổi hỏng hơn, nhiều việc phải làm lại hơn, thời gian khắc phục dài hơn.
->
-> Câu tôi thích nhất trong báo cáo đó là câu bên trái: **AI không phải giải pháp
-> đóng hộp, nó là một cái khuếch đại.**
->
-> Nói cho gọn: **nền tốt thì AI tăng tốc, nền lộn xộn thì AI làm bạn lộn xộn
-> nhanh hơn.**
->
-> Áp vào chủ đề hôm nay: chạy mười agent song song trên một repo không có test là
-> cách nhanh nhất để tạo ra mười thứ phải sửa. **Song song là bộ khuếch đại,
-> không phải cái loa.**
-
-**Slide 8.**
-
-> Và đây là con số làm mọi người khó chịu.
->
-> METR, tháng bảy 2025. Thử nghiệm ngẫu nhiên có đối chứng. Mười sáu lập trình
-> viên mã nguồn mở giàu kinh nghiệm, hai trăm bốn mươi sáu tác vụ, trên **chính
-> repo của họ**.
->
-> Trước khi làm, họ dự đoán AI giúp họ nhanh hơn khoảng hai mươi tư phần trăm.
->
-> Thực tế đo được: họ **chậm hơn mười chín phần trăm**.
->
-> Và sau khi xong, họ **vẫn tin** mình đã nhanh hơn hai mươi phần trăm.
->
-> [Dừng một nhịp, rồi nói ngay phần cảnh báo. Không được bỏ.]
->
-> Tôi phải nói kèm một điều, nếu không là tôi trích dẫn không trung thực: **METR
-> hiện đã gắn nhãn kết quả này là lịch sử.** Công cụ trong nghiên cứu là Cursor
-> với Claude 3.5 và 3.7, tức là trước thời agent chạy dài. Đừng ai về nói "có
-> nghiên cứu chứng minh AI làm chậm".
->
-> Bài học thật **không nằm ở cột giữa**. Nó nằm ở khoảng cách giữa cột hai và cột
-> ba: **cảm giác nhanh và nhanh thật là hai đại lượng khác nhau, và con người rất
-> tệ trong việc phân biệt chúng.**
->
-> Nên nếu tối nay các bạn về, cài một công cụ mới, và thấy sướng, thì **cái cảm
-> giác sướng đó không phải bằng chứng**. Cuối bài tôi sẽ nói cách đo thay cho
-> cách cảm.
-
-**Slide 9.**
-
-> Con số cuối của phần này. Gloria Mark, UC Irvine, nghiên cứu quan sát tại chỗ,
-> được trích dẫn nhiều nhất về công việc bị ngắt quãng.
->
-> **Hai mươi ba phút** để quay lại đúng mạch việc ban đầu, sau **một** lần bị ngắt.
-> Và trung bình có hai việc khác xen vào trước khi người ta quay lại việc cũ.
+> Có một nghiên cứu hay được trích: sau một lần bị ngắt, trung bình mất **23 phút**
+> mới quay lại đúng mạch cũ.
 >
 > [Kể chuyện thật, ngắn.]
 >
-> Tôi từng có một buổi chiều mở ba terminal, cứ vài phút lại alt-tab qua từng cái
-> xem xong chưa. Cuối buổi nhìn lại, tôi không làm được việc gì tử tế ở giữa cả.
-> Ba agent đều xong việc, còn tôi thì không.
+> Mình từng có buổi chiều mở 3 terminal, cứ vài phút alt-tab qua từng cái xem xong
+> chưa. Cuối buổi cả 3 con đều xong việc, còn mình thì chả làm được gì ra hồn.
 >
-> Điểm cần đọng lại: **chạy song song mà không có cách điều hướng chú ý thì không
-> phải là làm nhiều việc. Đó là tự ngắt quãng mình liên tục.**
+> **Chạy song song mà không có cái gọi mình về thì không phải làm được nhiều việc
+> hơn. Chỉ là tự ngắt mình nhiều hơn.**
+
+**Slide 5.** [Nói 30 giây rồi đi, đừng biến thành bài giảng]
+
+> Nhưng có một cái bẫy, nói luôn cho sòng phẳng.
+>
+> Báo cáo DORA năm ngoái khảo sát gần 5.000 người: dùng AI thì throughput tăng thật,
+> **nhưng tỉ lệ hỏng và phải làm lại cũng tăng**.
+>
+> Câu chốt của họ mình thích: **AI không phải giải pháp đóng hộp, nó là cái khuếch
+> đại.** Nền tốt thì nhanh hơn, nền lộn xộn thì lộn xộn nhanh hơn.
+>
+> Áp vào chuyện hôm nay: chạy 10 con song song trên repo không có test là cách nhanh
+> nhất để tạo ra 10 thứ phải sửa.
+>
+> Nói cách khác: chạy nhiều làm phần **chờ** ngắn lại, nhưng làm phần **kiểm tra
+> lại** dài ra. Lát nữa có mấy tính năng sinh ra chỉ để lo phần đó.
+
+---
+
+## Phần 2: cấu trúc (0:09 → 0:19)
+
+**Slide 6.** [Phân đoạn]
+
+> Giờ mình chỉ cho mọi người app được xếp thế nào. Hiểu cái này rồi thì phần tính
+> năng ở sau chỉ là chi tiết.
+
+**Slide 7.** [30 giây, chỉ để định vị]
+
+> Cửa sổ chia ba phần. **Sidebar** bên trái, cái này đáng nói nhất, slide sau nói
+> riêng. **Thanh tab** giống trình duyệt, mỗi tab là một session hoặc một file hoặc
+> một cái diff. **Phần nội dung** chia được nhiều ô, kéo tab qua lại giữa các ô.
+>
+> Bấm `⌘B` là giấu sidebar cho terminal rộng ra.
+
+**Slide 8.** [**Slide quan trọng nhất phần này. Đứng lại lâu.** Chỉ vào cây bên trái.]
+
+> Cây trong sidebar có bốn tầng. Mình đi từ trên xuống.
+>
+> **Folder.** Đây là thư mục ảo, chỉ để gom dự án cho gọn. **Không liên quan gì tới
+> thư mục trên ổ cứng.** Chỗ này hay nhầm. Kéo thả tuỳ ý, muốn xếp sao thì xếp.
+>
+> **Project.** Cái này mới là thư mục thật trên máy. Nó nhớ riêng bộ cờ chạy `claude`
+> của nó, ví dụ repo này luôn chạy với `--permission-mode auto`.
+>
+> **Worktree.** Nằm lồng ngay dưới project cha. Cùng repo, khác nhánh, khác thư mục
+> làm việc.
+>
+> **Session.** Là một tiến trình `claude` đang chạy. Nhiều session trong cùng một
+> project là chuyện bình thường.
+>
+> [Chỉ vào mấy cái chấm.]
+>
+> Mấy cái chấm này đang chạy thật trên slide luôn. Con vàng là đang chờ mình, con
+> xanh là đang làm. Trong app nó cũng nhảy y hệt vậy.
+
+**Slide 9.** [Chỗ CSM khác các app khác rõ nhất, nói kỹ]
+
+> Vì sao lại cần tới bốn tầng, trong khi phần lớn app quản lý agent chỉ có hai:
+> workspace rồi tới agent. Mỗi workspace một nhánh, mỗi nhánh một agent. Gọn, và hợp
+> nếu bạn làm một việc một lúc.
+>
+> Nhưng mình hay có **ba session trong cùng một nhánh**. Ví dụ đang sửa bug ở nhánh
+> mr-2103: một con viết code, một con viết test, một con đọc log production. Ba con
+> đó **cùng thư mục, không cần tách nhánh**.
+>
+> Nếu công cụ bắt mỗi agent phải có một worktree riêng thì mình phải đẻ ra ba nhánh
+> vô nghĩa.
+>
+> **Ý cốt lõi: "cần nhánh riêng" và "cần thêm một con chạy" là hai nhu cầu khác nhau.
+> Không nên bắt chúng dùng chung một cơ chế.**
+>
+> Cái này mang về được kể cả không dùng app của mình: ai tự dựng tmux hay viết script
+> cũng nên tách hai khái niệm đó ra.
+>
+> Còn folder thì đơn giản là để hai chục repo vẫn xếp gọn: việc công ty một hộp, việc
+> cá nhân một hộp.
 
 **Slide 10.**
 
-> Nên câu hỏi đúng **không phải** là "công cụ nào mạnh nhất".
+> Cái chấm bên trái mỗi session có 5 trạng thái. Xám là đang chạy nhưng im. Xanh dương
+> là đang làm việc. **Vàng là đang chờ mình trả lời**, đây là cái quan trọng nhất.
+> Xanh lá là vừa xong. Vòng tròn rỗng là đã tắt.
 >
-> Mà là: **trong ba khoảng thời gian của tôi, khoảng nào đang đau nhất, và công
-> cụ nào chạm được vào đúng khoảng đó.**
+> Nó biết bằng cách nào? Claude Code có cái gọi là **hook**: nó bắn ra ngoài ở từng
+> mốc trong một lượt. App mở một cổng ở địa chỉ loopback, dựng một file settings riêng
+> cho từng session, rồi nghe.
 >
-> [Dừng. Đây là bản lề của cả bài. Để câu này đứng vài giây.]
+> [Nhấn chỗ này, đây là phần mang về được.]
+>
+> Chỗ quan trọng: **"đang chờ" là một sự kiện, không phải đoán mò.**
+>
+> Nhìn chữ chạy trong terminal thì chỉ biết có chữ hay im. Mà im thì có thể là đang
+> nghĩ, cũng có thể là đang chờ. Hook nói thẳng cái nào ra cái nấy.
+>
+> Nên ai định tự dựng công cụ: **bắt đầu từ hook, đừng parse output terminal.** Parse
+> output là ngõ cụt.
 
----
+**Slide 11.** [Có GIF]
 
-## Phần 2: Sáu câu hỏi (0:11 tới 0:19)
-
-**Slide 11.** [Phân đoạn]
-
-> Giờ tới phần thực tế. Sáu câu hỏi. Trả lời thật lòng, không cần nói ra.
-
-**Slide 12.** [Đọc lướt cả sáu, không giải thích từng câu]
-
-> Câu một: bạn chạy mấy agent một lúc? **Nếu câu trả lời là một, dừng lại. Bạn
-> không cần công cụ nào cả**, và đó là một kết luận hợp lệ.
+> Còn một chuyện về cấu trúc: **session không sống trong tab.**
 >
-> Câu hai: trong lúc chờ, bạn làm gì.
-> Câu ba: bạn cần biết agent gọi sau bao lâu.
-> Câu bốn: bạn đọc thay đổi kiểu gì.
-> Câu năm: việc của bạn có chia nhánh không.
-> Câu sáu: bạn có rời khỏi máy không.
->
-> Ba câu quan trọng nhất tôi sẽ đào sâu ở hai slide sau.
-
-**Slide 13.** [Slide đáng dừng lâu nhất phần này. Đọc theo hàng.]
-
-> Câu số hai là câu phân loại mạnh nhất. Đọc theo hàng.
->
-> Nếu trong lúc chờ bạn **ngồi nhìn**, thì bạn không thiếu gì cả. Đừng đổi gì. Thật.
->
-> Nếu bạn **chuyển sang việc khác**, cái bạn thiếu là một tín hiệu gọi bạn về.
-> Thông báo, badge, một hộp thư liệt kê cái đang chờ.
->
-> Nếu bạn **chạy agent thứ hai**, bạn thiếu hai thứ: cô lập, và cách biết cái nào
-> đang chờ.
->
-> Nếu bạn **chạy năm agent**, bạn thiếu cả hai thứ trên, cộng thêm khả năng review
-> nhanh.
->
-> Để ý cột giữa. **Không có dòng nào cần "nhiều tính năng hơn".** Mỗi dòng thiếu
-> đúng một thứ.
->
-> [Nếu có người nhận mình ở dòng bốn, hỏi lại: "bạn review kiểu gì?" Câu trả lời
-> gần như luôn là "đọc PR trên GitLab", và đó chính là chỗ đau tiếp theo của họ.]
-
-**Slide 14.**
-
-> Câu ba, độ trễ bạn chịu được. **Đây là chỉ số duy nhất trong cả bài mà tôi
-> khuyên các bạn đo thật.**
->
-> Cách đo rẻ tới mức không có lý do gì để không làm: mở đồng hồ, chạy một agent,
-> làm việc khác, và ghi lại **khoảng cách giữa lúc nó thật sự cần bạn và lúc bạn
-> phát hiện ra**. Làm ba lần trong một buổi chiều là bạn có một con số.
->
-> Con số đó chọn công cụ giúp bạn, chứ không phải bảng tính năng của ai.
->
-> Câu năm, cô lập. Hai agent sửa cùng một thư mục sẽ giẫm lên nhau, và bạn mất
-> nhiều thời gian gỡ hơn số thời gian tiết kiệm được.
->
-> **Cô lập không phải là một tính năng để so sánh. Nó là điều kiện để song song
-> có nghĩa.** Công cụ nào không có nó thì thực chất chỉ phục vụ một agent.
->
-> Câu trả lời chuẩn cho câu năm là git worktree. Và Claude Code đã có sẵn nó.
->
-> [Nếu phòng chưa quen worktree, giải thích một câu: nhiều thư mục làm việc trên
-> cùng một repo, mỗi thư mục một nhánh, dùng chung lịch sử git. Không phải clone
-> lại.]
-
----
-
-## Phần 3: Bản đồ công cụ (0:19 tới 0:27)
-
-**Slide 15.** [Phân đoạn]
-
-> Có sáu câu trả lời rồi, giờ xem chúng dẫn tới đâu. Tôi sẽ không xếp hạng cái
-> nào, chỉ nói mỗi hình dạng đánh đổi cái gì.
-
-**Slide 16.** [Slide gây ngạc nhiên nhất trong bài]
-
-> Trước khi thêm bất cứ thứ gì, kiểm tra thứ các bạn **đã có**.
->
-> `--worktree` khởi động Claude ngay trong một worktree cô lập. Thêm `--tmux` thì
-> có luôn phiên tmux cho nó.
->
-> `--resume` lấy lại đúng cuộc hội thoại cũ. Đóng terminal không còn là mất trắng.
->
-> `--permission-mode` cho bạn chọn từ hỏi từng bước tới tự nhận sửa file. Chọn
-> đúng mức là **giảm hẳn số lần bị gọi**, mà không cần công cụ nào cả.
->
-> Và **hooks**: hơn ba mươi sự kiện trong vòng đời một lượt. Handler có thể là
-> một lệnh, một HTTP endpoint, một MCP tool, hoặc một agent khác.
->
-> [Chuyển sang terminal đã mở sẵn, chạy `claude --help` ngay tại chỗ. Sống động
-> hơn slide rất nhiều.]
->
-> Nói thêm về hooks vì nó quan trọng: **đây là cái mà mọi công cụ quản lý phiên
-> đều dựa vào** để biết agent đang làm gì. Không có hooks thì chỉ còn cách đoán
-> qua đầu ra terminal. Mà đoán thì không bao giờ biết chắc lúc nào agent **đang
-> chờ** và lúc nào nó **đang nghĩ**.
-
-**Slide 17.** [Đi từ trên xuống, mỗi dòng một câu. Dừng lâu nhất ở cột cuối.]
-
-> Năm hình dạng.
->
-> **Không gì cả**, nhiều tab terminal. Hợp với một tới hai agent và luôn ngồi máy.
-> Đổi lại: không có tín hiệu gọi.
->
-> **Multiplexer**, tmux hoặc zellij, hoặc Claude Squad. Hợp với người sống trong
-> terminal và muốn tự script layout. Đổi lại: phải tự dựng, và không có diff.
->
-> **Trong IDE**, Claude Code cho VS Code hoặc JetBrains. Hợp khi muốn review ngay
-> chỗ đang code. Đổi lại: nhiều agent thì chật.
->
-> **App quản lý**, ví dụ Conductor, và cái tôi tự làm. Hợp với nhiều agent, nhiều
-> repo. Đổi lại: thêm một app phải học.
->
-> **Bảng việc**, Vibe Kanban hoặc agent chạy trên cloud. Hợp khi giao việc rồi đi,
-> review qua PR. Đổi lại: vòng phản hồi dài.
->
-> [Ghi chú trung thực, nên nói.]
->
-> Một chuyện đáng nói về rủi ro: Crystal, một app mã nguồn mở khá được ưa chuộng
-> trong nhóm này, **đã ngừng phát triển tháng 2 năm 2026** và trỏ người dùng sang
-> một sản phẩm đóng nguồn có phí. Đó là rủi ro thật của thị trường mới: **cái bạn
-> chọn hôm nay có thể biến mất.**
->
-> [Nếu ai hỏi "vậy cái nào tốt nhất": "Câu đó không có đáp án, và đó chính là lý
-> do phần hai có sáu câu hỏi."]
-
-**Slide 18.**
-
-> Ba quy tắc đọc bản đồ này.
->
-> Một: chọn hình dạng **nhỏ nhất** giải được vấn đề bạn **đang** có, không phải
-> vấn đề bạn nghĩ mình sẽ có sau này.
->
-> Hai: nếu bạn chưa từng bị đau vì một vấn đề, đừng chọn công cụ vì nó giải vấn
-> đề đó. Bạn trả giá bằng độ phức tạp mà không nhận lại gì.
->
-> [Thú nhận một cái để câu này thật: kể một tính năng bạn làm vì "sau này sẽ cần"
-> mà tới giờ chưa dùng lần nào.]
->
-> Ba: **đổi một thứ một lần.** Đổi hai thứ cùng lúc thì bạn không bao giờ biết
-> cái nào có tác dụng.
-
----
-
-## Phần 4: Case study (0:27 tới 0:43)
-
-**Slide 19.** [Phân đoạn]
-
-> Giờ tới phần tôi kể chuyện của mình. Nghe với tâm thế **một ca bệnh**, không
-> phải một lời khuyên.
-
-**Slide 20.**
-
-> Sáu câu hỏi đó, trả lời cho trường hợp của tôi.
->
-> Ba tới sáu agent, trên nhiều repo khác nhau cùng lúc. Lúc chờ thì tôi chạy agent
-> khác hoặc review cái vừa xong. Độ trễ chịu được là vài giây, chờ lâu hơn là tôi
-> mất mạch. Tôi cần diff tử tế, và cần nó nằm cạnh file đang mở. Tôi chia nhánh
-> thường xuyên. Và tôi **hay rời khỏi máy**, muốn theo dõi từ điện thoại.
->
-> [Nhấn dòng cuối.]
->
-> Cái dòng cuối là dòng quan trọng nhất. Nhu cầu "rời máy và trả lời từ điện
-> thoại" là nhu cầu **hiếm**, và nó là lý do lớn nhất khiến các lựa chọn có sẵn
-> không vừa với tôi. Đây là ví dụ sống của thông điệp cả buổi: **nhu cầu riêng
-> quyết định lựa chọn, không phải bảng tính năng.**
-
-**Slide 21 tới 26.** [Sáu cặp đau và cách giải, mỗi slide khoảng 90 giây, có GIF]
-
-Với mỗi slide, nhịp giống nhau: đọc cái đau bằng giọng kể chuyện thật, để GIF
-chạy một vòng trong im lặng, rồi nói một câu về **bài học chuyển giao được**.
-
-**Slide 21, không biết cái nào đang chờ.**
-
-> Ba phiên đang chạy. Một cái đã hỏi tôi "có cho phép chạy lệnh này không" từ bốn
-> phút trước. Tôi không biết, vì nó nằm ở tab tôi không nhìn.
+> Tiến trình `claude` chạy ở tiến trình chính của app. Cái tab chỉ là chỗ để nhìn vào
+> nó thôi.
 >
 > [Để GIF chạy một vòng.]
 >
-> Trạng thái này lấy từ **hook của Claude Code**, không phải đoán qua đầu ra
-> terminal.
+> Nên đóng tab thì session vẫn chạy, vẫn nằm trong sidebar, chấm vẫn nhảy. Mở lại là
+> thấy nguyên.
 >
-> Đây là bài học chuyển giao được, và là bài học quan trọng nhất trong sáu cái:
-> **"đang chờ" là một sự kiện, không phải một suy đoán.** Nhìn đầu ra terminal
-> thì chỉ biết có chữ chạy hay im lặng. Mà im lặng có thể là đang nghĩ, cũng có
-> thể là đang chờ. Hook nói thẳng cái nào là cái nào. Ai định tự dựng công cụ thì
-> bắt đầu từ hook.
-
-**Slide 22, mất phiên.**
-
-> Đóng nhầm tab là mất cả cuộc hội thoại. Cả buổi sáng bối cảnh đi theo.
+> Muốn kết thúc hẳn thì có hành động riêng trong menu chuột phải, không ai đóng nhầm
+> được.
 >
-> [GIF]
->
-> Cách giải: tiến trình terminal sống ở tiến trình chính của app, **không sống
-> trong tab**. Chuyển tab chỉ gắn hoặc gỡ phần hiển thị.
->
-> Bài học: **vòng đời của tiến trình không nên gắn với vòng đời của cái khung
-> nhìn.** Đây là lỗi mà rất nhiều công cụ tự dựng mắc phải, kể cả script tmux tự
-> viết.
-
-**Slide 23, nhánh giẫm nhau.**
-
-> Hai agent trên cùng một repo, cùng một thư mục. Cái này sửa file cái kia đang
-> đọc.
->
-> [GIF]
->
-> Nhắc lại câu ở phần hai: **cô lập là điều kiện, không phải tính năng.** Đây là
-> chỗ nó thành hình.
-
-**Slide 24, review.**
-
-> Agent xong. Giờ tôi phải nhảy ra ngoài, mở một app khác, để trả lời một câu duy
-> nhất: nó vừa đổi cái gì.
->
-> [GIF]
->
-> Nối lại với DORA lúc nãy: **kiểm tra lại là nút thắt mới.** Đây là tính năng
-> phục vụ đúng cái nút thắt đó, và cũng là tính năng tôi làm **sau cùng**, sau khi
-> đã đau đủ lâu. Đó cũng là ví dụ cho quy tắc hai: tôi không làm nó vì app quản lý
-> nào cũng có diff, mà vì tôi đã alt-tab ra ngoài đủ nhiều lần.
-
-**Slide 25, rời máy.**
-
-> Rời bàn mười lăm phút là mù hoàn toàn.
->
-> [GIF hoặc video điện thoại]
->
-> [Nói phần bảo mật ngay, đừng chờ bị hỏi.]
->
-> Trước khi có người hỏi: cái này **mặc định tắt**, chỉ chạy trong mạng nội bộ, có
-> token, và có mức token **chỉ đọc** cho trường hợp muốn cho người khác xem mà
-> không cho gõ.
-
-**Slide 26, không nhớ app làm được gì.**
-
-> App có quá nhiều thứ. Tôi tự làm mà còn quên phím tắt và quên cả tính năng mình
-> đã viết.
->
-> [GIF]
->
-> Con trợ lý này chạy với **mọi công cụ bị tắt**: không đọc file của bạn, không
-> thấy phiên của bạn, không chạy được gì. Nó chỉ biết cách dùng app.
->
-> Và đây là bài học tôi thích nhất: **tài liệu không phải thứ viết sau cho có. Nó
-> là thứ duy nhất con bot biết.** Trong repo có một luật: PR nào đổi giao diện thì
-> phải cập nhật user guide trong **cùng PR đó**. Vì nếu không, con bot sẽ rất tự
-> tin nói với người dùng rằng tính năng đó không tồn tại.
->
-> Đó là cách buộc tài liệu không bị mục mà không cần ai đi nhắc.
-
-**Slide 27.** [Nói con số rồi đóng khung lại ngay]
-
-> Dự án này bằng số. Bốn mươi tám ngày. Bảy trăm hai mươi bảy commit. Bảy mươi
-> hai nghìn dòng TypeScript. Hai nghìn bảy trăm lẻ tám test. Năm mươi mốt phiên
-> bản đã phát hành. Ba nền tảng chạy trong CI.
->
-> [Đừng khoe. Chuyển ngay sang cách đọc.]
->
-> Con số đáng nói nhất **không phải** bảy mươi hai nghìn dòng. Là **hai nghìn bảy
-> trăm test**.
->
-> Vì khi agent viết phần lớn code, cái bạn cần không phải là đọc từng dòng. Cái
-> bạn cần là **một cái lưới bắt được lúc nó sai**. Test là hợp đồng bạn viết, code
-> là thứ agent điền vào.
->
-> Và đây chính là "nền tốt thì AI tăng tốc" của DORA. **Không có cái lưới đó thì
-> bảy trăm hai mươi bảy commit trong bốn mươi tám ngày là một thảm hoạ, chứ không
-> phải một thành tích.**
-
-**Slide 28.** [Slide quan trọng ngang slide 2]
-
-> Và đây là phần tôi không muốn kể.
->
-> Cái giá một: tự làm công cụ là **một dự án thứ hai**. Nó có bug, có CI hỏng, có
-> việc bảo trì. Thời gian tôi tiết kiệm ở việc chính, một phần không nhỏ chảy
-> ngược vào đây.
->
-> Cái giá hai: tôi là **người dùng duy nhất**. Mọi lựa chọn thiết kế đều vừa vặn
-> với tôi. Đó vừa là điểm mạnh, vừa là lý do nó có thể không hợp với bạn.
->
-> Cái giá ba, và là cái thật nhất: con số bốn mươi tám ngày nghe ấn tượng, nhưng
-> nó **không nói gì về việc công việc chính của tôi có nhanh hơn không**. Đó là
-> hai đại lượng khác nhau, và tôi **chưa đo được cái thứ hai một cách tử tế**.
->
-> Tức là tôi đang có đúng cái cảm giác mà METR cảnh báo ở phần một. Tôi biết vậy,
-> và tôi vẫn chưa đo. Nói ra để các bạn đừng lặp lại.
->
-> Nên khuyến nghị thật lòng của tôi cho phòng này là: **đừng tự làm.** Dùng cái có
-> sẵn, trừ khi nhu cầu của bạn thật sự không có cái nào vừa, và bạn thấy việc làm
-> công cụ tự nó đã vui.
+> Bài học mang về: **đừng gắn vòng đời tiến trình vào vòng đời cái khung nhìn.** Rất
+> nhiều script tmux tự viết dính đúng lỗi này.
 
 ---
 
-## Phần 5: Rút ra (0:43 tới 0:50)
+## Phần 3: tính năng (0:19 → 0:41)
+
+Nhịp chung: mỗi slide 60 tới 90 giây. Nói cái đau trước, rồi cách giải, rồi để GIF
+chạy. Đừng đọc hết gạch đầu dòng, chỉ nhấn 2 ý mỗi slide.
+
+**Slide 12.** [Phân đoạn]
+
+> Hiểu cấu trúc rồi thì phần này đi nhanh. Mình gom theo nhóm nhu cầu chứ không theo
+> menu.
+
+**Slide 13. Biết con nào đang chờ.** [Có GIF. **Nếu chỉ kịp chiếu một GIF thì chiếu cái này.**]
+
+> Nhóm một, và cũng là lý do app tồn tại. Có bốn đường báo.
+>
+> Chấm trong cây đổi màu tại chỗ. Badge ở header đếm số con đang chờ, **bấm vào là
+> nhảy tới con tiếp theo**. Thông báo hệ điều hành, bấm vào là mở đúng session đó.
+> Và tiếng chuông, cộng badge trên dock.
+>
+> [Để GIF chạy.]
+>
+> Bật tắt riêng từng cái được. Có người ghét chuông, có người ghét thông báo. Cái đó
+> là chuyện phải có chứ không phải tính năng để khoe.
+
+**Slide 14. Hộp thư chú ý.** [Bỏ được nếu trễ giờ]
+
+> `⇧⌘A` mở một danh sách gom mọi session đang chờ, từ tất cả dự án.
+>
+> Khác badge ở chỗ badge chỉ nói **có bao nhiêu**, còn hộp thư nói **là những con
+> nào**, kèm nó đang hỏi gì.
+>
+> Nói thật là chạy dưới 3 con thì cái này hơi thừa. Từ khoảng 4 con trở lên mới có
+> nghĩa.
+
+**Slide 15. Chia màn hình.** [Có GIF]
+
+> Chia dọc chia ngang tuỳ ý, lồng nhau được, kéo tab từ ô này sang ô kia.
+>
+> Cái hay hơn: **lưu cách sắp xếp thành template**, `⇧⌘L`. Mở lại lúc nào cũng được.
+>
+> Mỗi ô chọn được hai kiểu: luôn mở đúng session đó, hoặc hỏi lại mỗi lần dùng. Ô ghim
+> cố định hợp với mấy cái mình luôn mở, ô hỏi lại hợp với việc lặt vặt. Một template
+> trộn cả hai kiểu được.
+>
+> [Nói câu này để không ai sợ thử.]
+>
+> Áp template **không bao giờ đóng hay xoá session nào**. Nó chỉ xếp lại thôi.
+
+**Slide 16. Ô nhập prompt.**
+
+> Gõ thẳng vào terminal thì hay mất chữ lúc Claude đang in ra, và không dán ảnh được.
+> Nên có ô nhập riêng. Dán ảnh được, chạy cả trên điện thoại, gõ `/` là hiện slash
+> command.
+>
+> [Cột phải, chỗ hay gây "ồ" nhất.]
+>
+> Và mấy thứ chỉ có ở ô này. **Xếp hàng nhiều prompt**: viết sẵn 3 việc, xong cái này
+> nó tự chạy cái kia. **Hẹn giờ**: đặt sáng mai 8h tự chạy. Thư viện prompt hay dùng.
+> Và gửi một lượt cho nhiều session, kiểu "cả 4 con cùng chạy test đi".
+>
+> Ví dụ thật: tối trước khi về xếp 3 việc, sáng ra đọc kết quả.
+
+**Slide 17. Xem dạng hội thoại.** [Bỏ được nếu trễ giờ]
+
+> Terminal thô thì quen mắt với dân dev, nhưng cuộn ngược lại tìm một câu Claude nói
+> lúc nãy thì khổ. Bật chế độ hội thoại là nó hiện ra như một cuộc chat, tìm kiếm được.
+>
+> Chat cũ vẫn đọc lại được kể cả khi session đã tắt, vì nó nằm trong file trên máy.
+
+**Slide 18. Worktree.** [Có GIF]
+
+> Nhóm git. Worktree là nhiều thư mục làm việc trên cùng một repo, mỗi thư mục một
+> nhánh, **dùng chung lịch sử git**. Không phải clone lại, nên rẻ hơn nhiều.
+>
+> Chuột phải lên project, tạo worktree, đặt tên nhánh. Nó hiện lồng ngay dưới project
+> cha.
+>
+> [Nói cho công bằng.]
+>
+> Cái này `claude --worktree` cũng làm được mà không cần app nào. Thứ app thêm vào là
+> nó **nằm trong cây, nhìn thấy được**, và có session riêng.
+
+**Slide 19. Diff.** [Có GIF]
+
+> `⇧⌘D`. Diff mở ra như một tab, ngồi cạnh chính file nó nói về, chia đôi màn được,
+> và ở nguyên đó trong lúc mình làm việc tiếp.
+>
+> [Nối về slide 5.]
+>
+> Nhớ cái DORA lúc nãy không: **review là chỗ nghẽn mới**. Cái này sinh ra đúng vì
+> chỗ đó.
+>
+> Nói thật là mình làm nó gần như sau cùng, sau khi alt-tab ra ngoài đủ nhiều lần.
+> Không phải làm vì "app nào cũng có diff".
+
+**Slide 20. Lịch sử commit.** [Bỏ được nếu trễ giờ]
+
+> `⇧⌘H`. Danh sách commit, chọn một cái để xem nó đổi file nào, chọn file để xem đổi
+> chỗ nào.
+>
+> Hai cái đáng nói: **tìm commit theo message**, tìm cả lịch sử chứ không phải chỉ
+> 100 dòng đang hiện. Và **đọc nhánh khác mà không cần checkout**, kể cả nhánh remote.
+> Kiểu "trên origin/main có gì mà máy mình chưa có".
+>
+> Không có đồ thị nhánh, và đó là cố ý. Vẽ đồ thị là một đống việc để trả lời câu hỏi
+> mà mình gần như không bao giờ hỏi.
+
+**Slide 21. Editor.**
+
+> Có editor bên trong, nhưng **không phải để thay VS Code**. Mục đích hẹp thôi: sửa
+> nhanh một dòng, đọc file Claude vừa nhắc tới, sửa `CLAUDE.md`.
+>
+> `⌘P` nhảy tới file, `⇧⌘F` tìm trong toàn bộ dự án. Bôi đen một từ rồi bấm `⇧⌘F` là
+> nó tìm luôn từ đó, khỏi copy paste.
+>
+> Cây file cũng tự mở tới file đang xem, y như cây session tự cuộn tới session đang
+> mở. Hai cây hành xử giống nhau, đó là chủ ý.
+
+**Slide 22. Điện thoại.** [Có GIF. **Nói phần bảo mật ngay, đừng chờ bị hỏi.**]
+
+> Máy chạy app tự phục vụ luôn giao diện của nó qua HTTP cho thiết bị khác trong mạng.
+> Điện thoại mở trình duyệt là thấy đủ trạng thái và trả lời được.
+>
+> [Nói ngay, trước khi có người giơ tay.]
+>
+> Trước khi ai hỏi: cái này **mặc định tắt**, chỉ trong mạng nội bộ, có token, và có
+> mức token **chỉ đọc** cho trường hợp muốn cho người khác xem mà không cho gõ.
+>
+> Đây cũng là nhu cầu khiến mình không dùng được mấy app có sẵn. Lát nữa nói lại.
+
+**Slide 23. Hỏi thẳng app.** [Có GIF]
+
+> App nhiều thứ quá, mình tự làm mà còn quên phím tắt. Nên có một chỗ chat để hỏi
+> "làm sao để...".
+>
+> Nó chạy với **mọi công cụ bị tắt**: không đọc file của bạn, không thấy session của
+> bạn, không chạy được gì. Nó chỉ biết đúng một thứ là cách dùng app.
+>
+> [Bài học hay, nên kể.]
+>
+> Chỗ này có một bài học mình thích: **con bot chỉ biết đúng cái user guide**. Nên
+> trong repo có một luật: PR nào đổi giao diện thì phải sửa user guide trong **cùng
+> PR đó**. Vì nếu không, con bot sẽ rất tự tin bảo người dùng là tính năng đó không
+> tồn tại.
+>
+> Đó là cách bắt tài liệu không bị mục mà không cần ai đi nhắc.
+
+**Slide 24. Còn lại.** [Lướt nhanh, chỉ dừng 2 chỗ]
+
+> Mấy thứ còn lại gom một slide. Ba bảng màu sáng tối. Tag và lọc. Xem usage token.
+> `⌘K` tìm mọi thứ.
+>
+> Hai cái đáng dừng. Một, **chọn font và cỡ chữ riêng cho terminal, editor và giao
+> diện** vì ba chỗ đó đọc ở khoảng cách khác nhau. Ai mắt kém sẽ thích.
+>
+> Hai, **danger shield**: đánh dấu dự án nào là nguy hiểm để không lỡ tay chạy
+> `--dangerously-skip-permissions` ở đó.
+>
+> [Cuối slide, cho vui.]
+>
+> Và có một con pet pixel trong sidebar. Nó chả có tác dụng gì cả. Đó là lý do nó ở
+> lại: app dùng cả ngày thì cần một chỗ không nghiêm túc.
+
+**Slide 25. Phím tắt.** [Để mọi người chụp màn hình]
+
+> Slide này để mọi người chụp lại. Mình chỉ nhấn ba cái hay nhất: `⌘K` bảng lệnh,
+> `⇧⌘A` hộp thư, `⇧⌘L` template.
+>
+> Có một nguyên tắc đáng nói: **phím nào shell đang dùng thì app không lấy**. Ví dụ
+> Ctrl+W trên Windows vẫn là xoá từ trong terminal, app không đụng vào.
+
+---
+
+## Phần 4: một ngày (0:41 → 0:46)
+
+**Slide 26.** [Phân đoạn]
+
+> Liệt kê tính năng thì khô. Kể một ngày thật cho dễ hình dung hơn.
+
+**Slide 27.** [Kể như kể chuyện, đừng đọc bảng]
+
+> Mở máy: bấm `⇧⌘L`, mở template quen. Bên trái session chính của repo đang làm, bên
+> phải một con để hỏi vặt.
+>
+> Ra đề cho con chính. Trong lúc nó chạy, mở worktree mới cho một task khác rồi giao
+> tiếp.
+>
+> Rồi đi pha cà phê. [Nhấn dòng này.] **Không canh.** Con nào cần thì nó tự gọi.
+>
+> Chuông kêu, bấm badge, nhảy tới đúng con đang chờ, duyệt rồi quay lại việc cũ.
+>
+> Xong một việc thì `⇧⌘D` xem nó sửa gì, đặt diff cạnh file gốc, đọc, rồi bảo nó
+> commit.
+>
+> Rời bàn thì mở điện thoại xem có con nào đứng chờ không.
+>
+> [Chốt.]
+>
+> Cái dòng "đi pha cà phê" là cả điểm của app. Mọi thứ khác chỉ phục vụ để dòng đó
+> thành sự thật.
+
+**Slide 28.** [Slide mua tín nhiệm. Nói thẳng.]
+
+> Nói thật cái nào mình dùng cái nào không.
+>
+> Ngày nào cũng dùng: chấm trạng thái và thông báo, chia màn hình, worktree, diff,
+> `⌘K`. **Năm cái này là app.** Bỏ hết phần còn lại thì nó vẫn dùng được.
+>
+> Còn hẹn giờ, gửi nhiều session một lượt, thư viện prompt, xem dạng hội thoại: mình
+> làm xong rồi ít đụng.
+>
+> **Mình làm mấy cái đó vì nghĩ sẽ cần, chứ không phải vì đã đau.** Đó là một lỗi, và
+> lát nữa có một quy tắc rút ra từ nó.
+
+---
+
+## Phần 5: ai thì hợp (0:46 → 0:54)
 
 **Slide 29.** [Phân đoạn]
 
-> Bỏ app của tôi sang một bên. Năm điều sau đúng với mọi lựa chọn.
+> Phần cuối, và là phần mình nghĩ đáng nghe nhất kể cả khi bạn không định cài gì.
 
-**Slide 30.** [Slide để chụp màn hình. Nói chậm, mỗi ý một câu, không thêm ví dụ mới.]
+**Slide 30.**
 
-> Một: **đo bằng độ trễ, không bằng số tính năng.** Chỉ số đáng theo dõi là bao
-> lâu kể từ lúc agent cần bạn tới lúc bạn biết.
+> Bốn câu tự hỏi trước khi cài bất cứ thứ gì.
 >
-> Hai: **song song chỉ có lãi khi có cách điều hướng chú ý.**
+> Một: **bạn chạy mấy con một lúc?** Nếu là một thì thôi, không cần gì cả.
 >
-> Ba: **cô lập là điều kiện, không phải tính năng.**
+> [Nói câu này bằng giọng thật, nó mua được nhiều tín nhiệm.]
 >
-> Bốn: **kiểm tra lại là nút thắt mới.** DORA đã đo. Công cụ nào rút ngắn được
-> vòng review sẽ thắng công cụ nào chỉ chạy được nhiều agent hơn.
+> Thật đấy. Nếu bạn chạy một con và thấy ổn thì buổi nay không có gì cho bạn cả, và
+> mình thấy vậy là tốt.
 >
-> Năm: **công cụ tốt nhất là cái bạn còn dùng sau hai tuần.** Mọi thứ khác là cảm
-> giác mới lạ, và cảm giác thì METR đã nói rồi.
+> Hai: **trong lúc chờ bạn làm gì?** Ngồi canh thì không cần gì. Làm việc khác thì cần
+> cái gọi mình về. Chạy con thứ hai thì cần thêm cô lập.
+>
+> Ba: **bạn chịu được bao lâu mới biết nó gọi?** Vài giây, hay vài phút, hay không
+> quan trọng.
+>
+> Bốn: **bạn có hay rời khỏi máy không?** Câu này ít người hỏi, mà nó lại là câu quyết
+> định với mình. Chính vì nó mà mấy app có sẵn không vừa.
 
-**Slide 31.**
+**Slide 31.** [**Chạy `claude --help` ngay tại chỗ.** Slide này gây "ồ" to nhất buổi.]
 
-> Nếu muốn thử, làm theo thứ tự này.
+> Trước khi cài thêm gì, kiểm tra thứ mình đã có. Claude Code tự nó đã kha khá.
 >
-> Tuần một: **không cài gì cả.** Chỉ dùng Claude Code với `--worktree`. Mỗi ngày
-> ghi ba lần: agent cần bạn lúc mấy giờ, bạn biết lúc mấy giờ. Cuối tuần bạn có
-> một con số thật.
+> `claude --worktree` khởi động ngay trong worktree cô lập. Thêm `--tmux` có luôn
+> phiên tmux. `--resume` lấy lại đúng cuộc chat cũ. `--permission-mode` chỉnh mức hỏi,
+> chọn đúng là bớt hẳn số lần bị gọi.
 >
-> Tuần hai: thêm **đúng một** lớp, chọn theo con số tuần một. Đo lại đúng cách đó.
-> Nếu con số không giảm, **bỏ nó đi mà không tiếc**.
+> [Mở terminal, chạy `claude --help`.]
 >
-> Đừng đổi hai thứ cùng lúc, và đừng đánh giá bằng cảm giác của ngày đầu tiên.
+> Đây, mọi người xem. Rất nhiều người dùng hàng ngày mà chưa mở cái này bao giờ.
 >
-> Cách đo này rẻ tới mức không có lý do gì để không làm, và nó biến một cuộc tranh
-> luận về sở thích thành một con số.
+> Và ngoài app của mình còn mấy hình dạng khác: tmux hay zellij tự dựng, Claude Squad
+> quản lý session trong terminal, Conductor là app Mac mỗi agent một worktree, Vibe
+> Kanban là bảng việc kéo thẻ.
+>
+> [Nói một chuyện cho công bằng.]
+>
+> Có một rủi ro thật: Crystal, một app khá được ưa chuộng trong nhóm này, đã ngừng
+> phát triển hồi tháng 2. Chọn công cụ trong thị trường mới thì cái mình chọn hôm nay
+> có thể biến mất.
 
-**Slide 32.**
+**Slide 32.** [Giữ cho cả buổi không thành quảng cáo. Nói thẳng, đừng làm nhẹ.]
 
-> **Không có công cụ tốt nhất. Chỉ có công cụ vừa tay.**
+> Và cái giá của việc tự làm.
 >
-> Sáu câu hỏi ở phần hai quan trọng hơn toàn bộ phần còn lại của buổi này.
+> Một: **nó là một dự án thứ hai.** Có bug, có CI hỏng, có việc bảo trì. Thời gian
+> tiết kiệm ở việc chính chảy ngược một phần vào đây.
 >
-> Slide, kịch bản và toàn bộ nguồn dẫn nằm ở link dưới.
+> Hai: **mình là người dùng duy nhất.** Mọi lựa chọn đều vừa vặn với mình. Vừa là điểm
+> mạnh, vừa là lý do nó có thể không hợp với bạn.
 >
-> [Dừng. Để câu này đứng một mình vài giây trước khi mở hỏi đáp.]
-
----
-
-## Hỏi đáp (0:50 tới 1:00)
+> Ba, và là cái thật nhất: **mình chưa đo được** công việc chính có nhanh hơn không.
+> Cảm giác thì có, số liệu thì chưa. Mình biết vậy mà vẫn chưa đo, nói ra để mọi người
+> đừng lặp lại.
+>
+> Nên khuyên thật lòng: **đừng tự làm.** Dùng cái có sẵn, trừ khi nhu cầu của bạn
+> không có cái nào vừa, và bạn thấy việc làm công cụ tự nó đã vui.
 
 **Slide 33.**
 
-Đừng hỏi "có ai hỏi gì không", thường sẽ im lặng. Mở bằng một câu mồi cụ thể:
+> Muốn thử thì làm theo thứ tự này.
+>
+> Tuần 1: **không cài gì cả.** Chỉ dùng Claude Code với `--worktree`. Mỗi ngày ghi 3
+> lần: nó cần mình lúc mấy giờ, mình biết lúc mấy giờ. Cuối tuần có một con số thật.
+>
+> Tuần 2: thêm **đúng một** thứ, chọn theo con số tuần 1. Đo lại y hệt. Con số không
+> giảm thì bỏ, đừng tiếc.
+>
+> Đừng đổi hai thứ cùng lúc, và đừng đánh giá bằng cảm giác ngày đầu tiên.
 
-> Ai đang ở **dòng thứ tư** của cái bảng lúc nãy, chạy từ năm agent trở lên?
+**Slide 34.**
 
-hoặc
-
-> Có ai vừa nhận ra mình đang ở **dòng một** mà lâu nay tưởng mình ở dòng ba không?
-
-Nếu phòng vẫn im, quay lại slide 13 và đi từng dòng, hỏi ai ở dòng nào.
-
-### Câu chuẩn bị sẵn
-
-**Chạy nhiều agent có tốn nhiều token hơn không?**
-Có. Song song không làm mỗi lượt rẻ đi, nó chỉ làm nhiều lượt xảy ra cùng lúc. Nếu
-bạn đang chạm trần gói, song song sẽ chạm nhanh hơn.
-
-**Bao nhiêu agent là quá nhiều?**
-Khi hàng đợi review của bạn dài hơn thời gian bạn có để review. Con số đó khác nhau
-ở mỗi người, và nó thấp hơn nhiều so với số agent bạn chạy được về mặt kỹ thuật.
-
-**Sao không dùng tmux cho xong?**
-Hoàn toàn được, và nếu bạn đã sống trong tmux thì đó là lựa chọn rẻ nhất. Cái tmux
-không cho bạn là tín hiệu "agent đang chờ" (nó không đọc hook) và diff. Nếu hai thứ
-đó không phải chỗ đau của bạn thì tmux là đủ.
-
-**Có định mở mã nguồn không?**
-[Trả lời theo ý bạn. Nếu chưa quyết thì nói thẳng là chưa quyết, đừng hứa.]
-
-**Team dùng chung được không?**
-Tôi mới chỉ chạy một người. Mọi câu trả lời của tôi về quy mô team đều là suy đoán,
-nên tôi sẽ không đoán.
-
-**Nó có làm anh làm việc nhanh hơn không?**
-Tôi chưa đo được một cách tử tế. Xem lại slide 28. Tôi biết mình đang có đúng cái
-cảm giác mà METR cảnh báo.
+> **Không có công cụ tốt nhất. Chỉ có công cụ vừa tay.**
+>
+> Bốn câu hỏi lúc nãy quan trọng hơn cả buổi nói này.
+>
+> Slide và ghi chú ở link dưới, mọi người mở bằng điện thoại là lấy được luôn.
+>
+> [Dừng vài giây rồi mới mở hỏi đáp.]
 
 ---
 
-## Nếu bị trễ giờ
+## Hỏi đáp (0:54 → 1:04)
+
+**Slide 35.**
+
+Đừng hỏi "có ai hỏi gì không", thường sẽ im. Mở bằng câu cụ thể:
+
+> Ai đang chạy từ 4 con trở lên?
+
+hoặc
+
+> Có ai vừa nhận ra mình chỉ cần một con thôi không?
+
+Phòng vẫn im thì quay lại slide 30, hỏi từng câu.
+
+### Câu chuẩn bị sẵn
+
+**Chạy nhiều con có tốn token hơn không?**
+Có. Song song không làm mỗi lượt rẻ đi, chỉ làm nhiều lượt xảy ra cùng lúc. Đang chạm
+trần gói thì song song chạm nhanh hơn.
+
+**Bao nhiêu con là quá nhiều?**
+Khi hàng chờ review dài hơn thời gian mình có để review. Con số đó thấp hơn số con
+chạy được về mặt kỹ thuật nhiều.
+
+**Sao không xài tmux cho xong?**
+Được chứ, và nếu đã sống trong tmux thì đó là lựa chọn rẻ nhất. Cái tmux không cho là
+tín hiệu "đang chờ", vì nó không đọc hook, và cái diff. Không đau hai chỗ đó thì tmux
+là đủ.
+
+**Có mở mã nguồn không?**
+[Trả lời theo ý mình. Chưa quyết thì nói chưa quyết, đừng hứa.]
+
+**Team dùng chung được không?**
+Mới chạy một người. Nói gì về quy mô team cũng là đoán, nên mình không đoán.
+
+**Nó làm anh nhanh hơn bao nhiêu?**
+Chưa đo được tử tế. Xem lại slide 32. Mình biết mình đang có đúng cái cảm giác mà
+nghiên cứu người ta cảnh báo.
+
+**Sao không dùng Conductor cho rồi?**
+Có thử. Nó tốt. Cái nó không có là mở được bằng điện thoại, và cái cây bốn tầng. Với
+người không cần hai thứ đó thì Conductor là lựa chọn hợp lý hơn tự làm nhiều.
+
+---
+
+## Nếu trễ giờ
 
 | Đang ở | Đồng hồ | Làm gì |
 |---|---|---|
-| Slide 10 | quá 13 phút | Bỏ slide 14, gộp câu 3 và 5 vào lời nói ở slide 13 |
-| Slide 19 | quá 28 phút | Bỏ slide 18. Ở phần 4 chỉ demo slide 21, 24, 25 |
-| Slide 27 | quá 45 phút | Bỏ slide 31, nói kế hoạch hai tuần bằng lời trong 30 giây |
+| Slide 12 | quá 20 phút | Bỏ slide 14, 17, 20 |
+| Slide 26 | quá 43 phút | Bỏ slide 28, kể luôn vào phần 5 |
+| Slide 30 | quá 50 phút | Bỏ slide 33, nói kế hoạch 2 tuần bằng lời trong 20 giây |
 
-Không bao giờ cắt: slide 2, slide 10, slide 13, slide 28, slide 30.
+Không bao giờ cắt: slide 2, 8, 9, 10, 13, 28, 30, 32.
