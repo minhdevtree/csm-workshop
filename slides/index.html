@@ -201,7 +201,7 @@ tbody tr + tr td { border-top: 1px solid var(--line); }
 .win .side { grid-row: 1 / 3; border-color: var(--accent-dim); }
 .win .side span { color: var(--accent); }
 
-.demo { display: flex; flex-direction: column; gap: 9px; height: 100%; }
+.demo { display: flex; flex-direction: column; justify-content: center; gap: 12px; height: 100%; }
 .demo-frame {
   flex: 1; min-height: 160px;
   border: 2px dashed var(--line); border-radius: var(--r); background: var(--bg-sink);
@@ -210,14 +210,19 @@ tbody tr + tr td { border-top: 1px solid var(--line); }
 .demo-frame .lbl { font-family: var(--mono); font-size: 12px; letter-spacing: .14em; text-transform: uppercase; color: var(--ink-faint); }
 .demo-frame .file { font-family: var(--mono); font-size: 14.5px; color: var(--accent); }
 .demo figcaption { font-size: 14.5px; color: var(--ink-faint); }
+/* KHÔNG nền, KHÔNG viền. Ảnh chụp app là hình rất rộng, fit vào khung cao hơn thì
+   thừa chỗ trên dưới. Nếu chỗ thừa đó có nền riêng thì nó hiện thành hai dải đen.
+   Để trong suốt thì phần thừa trùng luôn với nền slide và biến mất. Bản ghi màn
+   hình vốn đã có khung cửa sổ của chính nó nên không cần viền thêm. */
 .demo img {
-  flex: 1;
-  min-height: 0;
+  /* height:auto nên hộp ảnh cao ĐÚNG bằng ảnh, dòng chú thích bám sát ngay dưới.
+     Dùng flex:1 thì hộp cao hết phần trống, ảnh nằm giữa, và chú thích bị đẩy
+     xuống tận đáy cách ảnh một quãng. max-height là chốt chặn cho video dọc
+     (quay màn hình điện thoại), lúc đó object-fit giữ đúng tỉ lệ. */
   width: 100%;
+  height: auto;
+  max-height: 100%;
   object-fit: contain;
-  border-radius: var(--r);
-  border: 1px solid var(--line);
-  background: var(--bg-sink);
 }
 
 .feat { display: grid; grid-template-columns: 22px 1fr; gap: 12px; align-items: start; }
