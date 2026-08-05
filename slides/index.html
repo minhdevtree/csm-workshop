@@ -318,7 +318,7 @@ tbody tr + tr td { border-top: 1px solid var(--line); }
 <!-- 4 ────────────────────────────────────────────────────────────────────── -->
 <section class="slide" data-t="Được gì mất gì">
   <h2>Chạy nhiều con thì được gì, mất gì</h2>
-  <div class="two grow" style="margin-top:26px">
+  <div class="two grow" style="margin-top:22px">
     <div class="stack">
       <p class="kicker">Được</p>
       <div class="panel"><p>Mỗi lượt Claude chạy 3 tới 10 phút. Chạy nhiều con thì <strong>không phải ngồi chờ</strong> khoảng đó nữa.</p></div>
@@ -327,28 +327,58 @@ tbody tr + tr td { border-top: 1px solid var(--line); }
       <p class="kicker">Mất</p>
       <div class="panel"><p><strong>Phải review nhiều hơn.</strong> Chờ ngắn lại thì phần đọc và kiểm tra dài ra.</p></div>
       <div class="panel"><p><strong>Dễ bị ngắt liên tục.</strong> Không biết con nào đang gọi mình thì cứ vài phút lại tự đi kiểm tra.</p></div>
+      <div class="panel"><p><strong>Quá tay thì chính mình thành chỗ nghẽn.</strong> Sáu con cùng chờ không phải là sáu việc chạy song song. Đó là một hàng sáu người đang đứng chờ mình, và mình thì căng.</p></div>
     </div>
   </div>
   <div class="panel accent" style="margin-top:auto">
-    <p>Nên thứ quyết định không phải là <strong>chạy được mấy con</strong>, mà là <strong>bạn có biết con nào đang cần mình hay không</strong>.</p>
+    <p><strong>Nhiều hơn không tự động là tốt hơn.</strong> Số con hợp lý là số con mình review kịp, và con số đó thấp hơn số con máy chạy nổi rất nhiều.</p>
   </div>
   <div class="foot"><span>Phần 1</span><span class="pg"></span></div>
   <aside class="notes">
-    <p>Slide này thay cho hai slide lý thuyết ở bản trước. Nói 60 giây, đừng giảng.</p>
+    <p>Nói 60 giây, đừng giảng. Ô thứ ba bên phải là ô quan trọng nhất và hay bị bỏ qua nhất trong mấy bài kiểu này.</p>
     <p>Kể chuyện thật cho gần: buổi chiều mở 3 terminal, cứ vài phút alt-tab qua từng cái xem xong chưa. Cuối buổi cả 3 con đều xong việc, còn mình thì chả làm được gì ra hồn.</p>
-    <p>Nếu ai hỏi "có số liệu gì không": có một nghiên cứu hay được trích của Gloria Mark, sau một lần bị ngắt thì trung bình mất 23 phút mới quay lại đúng mạch cũ. Nhưng <strong>chỉ nói khi được hỏi</strong>, đừng đưa lên slide, vì nó kéo buổi thành bài giảng.</p>
-    <p>Câu cuối là bản lề dẫn thẳng sang phần cấu trúc và cái chấm trạng thái.</p>
+    <p><strong>Đừng bán ý "chạy càng nhiều càng nhanh".</strong> Nó không đúng, và trong phòng có người đã thử rồi thấy mệt. Nói thẳng là quá tay thì stress tăng, chất lượng review giảm.</p>
+    <p>Nếu ai hỏi số liệu: có nghiên cứu của Gloria Mark, sau một lần bị ngắt thì trung bình mất 23 phút mới quay lại đúng mạch cũ. Chỉ nói khi được hỏi.</p>
   </aside>
 </section>
 
-<!-- 5 ────────────────────────────────────────────────────────────────────── -->
+<!-- 5 ─────────────────────────────────────────────────────────────────────── -->
+<section class="slide" data-t="Khi nào cần nhiều session">
+  <h2>Vậy khi nào thì thật sự cần nhiều session</h2>
+  <div class="three grow" style="margin-top:24px;align-items:start">
+    <div class="panel">
+      <h3>Verify bằng context sạch</h3>
+      <p>Session chính đã đọc cả đống file và <strong>dễ tin thứ nó vừa tự viết ra</strong>. Mở một con mới tinh, hỏi lại cùng câu đó, xem có ra cùng câu trả lời không.</p>
+    </div>
+    <div class="panel">
+      <h3>Hỏi vặt mà không làm bẩn việc chính</h3>
+      <p>"Hàm này gọi từ đâu", "repo này deploy kiểu gì". Hỏi trong session chính thì <strong>ăn mất context</strong> của việc đang làm dở.</p>
+    </div>
+    <div class="panel">
+      <h3>Thử nhiều cách cho một tính năng</h3>
+      <p>Mỗi worktree một hướng, chạy song song, rồi <strong>xem cách nào ra gọn hơn</strong> và bỏ mấy cách kia đi.</p>
+    </div>
+  </div>
+  <div class="panel accent" style="margin-top:auto">
+    <p>Ba cái này có điểm chung: <strong>mỗi con có một lý do riêng để tồn tại.</strong> Mở thêm session mà không nói được lý do thì đó là mở thừa.</p>
+  </div>
+  <div class="foot"><span>Phần 1</span><span class="pg"></span></div>
+  <aside class="notes">
+    <p><strong>Đây là slide trả lời cho slide trước.</strong> Vừa nói "nhiều hơn không tự động tốt hơn" thì phải nói ngay "vậy khi nào thì đúng là cần".</p>
+    <p>Ô một là ô hay nhất, và ít người nghĩ tới: <strong>một con đã đọc code của chính nó viết ra thì không còn là người kiểm tra độc lập nữa.</strong> Context sạch là cách rẻ nhất để có ý kiến thứ hai.</p>
+    <p>Ô ba là chỗ worktree thật sự có giá trị, lát nữa nói lại ở phần git.</p>
+    <p>Câu chốt là câu để mọi người mang về: <strong>lý do trước, session sau.</strong> Không phải mở cho đủ số.</p>
+  </aside>
+</section>
+
+<!-- 6 ────────────────────────────────────────────────────────────────────── -->
 <section class="slide divider" data-t="Phần 2">
   <p class="n">PHẦN 2</p>
   <h2 style="margin-top:12px">CSM nhìn từ trên xuống</h2>
   <aside class="notes"><p>Chuyển: "Giờ mình chỉ cho mọi người app được xếp thế nào. Hiểu cái này rồi thì phần tính năng ở sau chỉ là chi tiết."</p></aside>
 </section>
 
-<!-- 6 ────────────────────────────────────────────────────────────────────── -->
+<!-- 7 ────────────────────────────────────────────────────────────────────── -->
 <section class="slide" data-t="Bố cục cửa sổ">
   <h2>Cửa sổ chia làm ba phần</h2>
   <div class="two-b grow" style="margin-top:18px">
@@ -368,7 +398,7 @@ tbody tr + tr td { border-top: 1px solid var(--line); }
   <aside class="notes"><p>Slide này chỉ để định vị, 30 giây. Đây là sơ đồ chứ không phải ảnh chụp, nên đừng chỉ trỏ chi tiết, lát nữa có GIF thật.</p></aside>
 </section>
 
-<!-- 7 ────────────────────────────────────────────────────────────────────── -->
+<!-- 8 ────────────────────────────────────────────────────────────────────── -->
 <section class="slide" data-t="Cây bốn tầng">
   <h2>Cây trong sidebar có bốn tầng</h2>
   <div class="two-a grow" style="margin-top:16px">
@@ -396,7 +426,7 @@ tbody tr + tr td { border-top: 1px solid var(--line); }
   </aside>
 </section>
 
-<!-- 8 ────────────────────────────────────────────────────────────────────── -->
+<!-- 9 ────────────────────────────────────────────────────────────────────── -->
 <section class="slide" data-t="Vì sao bốn tầng">
   <h2>Vì sao lại cần tới bốn tầng</h2>
   <div class="two grow" style="margin-top:20px">
@@ -407,9 +437,9 @@ tbody tr + tr td { border-top: 1px solid var(--line); }
     </div>
     <div class="stack">
       <p class="kicker">Session riêng thì khác ở đâu</p>
-      <div class="feat"><span class="k">◆</span><p>Context riêng, lịch sử riêng, sống qua nhiều ngày.</p></div>
+      <div class="feat"><span class="k">◆</span><p><b>Context riêng</b>, nên một con mới tinh vẫn là ý kiến độc lập. Subagent thì thừa hưởng context của con mẹ.</p></div>
+      <div class="feat"><span class="k">◆</span><p>Lịch sử riêng, sống qua nhiều ngày, mai mở lại vẫn còn.</p></div>
       <div class="feat"><span class="k">◆</span><p>Duyệt quyền riêng, nên biết đúng <b>con nào</b> đang hỏi.</p></div>
-      <div class="feat"><span class="k">◆</span><p>Bỏ một con đi không ảnh hưởng con kia.</p></div>
       <div class="panel accent"><p>Bốn tầng là để <strong>quản lý mấy session riêng đó</strong>, không phải để thay subagent. Hai thứ dùng cùng lúc được, và mình dùng cả hai.</p></div>
     </div>
   </div>
@@ -417,7 +447,7 @@ tbody tr + tr td { border-top: 1px solid var(--line); }
   <aside class="notes">
     <p><strong>Slide này phải nói cẩn thận, dễ bị bắt bẻ đúng.</strong> Nếu trình bày kiểu "Claude không chạy song song được nên mình làm cái này" thì sai, và trong phòng chắc chắn có người biết.</p>
     <p>Cách nói đúng: <strong>subagent và session riêng giải hai bài toán khác nhau.</strong> Subagent hợp khi một việc chia được thành mấy việc con rồi gộp kết quả lại. Session riêng hợp khi đó là <strong>mấy việc không liên quan tới nhau</strong>, mỗi việc một mạch hội thoại, kéo dài nhiều ngày.</p>
-    <p>Ví dụ cụ thể: sửa bug ở nhánh mr-2103. Việc "đọc log production để tìm nguyên nhân" là một mạch riêng, hôm sau vẫn còn dùng tới. Đưa vào subagent thì xong lượt là mất, mà nó cũng ăn chung context với việc sửa code.</p>
+    <p>Ví dụ cụ thể, nối thẳng về slide 5: muốn <strong>verify bằng context sạch</strong> thì subagent không làm được, vì subagent thừa hưởng context của con mẹ. Nó đã đọc chính đoạn code đó rồi, nên nó không còn là ý kiến độc lập nữa. Phải là một session mới hẳn.</p>
     <p>Còn folder thì đơn giản: hai chục repo vẫn xếp gọn, việc công ty một hộp, việc cá nhân một hộp.</p>
   </aside>
 </section>
@@ -596,7 +626,8 @@ tbody tr + tr td { border-top: 1px solid var(--line); }
       <h2 style="font-size:33px">Worktree đẻ ngay trong cây</h2>
       <p>Worktree là nhiều thư mục làm việc trên cùng một repo, mỗi thư mục một nhánh, dùng chung lịch sử git. Không phải clone lại.</p>
       <p>Chuột phải lên project, chọn tạo worktree, đặt tên nhánh. Nó hiện lồng ngay dưới project cha.</p>
-      <div class="panel accent"><p>Repo đã có sẵn worktree thì bấm nhận diện, nó tự đưa vào cây.</p></div>
+      <div class="panel accent"><p>Chỗ worktree đáng giá nhất: <strong>thử nhiều cách cho cùng một tính năng.</strong> Mỗi hướng một worktree, chạy song song, xem cách nào ra gọn hơn rồi bỏ mấy cách kia.</p></div>
+      <p class="sub">Repo đã có sẵn worktree thì bấm nhận diện, nó tự đưa vào cây.</p>
     </div>
     <figure class="demo">
       <div class="demo-frame"><span class="lbl">Chèn GIF</span><span class="file">assets/demo-04-worktree.gif</span></div>

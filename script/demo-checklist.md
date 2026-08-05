@@ -1,6 +1,6 @@
 # Bảy đoạn demo cần quay
 
-Slide 10, 12, 14, 17, 18, 21, 22 đang để khung nét đứt. Bỏ file vào `assets/` đúng tên dưới đây là
+Slide 11, 13, 15, 18, 19, 22, 23 đang để khung nét đứt. Bỏ file vào `assets/` đúng tên dưới đây là
 slide tự hiện ảnh, không cần sửa gì trong HTML.
 
 Sau khi có đủ file, chạy lệnh ở cuối trang này để thay khung nét đứt bằng ảnh.
@@ -25,13 +25,13 @@ Sau khi có đủ file, chạy lệnh ở cuối trang này để thay khung né
 
 | File | Slide | Quay cái gì |
 |---|---|---|
-| `demo-01-session-alive.gif` | 10 | Đóng tab một session đang chạy. Nó vẫn nằm trong sidebar, chấm vẫn nhảy. Mở lại thấy nguyên. |
-| `demo-02-attention.gif` | 12 | **Quan trọng nhất.** 3 session chạy, một con chuyển sang chờ, chấm đổi vàng, badge nhảy số, bấm badge nhảy tới đúng con đó. |
-| `demo-03-split-layout.gif` | 14 | Chia màn thành 3 ô, kéo một tab sang ô khác, lưu thành template, đóng hết rồi mở template ra lại. |
-| `demo-04-worktree.gif` | 17 | Chuột phải lên project, tạo worktree, nó hiện lồng bên dưới, mở một session trong đó. |
-| `demo-05-diff.gif` | 18 | Bấm ⇧⌘D, diff mở thành tab, chia đôi màn đặt cạnh file gốc. |
-| `demo-06-mobile.gif` | 21 | Điện thoại mở địa chỉ máy bàn, thấy một con đang chờ, gõ trả lời, máy bàn nhận được. |
-| `demo-07-help.gif` | 22 | Bấm dấu hỏi ở header, hỏi "làm sao lưu cách chia màn hình", nhận câu trả lời kèm đúng phím tắt. |
+| `demo-01-session-alive.gif` | 11 | Đóng tab một session đang chạy. Nó vẫn nằm trong sidebar, chấm vẫn nhảy. Mở lại thấy nguyên. |
+| `demo-02-attention.gif` | 13 | **Quan trọng nhất.** 3 session chạy, một con chuyển sang chờ, chấm đổi vàng, badge nhảy số, bấm badge nhảy tới đúng con đó. |
+| `demo-03-split-layout.gif` | 15 | Chia màn thành 3 ô, kéo một tab sang ô khác, lưu thành template, đóng hết rồi mở template ra lại. |
+| `demo-04-worktree.gif` | 18 | Chuột phải lên project, tạo worktree, nó hiện lồng bên dưới, mở một session trong đó. |
+| `demo-05-diff.gif` | 19 | Bấm ⇧⌘D, diff mở thành tab, chia đôi màn đặt cạnh file gốc. |
+| `demo-06-mobile.gif` | 22 | Điện thoại mở địa chỉ máy bàn, thấy một con đang chờ, gõ trả lời, máy bàn nhận được. |
+| `demo-07-help.gif` | 23 | Bấm dấu hỏi ở header, hỏi "làm sao lưu cách chia màn hình", nhận câu trả lời kèm đúng phím tắt. |
 
 Nếu chỉ kịp quay một cái thì quay `demo-02-attention.gif`.
 
@@ -66,6 +66,6 @@ print('đã chèn')
 PY
 ```
 
-Kiểm tra lại bằng cách mở `slides/index.html` và bấm tới slide 12. Nếu ảnh không
+Kiểm tra lại bằng cách mở `slides/index.html` và bấm tới slide 13. Nếu ảnh không
 hiện, kiểm tra đường dẫn: slide nằm trong `slides/` nên đường dẫn tới `assets/`
 phải bắt đầu bằng `../`.
