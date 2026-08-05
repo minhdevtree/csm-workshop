@@ -1,0 +1,1101 @@
+<!doctype html>
+<html lang="vi" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Chạy nhiều Claude Code cùng lúc mà không loạn</title>
+<style>
+/* ─────────────────────────────────────────────────────────────────────────────
+   Deck cho workshop nội bộ. Tự chứa hoàn toàn: không font ngoài, không script
+   ngoài, không ảnh ngoài. Mở bằng file:// vẫn chạy đủ.
+
+   Font là stack hệ thống chứ không phải webfont, và đó là lựa chọn có chủ đích:
+   deck phải chạy được khi phòng họp mất mạng. Trên máy Mac stack này giải ra
+   SF Pro, trên Windows là Segoe UI. Cả hai đều đọc tốt từ cuối phòng.
+
+   Một accent duy nhất cho cả deck: cam ấm. Không gradient, không glow.
+   ───────────────────────────────────────────────────────────────────────────── */
+
+:root {
+  --slide-w: 1280px;
+  --slide-h: 720px;
+
+  --bg:        #0e0e11;
+  --bg-raise:  #16161b;
+  --bg-sink:   #08080a;
+  --ink:       #ececef;
+  --ink-mute:  #9a9aa4;
+  --ink-faint: #63636d;
+  --line:      #26262e;
+  --accent:    #e08b4c;
+  --accent-dim:#7a4a24;
+  --good:      #56b586;
+  --warn:      #d9a441;
+
+  --sans: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --mono: ui-monospace, SFMono-Regular, "SF Mono", "JetBrains Mono", "Cascadia Mono", Menlo, Consolas, monospace;
+
+  --r: 10px;
+}
+
+:root[data-theme="light"] {
+  --bg:        #faf9f7;
+  --bg-raise:  #ffffff;
+  --bg-sink:   #efeeea;
+  --ink:       #1b1b1f;
+  --ink-mute:  #5c5c66;
+  --ink-faint: #8c8c96;
+  --line:      #e0dfda;
+  --accent:    #b8611f;
+  --accent-dim:#e8c9ae;
+  --good:      #2f7a55;
+  --warn:      #9a6f14;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body {
+  height: 100%;
+  background: var(--bg-sink);
+  color: var(--ink);
+  font-family: var(--sans);
+  -webkit-font-smoothing: antialiased;
+  overflow: hidden;
+}
+
+/* ── Sân khấu ─────────────────────────────────────────────────────────────── */
+
+#stage {
+  position: fixed;
+  inset: 0;
+  display: grid;
+  place-items: center;
+}
+
+#scaler {
+  width: var(--slide-w);
+  height: var(--slide-h);
+  transform-origin: center center;
+  position: relative;
+}
+
+.slide {
+  position: absolute;
+  inset: 0;
+  background: var(--bg);
+  padding: 64px 80px 72px;
+  flex-direction: column;
+  overflow: hidden;
+}
+/* Ẩn theo kiểu loại trừ, không phải `display:none` trần. Một lớp tiện ích khai
+   báo sau (ví dụ .center, cũng đặt display:flex và cùng độ ưu tiên) sẽ đè được
+   `display:none` và làm slide đó hiện vĩnh viễn, phủ lên slide đang chiếu. Đã
+   xảy ra đúng như vậy. `:not()` đẩy độ ưu tiên lên nên không lặp lại được. */
+.slide:not(.is-current) { display: none; }
+.slide.is-current { display: flex; }
+
+/* Ghi chú của diễn giả sống trong chính slide, nhưng không bao giờ được vẽ ra
+   ở đó. Panel #notes bên dưới đọc nội dung này và hiển thị riêng. Thiếu dòng
+   này thì toàn bộ ghi chú in thẳng lên màn chiếu cho cả phòng đọc. */
+.slide .notes { display: none; }
+
+@media (prefers-reduced-motion: no-preference) {
+  .slide.is-current > * { animation: rise .34s cubic-bezier(.16,1,.3,1) both; }
+  .slide.is-current > *:nth-child(2) { animation-delay: .04s; }
+  .slide.is-current > *:nth-child(3) { animation-delay: .08s; }
+  .slide.is-current > *:nth-child(4) { animation-delay: .12s; }
+  @keyframes rise { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+}
+
+/* ── Kiểu chữ ─────────────────────────────────────────────────────────────── */
+
+h1 { font-size: 62px; line-height: 1.06; letter-spacing: -.028em; font-weight: 640; }
+h2 { font-size: 42px; line-height: 1.12; letter-spacing: -.022em; font-weight: 620; }
+h3 { font-size: 25px; line-height: 1.2;  letter-spacing: -.012em; font-weight: 600; }
+p, li { font-size: 21px; line-height: 1.52; color: var(--ink-mute); }
+strong { color: var(--ink); font-weight: 620; }
+em { font-style: normal; color: var(--accent); }
+
+.lead { font-size: 25px; line-height: 1.5; max-width: 62ch; }
+.sub  { font-size: 19px; color: var(--ink-faint); }
+
+.kicker {
+  font-family: var(--mono);
+  font-size: 13px;
+  letter-spacing: .16em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 18px;
+}
+
+code, .mono { font-family: var(--mono); font-size: .93em; }
+code {
+  background: var(--bg-raise);
+  border: 1px solid var(--line);
+  border-radius: 5px;
+  padding: 1px 6px;
+  color: var(--ink);
+}
+
+/* ── Bố cục dùng lại ──────────────────────────────────────────────────────── */
+
+.slide > * + * { margin-top: 26px; }
+.grow { flex: 1; min-height: 0; }
+
+.two   { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; }
+.two-a { display: grid; grid-template-columns: 1.15fr .85fr; gap: 44px; }
+.two-b { display: grid; grid-template-columns: .8fr 1.2fr; gap: 44px; }
+.three { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+
+.stack { display: flex; flex-direction: column; gap: 16px; }
+.center { display: flex; flex-direction: column; justify-content: center; }
+
+ul, ol { padding-left: 1.1em; }
+ul.plain { list-style: none; padding-left: 0; }
+ul li + li, ol li + li { margin-top: 12px; }
+
+/* ── Thành phần ───────────────────────────────────────────────────────────── */
+
+.panel {
+  background: var(--bg-raise);
+  border: 1px solid var(--line);
+  border-radius: var(--r);
+  padding: 24px 26px;
+}
+.panel h3 { margin-bottom: 10px; }
+.panel p { font-size: 19px; }
+
+.panel.accent { border-color: var(--accent-dim); }
+
+.stat { display: flex; flex-direction: column; gap: 4px; }
+.stat .n {
+  font-family: var(--mono);
+  font-size: 54px;
+  line-height: 1;
+  letter-spacing: -.03em;
+  color: var(--ink);
+  font-weight: 600;
+}
+.stat .n.hot { color: var(--accent); }
+.stat .l { font-size: 16px; color: var(--ink-faint); }
+
+.rule { height: 1px; background: var(--line); border: 0; }
+
+table { width: 100%; border-collapse: collapse; }
+th, td { text-align: left; padding: 17px 14px; font-size: 19.5px; vertical-align: top; }
+th {
+  font-family: var(--mono);
+  font-size: 13px;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+  font-weight: 500;
+  border-bottom: 1px solid var(--line);
+}
+td { color: var(--ink-mute); }
+td:first-child { color: var(--ink); font-weight: 560; white-space: nowrap; }
+tbody tr + tr td { border-top: 1px solid var(--line); }
+
+.q {
+  display: grid;
+  grid-template-columns: 44px 1fr;
+  gap: 18px;
+  align-items: start;
+}
+.q .i {
+  font-family: var(--mono);
+  font-size: 17px;
+  color: var(--accent);
+  padding-top: 3px;
+}
+.q h3 { font-size: 22px; margin-bottom: 5px; }
+.q p { font-size: 18px; }
+
+.pain {
+  border-left: 2px solid var(--line);
+  padding-left: 22px;
+}
+.pain .t { font-size: 15px; font-family: var(--mono); letter-spacing: .08em; text-transform: uppercase; color: var(--ink-faint); margin-bottom: 8px; }
+.pain.fix { border-left-color: var(--accent); }
+.pain.fix .t { color: var(--accent); }
+
+.quote {
+  font-size: 30px;
+  line-height: 1.32;
+  letter-spacing: -.014em;
+  color: var(--ink);
+  max-width: 26ch;
+}
+.cite { font-size: 16px; color: var(--ink-faint); font-family: var(--mono); }
+
+/* Khung chờ chèn GIF. Cố tình để trống và ghi rõ tên file cần bỏ vào, thay vì
+   dựng một ảnh giả bằng div. */
+.demo { display: flex; flex-direction: column; gap: 12px; height: 100%; }
+.demo-frame {
+  flex: 1;
+  min-height: 190px;
+  border: 2px dashed var(--line);
+  border-radius: var(--r);
+  background: var(--bg-sink);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+.demo-frame .lbl {
+  font-family: var(--mono);
+  font-size: 13px;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+}
+.demo-frame .file { font-family: var(--mono); font-size: 16px; color: var(--accent); }
+.demo figcaption { font-size: 16px; color: var(--ink-faint); }
+.demo img { width: 100%; height: 100%; object-fit: contain; border-radius: var(--r); }
+
+.tag {
+  display: inline-block;
+  font-family: var(--mono);
+  font-size: 13px;
+  letter-spacing: .06em;
+  padding: 3px 9px;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  color: var(--ink-faint);
+}
+.tag.on { border-color: var(--accent-dim); color: var(--accent); }
+
+/* ── Slide tiêu đề và slide phân đoạn ─────────────────────────────────────── */
+
+.slide.mid { justify-content: center; }
+.slide.title { justify-content: center; background: var(--bg); }
+.slide.title h1 { font-size: 74px; max-width: 20ch; }
+.slide.divider { justify-content: center; background: var(--bg-sink); }
+.slide.divider .n {
+  font-family: var(--mono);
+  font-size: 17px;
+  color: var(--accent);
+  letter-spacing: .18em;
+}
+.slide.divider h2 { font-size: 58px; max-width: 22ch; }
+
+/* ── Chân slide ───────────────────────────────────────────────────────────── */
+
+.foot {
+  position: absolute;
+  left: 80px; right: 80px; bottom: 26px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-family: var(--mono);
+  font-size: 13px;
+  color: var(--ink-faint);
+  letter-spacing: .04em;
+}
+.slide.title .foot, .slide.divider .foot { display: none; }
+
+/* ── Vỏ ngoài: tiến độ, ghi chú, tổng quan ───────────────────────────────── */
+
+#bar {
+  position: fixed;
+  left: 0; top: 0;
+  height: 2px;
+  background: var(--accent);
+  z-index: 40;
+  transition: width .22s ease;
+}
+
+#notes {
+  position: fixed;
+  left: 0; right: 0; bottom: 0;
+  max-height: 42vh;
+  overflow: auto;
+  background: var(--bg-raise);
+  border-top: 1px solid var(--line);
+  padding: 22px 28px;
+  z-index: 50;
+  display: none;
+  font-size: 16px;
+  line-height: 1.62;
+  color: var(--ink-mute);
+}
+#notes.on { display: block; }
+#notes h4 {
+  font-family: var(--mono);
+  font-size: 12px;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 10px;
+  font-weight: 500;
+}
+#notes p + p { margin-top: 10px; }
+#notes strong { color: var(--ink); }
+
+#help {
+  position: fixed;
+  right: 14px; bottom: 12px;
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--ink-faint);
+  z-index: 45;
+  opacity: .55;
+}
+
+#grid {
+  position: fixed;
+  inset: 0;
+  background: var(--bg-sink);
+  z-index: 60;
+  display: none;
+  grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+  gap: 14px;
+  padding: 22px;
+  overflow: auto;
+  align-content: start;
+}
+#grid.on { display: grid; }
+#grid button {
+  aspect-ratio: 16 / 9;
+  background: var(--bg);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  color: var(--ink-mute);
+  font-family: var(--sans);
+  font-size: 13px;
+  line-height: 1.35;
+  text-align: left;
+  padding: 12px;
+  cursor: pointer;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+#grid button:hover, #grid button:focus-visible { border-color: var(--accent); color: var(--ink); outline: none; }
+#grid button .gi { font-family: var(--mono); font-size: 11px; color: var(--ink-faint); }
+
+/* ── In ra PDF: mỗi slide một trang ngang ────────────────────────────────── */
+
+@page { size: 1280px 720px; margin: 0; }
+@media print {
+  html, body { overflow: visible; background: #fff; height: auto; }
+  #bar, #help, #grid, #notes { display: none !important; }
+  #stage { position: static; display: block; }
+  #scaler { width: 1280px; height: auto; transform: none !important; }
+  .slide {
+    position: static !important;
+    display: flex !important;
+    width: 1280px;
+    height: 720px;
+    page-break-after: always;
+    break-after: page;
+    animation: none !important;
+  }
+  .slide > * { animation: none !important; opacity: 1 !important; transform: none !important; }
+}
+</style>
+</head>
+<body>
+
+<div id="bar"></div>
+<div id="stage"><div id="scaler">
+
+<!-- 1 ─────────────────────────────────────────────────────────────────────── -->
+<section class="slide title" data-t="Tiêu đề">
+  <h1>Chạy nhiều Claude Code cùng lúc mà không loạn</h1>
+  <p class="lead" style="margin-top:28px">Chọn công cụ vừa tay bạn, không phải công cụ nhiều tính năng nhất.</p>
+  <p class="sub mono" style="margin-top:36px">Workshop nội bộ &nbsp;·&nbsp; 07/08/2026</p>
+  <aside class="notes">
+    <p><strong>Mở bằng một câu hỏi giơ tay, không phải bằng slide.</strong> "Ai ở đây đang chạy từ hai phiên Claude Code trở lên cùng lúc?" Đếm tay. "Ai từng mất một phiên vì lỡ đóng terminal?" Đếm tiếp.</p>
+    <p>Hai câu đó làm hai việc: cho bạn biết phòng này đang ở đâu, và cho họ biết bài này nói về vấn đề của họ chứ không phải về một app.</p>
+    <p>Nếu phần lớn phòng chỉ chạy một phiên, đổi nhấn mạnh: phần 1 và phần 2 quan trọng hơn, phần case study rút ngắn.</p>
+  </aside>
+</section>
+
+<!-- 2 ─────────────────────────────────────────────────────────────────────── -->
+<section class="slide" data-t="Buổi này không phải cái gì">
+  <h2>Trước khi bắt đầu, nói rõ buổi này không phải cái gì</h2>
+  <div class="two grow" style="margin-top:34px">
+    <div class="stack">
+      <p class="kicker">Không có ở đây</p>
+      <div class="panel"><p>Bảng so sánh công cụ nào nhiều tính năng hơn.</p></div>
+      <div class="panel"><p>Lời khuyên "hãy dùng cái tôi đang dùng".</p></div>
+      <div class="panel"><p>Quảng cáo một sản phẩm.</p></div>
+    </div>
+    <div class="stack">
+      <p class="kicker">Có ở đây</p>
+      <div class="panel accent"><p>Một cách tự hỏi để biết <strong>bạn</strong> cần gì.</p></div>
+      <div class="panel accent"><p>Bản đồ các <strong>hình dạng</strong> công cụ, không xếp hạng.</p></div>
+      <div class="panel accent"><p>Một case study thật, kể cả phần dở của nó.</p></div>
+    </div>
+  </div>
+  <div class="foot"><span>Chạy nhiều Claude Code cùng lúc</span><span class="pg"></span></div>
+  <aside class="notes">
+    <p><strong>Đây là slide quan trọng nhất về mặt kỳ vọng.</strong> Nói thẳng: "Tôi có làm một app riêng, và tôi sẽ nói về nó ở phần 4. Nhưng nếu cuối buổi các bạn về và không cài gì cả, mà biết rõ hơn mình cần gì, thì buổi này thành công."</p>
+    <p>Lý do phải nói trước: nếu không, khán giả sẽ nghe cả buổi với tâm thế "ông này đang bán hàng", và mọi số liệu bạn đưa ra đều bị chiết khấu.</p>
+  </aside>
+</section>
+
+<!-- 3 ─────────────────────────────────────────────────────────────────────── -->
+<section class="slide" data-t="Chương trình">
+  <h2>Chương trình</h2>
+  <table style="margin-top:26px">
+    <tbody>
+      <tr><td>1</td><td>Nút thắt đã đổi chỗ, và đổi đi đâu</td><td class="mono sub" style="text-align:right">8 phút</td></tr>
+      <tr><td>2</td><td>Sáu câu hỏi để biết bạn thật sự cần gì</td><td class="mono sub" style="text-align:right">8 phút</td></tr>
+      <tr><td>3</td><td>Bản đồ công cụ, theo hình dạng chứ không theo điểm</td><td class="mono sub" style="text-align:right">8 phút</td></tr>
+      <tr><td>4</td><td>Case study: tôi tự làm một cái, và nó dạy tôi gì</td><td class="mono sub" style="text-align:right">16 phút</td></tr>
+      <tr><td>5</td><td>Rút ra, và cách bắt đầu tuần sau</td><td class="mono sub" style="text-align:right">8 phút</td></tr>
+      <tr><td>6</td><td>Hỏi đáp</td><td class="mono sub" style="text-align:right">10 phút</td></tr>
+    </tbody>
+  </table>
+  <div class="foot"><span>Chạy nhiều Claude Code cùng lúc</span><span class="pg"></span></div>
+  <aside class="notes">
+    <p>Lướt nhanh, đừng đọc từng dòng. Chỉ dừng ở phần 4 để nói: "phần này dài nhất và có demo, nên nếu buổi bị trễ thì tôi cắt phần 3 chứ không cắt phần 4."</p>
+  </aside>
+</section>
+
+<!-- 4 ─────────────────────────────────────────────────────────────────────── -->
+<section class="slide divider" data-t="Phần 1">
+  <p class="n">PHẦN 1</p>
+  <h2 style="margin-top:16px">Nút thắt đã đổi chỗ</h2>
+  <aside class="notes"><p>Chuyển tiếp: "Bắt đầu bằng câu hỏi tại sao chúng ta lại cần bàn về chuyện này vào năm 2026, chứ không phải năm 2023."</p></aside>
+</section>
+
+<!-- 5 ─────────────────────────────────────────────────────────────────────── -->
+<section class="slide" data-t="Nút thắt cũ và mới">
+  <h2>Việc gõ code không còn là chỗ nghẽn</h2>
+  <div class="two grow" style="margin-top:36px">
+    <div class="stack">
+      <p class="kicker">Trước đây</p>
+      <p>Bạn nghĩ ra cách làm, rồi bỏ phần lớn thời gian để <strong>gõ nó ra</strong>. Tốc độ gõ, độ thuộc API, độ quen codebase quyết định bạn xong nhanh hay chậm.</p>
+    </div>
+    <div class="stack">
+      <p class="kicker">Bây giờ</p>
+      <p>Agent gõ hộ. Cái còn lại của bạn là <strong>ra đề bài</strong>, <strong>chờ</strong>, và <strong>kiểm tra lại</strong>. Ba việc đó có đặc tính hoàn toàn khác việc gõ.</p>
+    </div>
+  </div>
+  <div class="panel accent" style="margin-top:auto">
+    <p>Khi phần việc thay đổi, công cụ phục vụ phần việc cũ sẽ tối ưu nhầm chỗ.</p>
+  </div>
+  <div class="foot"><span>Phần 1 &nbsp;·&nbsp; Nút thắt đã đổi chỗ</span><span class="pg"></span></div>
+  <aside class="notes">
+    <p>Ví dụ cụ thể để phòng gật đầu: "Cái editor của bạn tối ưu cho việc gõ. Autocomplete, snippet, đa con trỏ. Toàn bộ những thứ đó phục vụ một việc mà bây giờ bạn làm ít đi rất nhiều."</p>
+    <p>Đừng nói "editor vô dụng". Nói "editor vẫn cần, nhưng nó không còn là nơi thời gian của bạn trôi đi".</p>
+  </aside>
+</section>
+
+<!-- 6 ─────────────────────────────────────────────────────────────────────── -->
+<section class="slide" data-t="Ba khoảng thời gian">
+  <h2>Thời gian của bạn giờ nằm ở ba chỗ</h2>
+  <div class="three grow" style="margin-top:36px">
+    <div class="panel">
+      <h3>Ra đề bài</h3>
+      <p>Mô tả cái cần làm, đủ rõ để agent không đoán sai. Đây là việc duy nhất trong ba việc mà bạn không thể ủy thác.</p>
+    </div>
+    <div class="panel accent">
+      <h3>Chờ</h3>
+      <p>Từ ba tới mười phút mỗi lượt. Đây là khoảng duy nhất mà công cụ có thể lấy lại cho bạn, và cũng là khoảng bị lãng phí nhiều nhất.</p>
+    </div>
+    <div class="panel">
+      <h3>Kiểm tra lại</h3>
+      <p>Đọc diff, chạy test, quyết định nhận hay bỏ. Càng chạy nhiều agent thì khoảng này càng phình.</p>
+    </div>
+  </div>
+  <p class="sub">Cả buổi hôm nay xoay quanh khoảng ở giữa, và cái giá mà khoảng thứ ba phải trả cho nó.</p>
+  <div class="foot"><span>Phần 1 &nbsp;·&nbsp; Nút thắt đã đổi chỗ</span><span class="pg"></span></div>
+  <aside class="notes">
+    <p>Hỏi phòng: "Trong lúc chờ, các bạn làm gì?" Câu trả lời thật thường là: xem điện thoại, đọc Slack, hoặc ngồi nhìn con trỏ nhấp nháy. Không ai thấy xấu hổ vì điều đó, nhưng ai cũng nhận ra khi được hỏi.</p>
+    <p><strong>Đừng bỏ qua khoảng thứ ba.</strong> Đó là cái bẫy của cả buổi: chạy song song làm khoảng thứ hai ngắn lại nhưng làm khoảng thứ ba dài ra. Slide DORA ngay sau đây là bằng chứng.</p>
+  </aside>
+</section>
+
+<!-- 7 ─────────────────────────────────────────────────────────────────────── -->
+<section class="slide" data-t="DORA 2025">
+  <div class="two-b grow">
+    <div class="center">
+      <p class="quote">AI không phải giải pháp đóng hộp. Nó là một cái khuếch đại.</p>
+      <p class="cite" style="margin-top:20px">DORA 2025<br>State of AI-assisted Software Development</p>
+    </div>
+    <div class="center stack">
+      <div class="panel">
+        <h3 style="color:var(--good)">Đi lên</h3>
+        <p>Throughput giao hàng phần mềm tăng rõ rệt khi áp dụng AI.</p>
+      </div>
+      <div class="panel">
+        <h3 style="color:var(--warn)">Cũng đi lên</h3>
+        <p>Bất ổn định: nhiều thay đổi hỏng hơn, nhiều việc làm lại hơn, thời gian khắc phục dài hơn.</p>
+      </div>
+      <p class="sub">Khảo sát gần 5.000 người làm công nghệ. Nút thắt bị đẩy xuống hạ nguồn: kiểm thử, review, QA.</p>
+    </div>
+  </div>
+  <div class="foot"><span>Phần 1 &nbsp;·&nbsp; Nút thắt đã đổi chỗ</span><span class="pg"></span></div>
+  <aside class="notes">
+    <p>Cách diễn đạt gọn nhất: <strong>"Nền tốt thì AI tăng tốc. Nền lộn xộn thì AI làm bạn lộn xộn nhanh hơn."</strong></p>
+    <p>Áp vào chủ đề hôm nay: chạy mười agent song song trên một repo không có test là cách nhanh nhất để tạo ra mười thứ phải sửa. Song song là bộ khuếch đại, không phải cái loa.</p>
+    <p>Nguồn để trong research/sources.md, có link DORA của Google Cloud.</p>
+  </aside>
+</section>
+
+<!-- 8 ─────────────────────────────────────────────────────────────────────── -->
+<section class="slide" data-t="METR">
+  <h2>Và một con số làm mọi người khó chịu</h2>
+  <div class="three" style="margin-top:38px">
+    <div class="stat"><span class="n">+24%</span><span class="l">Lập trình viên <strong>dự đoán</strong> mình sẽ nhanh hơn nhờ AI</span></div>
+    <div class="stat"><span class="n hot">-19%</span><span class="l">Thực tế đo được: họ <strong>chậm hơn</strong></span></div>
+    <div class="stat"><span class="n">+20%</span><span class="l">Sau khi xong, họ <strong>vẫn tin</strong> mình đã nhanh hơn</span></div>
+  </div>
+  <hr class="rule" style="margin-top:34px">
+  <p style="margin-top:24px">METR, 07/2025. Thử nghiệm ngẫu nhiên có đối chứng, 16 lập trình viên mã nguồn mở giàu kinh nghiệm, 246 tác vụ, trên chính repo của họ.</p>
+  <div class="panel" style="margin-top:auto">
+    <p><strong>Phải nói kèm:</strong> METR hiện gắn nhãn kết quả này là lịch sử. Công cụ trong nghiên cứu là Cursor với Claude 3.5 và 3.7, tức trước thời agent chạy dài. Đừng dùng slide này để kết luận AI vô dụng.</p>
+  </div>
+  <div class="foot"><span>Phần 1 &nbsp;·&nbsp; Nút thắt đã đổi chỗ</span><span class="pg"></span></div>
+  <aside class="notes">
+    <p>Đây là slide dễ bị trích dẫn sai nhất. <strong>Bắt buộc nói câu cảnh báo ở dưới.</strong> Nếu bạn chỉ khoe con số -19% rồi đi tiếp, bạn đang làm đúng cái việc mà bài này phê phán.</p>
+    <p>Bài học thật nằm ở khoảng cách giữa cột 2 và cột 3, không phải ở cột 2: <strong>cảm giác nhanh và nhanh thật là hai đại lượng khác nhau, và con người rất tệ trong việc phân biệt.</strong></p>
+    <p>Chốt: "Nên nếu tối nay các bạn về, cài một công cụ mới, và thấy sướng, thì cái cảm giác sướng đó không phải bằng chứng. Cuối bài tôi sẽ nói cách đo thay cho cách cảm."</p>
+  </aside>
+</section>
+
+<!-- 9 ─────────────────────────────────────────────────────────────────────── -->
+<section class="slide" data-t="Chi phí chuyển ngữ cảnh">
+  <div class="two-a grow">
+    <div class="center">
+      <p class="kicker">Chi phí một lần bị ngắt</p>
+      <div class="stat"><span class="n hot" style="font-size:96px">23 phút</span><span class="l" style="font-size:18px">để quay lại đúng mạch việc ban đầu</span></div>
+      <p style="margin-top:26px">Gloria Mark, UC Irvine. Nghiên cứu quan sát tại chỗ, được trích dẫn nhiều nhất về công việc bị ngắt quãng. Trung bình có hai việc khác xen vào trước khi người ta quay lại việc cũ.</p>
+    </div>
+    <div class="center stack">
+      <div class="panel accent">
+        <h3>Vì sao nó liên quan</h3>
+        <p>Chạy nhiều agent song song <strong>là</strong> tự tạo ra chuỗi ngắt quãng cho chính mình. Mỗi lần một agent gọi bạn là một lần ngắt.</p>
+      </div>
+      <div class="panel">
+        <p>Nếu bạn không biết agent gọi lúc nào, bạn sẽ tự đi kiểm tra. Tự kiểm tra cũng là ngắt, mà lại là ngắt vô ích khi chưa có gì để xem.</p>
+      </div>
+    </div>
+  </div>
+  <div class="foot"><span>Phần 1 &nbsp;·&nbsp; Nút thắt đã đổi chỗ</span><span class="pg"></span></div>
+  <aside class="notes">
+    <p>Chỗ này nên kể một câu chuyện thật của chính bạn, ngắn thôi: lần bạn mở ba terminal, cứ vài phút lại alt-tab qua từng cái xem xong chưa, và cuối buổi chiều nhận ra mình chẳng làm được việc gì tử tế ở giữa.</p>
+    <p>Điểm cần đọng lại: <strong>song song mà không có cách điều hướng chú ý thì không phải làm nhiều việc, mà là tự ngắt quãng mình liên tục.</strong></p>
+  </aside>
+</section>
+
+<!-- 10 ────────────────────────────────────────────────────────────────────── -->
+<section class="slide mid" data-t="Chốt phần 1">
+  <h2 style="max-width:24ch">Vậy câu hỏi đúng không phải là "công cụ nào mạnh nhất"</h2>
+  <p class="lead" style="margin-top:28px">Mà là: <em>trong ba khoảng thời gian của tôi, khoảng nào đang đau nhất, và công cụ nào chạm được vào đúng khoảng đó.</em></p>
+  <div class="foot"><span>Phần 1 &nbsp;·&nbsp; Nút thắt đã đổi chỗ</span><span class="pg"></span></div>
+  <aside class="notes">
+    <p>Dừng một nhịp ở đây. Đây là bản lề của cả bài. Nếu chỉ có một câu được nhớ sau buổi này thì là câu này.</p>
+  </aside>
+</section>
+
+<!-- 11 ────────────────────────────────────────────────────────────────────── -->
+<section class="slide divider" data-t="Phần 2">
+  <p class="n">PHẦN 2</p>
+  <h2 style="margin-top:16px">Sáu câu hỏi để biết bạn cần gì</h2>
+  <aside class="notes"><p>Chuyển: "Giờ tới phần thực tế. Sáu câu hỏi, trả lời thật lòng, không cần nói ra."</p></aside>
+</section>
+
+<!-- 12 ────────────────────────────────────────────────────────────────────── -->
+<section class="slide" data-t="Sáu câu hỏi">
+  <h2>Trả lời sáu câu này trước khi cài bất cứ thứ gì</h2>
+  <div class="two grow" style="margin-top:32px;gap:32px 48px">
+    <div class="stack">
+      <div class="q"><span class="i">01</span><div><h3>Bạn chạy mấy agent một lúc?</h3><p>Nếu câu trả lời là một, dừng lại. Bạn không cần công cụ nào cả.</p></div></div>
+      <div class="q"><span class="i">02</span><div><h3>Trong lúc chờ, bạn làm gì?</h3><p>Ngồi nhìn, làm việc khác, hay chạy agent khác. Ba câu trả lời dẫn tới ba loại công cụ khác nhau.</p></div></div>
+      <div class="q"><span class="i">03</span><div><h3>Bạn cần biết agent gọi sau bao lâu?</h3><p>Vài giây, vài phút, hay không quan trọng.</p></div></div>
+    </div>
+    <div class="stack">
+      <div class="q"><span class="i">04</span><div><h3>Bạn đọc thay đổi kiểu gì?</h3><p>Đọc thẳng trong terminal, cần diff riêng, hay chỉ xem trên PR.</p></div></div>
+      <div class="q"><span class="i">05</span><div><h3>Việc của bạn có chia nhánh không?</h3><p>Một nhánh một lúc, hay nhiều nhánh song song trên cùng repo.</p></div></div>
+      <div class="q"><span class="i">06</span><div><h3>Bạn có rời khỏi máy không?</h3><p>Luôn ngồi trước máy, hay hay đi lại và cần theo dõi từ chỗ khác.</p></div></div>
+    </div>
+  </div>
+  <div class="foot"><span>Phần 2 &nbsp;·&nbsp; Bạn cần gì</span><span class="pg"></span></div>
+  <aside class="notes">
+    <p>Đọc lướt cả sáu câu, rồi quay lại đào sâu ba câu ở slide sau. Đừng giải thích từng câu ở đây, sẽ lặp.</p>
+    <p>Nhấn mạnh câu 01 bằng giọng thật: <strong>"Nếu bạn chạy một agent và thấy ổn, bài này không có gì cho bạn cả, và đó là một kết luận hợp lệ."</strong> Câu này mua được rất nhiều tín nhiệm cho phần còn lại.</p>
+  </aside>
+</section>
+
+<!-- 13 ────────────────────────────────────────────────────────────────────── -->
+<section class="slide" data-t="Câu 2 đào sâu">
+  <h2>Câu số 2 là câu phân loại mạnh nhất</h2>
+  <table style="margin-top:30px">
+    <thead><tr><th>Trong lúc chờ, bạn</th><th>Thì cái bạn thiếu là</th><th>Và bạn nên nhìn về phía</th></tr></thead>
+    <tbody>
+      <tr><td>Ngồi nhìn</td><td>Không thiếu gì cả</td><td>Đừng đổi gì. Thật.</td></tr>
+      <tr><td>Chuyển sang việc khác</td><td>Một tín hiệu gọi bạn về</td><td>Thông báo, badge, hộp thư chú ý</td></tr>
+      <tr><td>Chạy agent thứ hai</td><td>Cô lập, và cách biết cái nào đang chờ</td><td>Worktree, và một bảng điều hướng</td></tr>
+      <tr><td>Chạy năm agent</td><td>Cả hai thứ trên, cộng review nhanh</td><td>Diff tốt, và một quy trình nhận hay bỏ</td></tr>
+    </tbody>
+  </table>
+  <div class="panel" style="margin-top:auto">
+    <p>Để ý cột giữa: <strong>không có dòng nào cần "nhiều tính năng hơn".</strong> Mỗi dòng thiếu đúng một thứ.</p>
+  </div>
+  <div class="foot"><span>Phần 2 &nbsp;·&nbsp; Bạn cần gì</span><span class="pg"></span></div>
+  <aside class="notes">
+    <p>Đây là slide đáng dừng lâu nhất trong phần 2. Đọc theo hàng, mỗi hàng một câu.</p>
+    <p>Nếu ai đó trong phòng nói "tôi ở dòng bốn", hỏi lại: "bạn review kiểu gì?" Câu trả lời hầu như luôn là "đọc PR trên GitLab", và đó chính là chỗ đau tiếp theo của họ.</p>
+  </aside>
+</section>
+
+<!-- 14 ────────────────────────────────────────────────────────────────────── -->
+<section class="slide" data-t="Câu 3 và 5 đào sâu">
+  <div class="two grow">
+    <div class="stack">
+      <p class="kicker">Câu 3 &nbsp;·&nbsp; độ trễ bạn chịu được</p>
+      <p>Đây là chỉ số duy nhất trong bài mà tôi khuyên các bạn <strong>đo thật</strong>. Cách đo: mở đồng hồ, chạy một agent, làm việc khác, ghi lại khoảng cách giữa lúc nó thật sự cần bạn và lúc bạn phát hiện ra.</p>
+      <p>Làm ba lần trong một buổi chiều là bạn có một con số. Con số đó chọn công cụ giúp bạn, chứ không phải bảng tính năng.</p>
+    </div>
+    <div class="stack">
+      <p class="kicker">Câu 5 &nbsp;·&nbsp; cô lập</p>
+      <p>Hai agent sửa cùng một thư mục làm việc sẽ giẫm lên nhau, và bạn sẽ mất nhiều thời gian gỡ hơn là số thời gian tiết kiệm được.</p>
+      <p><strong>Cô lập không phải là một tính năng để so sánh. Nó là điều kiện để song song có nghĩa.</strong> Nếu công cụ nào đó không có, nó chỉ phục vụ một agent.</p>
+    </div>
+  </div>
+  <div class="panel accent">
+    <p>Git worktree là câu trả lời chuẩn cho câu 5, và Claude Code đã có sẵn nó: <code>claude --worktree</code>.</p>
+  </div>
+  <div class="foot"><span>Phần 2 &nbsp;·&nbsp; Bạn cần gì</span><span class="pg"></span></div>
+  <aside class="notes">
+    <p>Phần đo ở cột trái là thứ khán giả có thể làm ngay chiều nay. Khuyến khích họ làm trước khi cài gì.</p>
+    <p>Cột phải, nếu phòng chưa quen worktree, giải thích một câu: "worktree là nhiều thư mục làm việc trên cùng một repo, mỗi thư mục một nhánh, dùng chung lịch sử git. Không phải clone lại."</p>
+  </aside>
+</section>
+
+<!-- 15 ────────────────────────────────────────────────────────────────────── -->
+<section class="slide divider" data-t="Phần 3">
+  <p class="n">PHẦN 3</p>
+  <h2 style="margin-top:16px">Bản đồ công cụ, theo hình dạng</h2>
+  <aside class="notes"><p>Chuyển: "Có sáu câu trả lời rồi, giờ xem chúng dẫn tới đâu. Tôi sẽ không xếp hạng cái nào, chỉ nói mỗi hình dạng đánh đổi cái gì."</p></aside>
+</section>
+
+<!-- 16 ────────────────────────────────────────────────────────────────────── -->
+<section class="slide" data-t="Trước khi thêm công cụ">
+  <h2>Trước khi thêm gì, kiểm tra thứ bạn đã có</h2>
+  <p class="lead" style="margin-top:20px">Claude Code tự nó đã giải quyết một phần khá lớn của bài toán, và phần lớn người dùng không biết.</p>
+  <div class="two" style="margin-top:30px">
+    <div class="stack">
+      <div class="panel"><h3><code>--worktree</code></h3><p>Khởi động ngay trong một worktree cô lập. Kèm <code>--tmux</code> thì có luôn phiên tmux cho nó.</p></div>
+      <div class="panel"><h3><code>--resume</code></h3><p>Lấy lại đúng cuộc hội thoại cũ. Đóng terminal không còn là mất trắng.</p></div>
+    </div>
+    <div class="stack">
+      <div class="panel"><h3>Hooks</h3><p>Hơn ba mươi sự kiện trong vòng đời một lượt. Handler có thể là lệnh, HTTP endpoint, MCP tool, hoặc một agent.</p></div>
+      <div class="panel"><h3><code>--permission-mode</code></h3><p>Từ hỏi từng bước tới tự nhận sửa file. Chọn đúng mức là giảm hẳn số lần bị gọi.</p></div>
+    </div>
+  </div>
+  <div class="foot"><span>Phần 3 &nbsp;·&nbsp; Bản đồ công cụ</span><span class="pg"></span></div>
+  <aside class="notes">
+    <p><strong>Slide này thường gây tiếng "ồ" to nhất trong cả buổi.</strong> Rất nhiều người dùng Claude Code hàng ngày mà chưa từng chạy <code>claude --help</code>.</p>
+    <p>Nếu có thời gian, mở terminal chạy <code>claude --help</code> ngay tại chỗ. Sống động hơn slide.</p>
+    <p>Nói rõ về hooks: đây là cái mà mọi công cụ quản lý phiên đều dựa vào để biết agent đang làm gì. Không có hooks thì chỉ còn cách đoán qua đầu ra terminal, và đoán thì không bao giờ biết chắc lúc nào agent đang chờ.</p>
+  </aside>
+</section>
+
+<!-- 17 ────────────────────────────────────────────────────────────────────── -->
+<section class="slide" data-t="Năm hình dạng">
+  <h2>Năm hình dạng công cụ</h2>
+  <table style="margin-top:24px">
+    <thead><tr><th>Hình dạng</th><th>Ví dụ</th><th>Hợp với ai</th><th>Đổi lại</th></tr></thead>
+    <tbody>
+      <tr><td>Không gì cả</td><td>Nhiều tab terminal</td><td>Một tới hai agent, luôn ngồi máy</td><td>Không có tín hiệu gọi</td></tr>
+      <tr><td>Multiplexer</td><td>tmux, zellij, Claude Squad</td><td>Người sống trong terminal, muốn tự script</td><td>Phải tự dựng, không có diff</td></tr>
+      <tr><td>Trong IDE</td><td>Claude Code cho VS Code, JetBrains</td><td>Muốn review ngay chỗ đang code</td><td>Nhiều agent thì chật</td></tr>
+      <tr><td>App quản lý</td><td>Conductor, và cái tôi tự làm</td><td>Nhiều agent, nhiều repo, cần điều hướng</td><td>Thêm một app phải học</td></tr>
+      <tr><td>Bảng việc</td><td>Vibe Kanban, agent trên cloud</td><td>Giao việc rồi đi, review qua PR</td><td>Vòng phản hồi dài</td></tr>
+    </tbody>
+  </table>
+  <p class="sub">Cột cuối là cột quan trọng nhất. Không có hình dạng nào không mất gì.</p>
+  <div class="foot"><span>Phần 3 &nbsp;·&nbsp; Bản đồ công cụ</span><span class="pg"></span></div>
+  <aside class="notes">
+    <p>Đi từ trên xuống, mỗi dòng một câu ngắn. <strong>Dừng lâu nhất ở cột cuối.</strong></p>
+    <p>Một ghi chú trung thực đáng nói: Crystal, một app Electron mã nguồn mở khá được ưa chuộng trong nhóm này, đã ngừng phát triển tháng 2/2026 và trỏ người dùng sang một sản phẩm đóng nguồn có phí. Đó là rủi ro thật của việc chọn công cụ trong một thị trường mới: cái bạn chọn hôm nay có thể biến mất.</p>
+    <p>Nếu ai hỏi "vậy cái nào tốt nhất", trả lời thẳng: "câu hỏi đó không có đáp án, và đó là lý do phần 2 có sáu câu hỏi."</p>
+  </aside>
+</section>
+
+<!-- 18 ────────────────────────────────────────────────────────────────────── -->
+<section class="slide" data-t="Cách chọn">
+  <h2>Cách đọc bản đồ này</h2>
+  <div class="stack grow" style="margin-top:32px">
+    <div class="pain fix"><div class="t">Quy tắc 1</div><p>Chọn hình dạng nhỏ nhất giải được vấn đề bạn đang có, <strong>không phải</strong> vấn đề bạn nghĩ mình sẽ có sau này.</p></div>
+    <div class="pain fix"><div class="t">Quy tắc 2</div><p>Nếu bạn chưa từng bị đau vì một vấn đề, đừng chọn công cụ vì nó giải vấn đề đó. Bạn sẽ trả giá bằng độ phức tạp mà không nhận lại gì.</p></div>
+    <div class="pain fix"><div class="t">Quy tắc 3</div><p>Đổi một thứ một lần. Đổi hai thứ cùng lúc thì bạn không bao giờ biết cái nào có tác dụng.</p></div>
+  </div>
+  <div class="foot"><span>Phần 3 &nbsp;·&nbsp; Bản đồ công cụ</span><span class="pg"></span></div>
+  <aside class="notes">
+    <p>Quy tắc 2 là quy tắc bị vi phạm nhiều nhất, kể cả bởi chính tôi. Thú nhận luôn cho thật: kể một tính năng bạn từng làm vì "sau này sẽ cần" mà tới giờ vẫn chưa dùng tới lần nào.</p>
+  </aside>
+</section>
+
+<!-- 19 ────────────────────────────────────────────────────────────────────── -->
+<section class="slide divider" data-t="Phần 4">
+  <p class="n">PHẦN 4</p>
+  <h2 style="margin-top:16px">Case study: tôi tự làm một cái</h2>
+  <aside class="notes"><p>Chuyển: "Giờ tới phần tôi kể chuyện của mình. Nghe với tâm thế một ca bệnh, không phải một lời khuyên."</p></aside>
+</section>
+
+<!-- 20 ────────────────────────────────────────────────────────────────────── -->
+<section class="slide" data-t="Nhu cầu của tôi">
+  <h2>Sáu câu hỏi đó, trả lời cho trường hợp của tôi</h2>
+  <table style="margin-top:26px">
+    <tbody>
+      <tr><td>Mấy agent</td><td>Ba tới sáu, trên nhiều repo khác nhau cùng lúc</td></tr>
+      <tr><td>Lúc chờ</td><td>Chạy agent khác, hoặc review cái vừa xong</td></tr>
+      <tr><td>Độ trễ chịu được</td><td>Vài giây. Chờ lâu hơn là tôi mất mạch</td></tr>
+      <tr><td>Đọc thay đổi</td><td>Cần diff tử tế, và cần nó nằm cạnh file đang mở</td></tr>
+      <tr><td>Chia nhánh</td><td>Có, thường xuyên, nhiều nhánh cùng lúc trên một repo</td></tr>
+      <tr><td>Rời máy</td><td>Có. Muốn theo dõi và trả lời từ điện thoại</td></tr>
+    </tbody>
+  </table>
+  <div class="panel accent" style="margin-top:auto">
+    <p>Sáu câu trả lời này chỉ vào ô "app quản lý" trong bản đồ. Tôi đã thử vài cái, và cuối cùng tự làm, vì lý do ở slide sau.</p>
+  </div>
+  <div class="foot"><span>Phần 4 &nbsp;·&nbsp; Case study</span><span class="pg"></span></div>
+  <aside class="notes">
+    <p>Nhấn dòng cuối: nhu cầu "rời máy và trả lời từ điện thoại" là nhu cầu hiếm, và nó là lý do lớn nhất khiến các lựa chọn có sẵn không vừa. Đây là ví dụ sống của thông điệp cả buổi: <strong>nhu cầu riêng quyết định lựa chọn, không phải bảng tính năng.</strong></p>
+  </aside>
+</section>
+
+<!-- 21 ────────────────────────────────────────────────────────────────────── -->
+<section class="slide" data-t="Đau 1: không biết cái nào chờ">
+  <div class="two-a grow">
+    <div class="stack center">
+      <div class="pain"><div class="t">Cái đau</div><p>Ba phiên đang chạy. Một cái đã hỏi tôi "có cho phép chạy lệnh này không" từ bốn phút trước. Tôi không biết, vì nó nằm ở tab tôi không nhìn.</p></div>
+      <div class="pain fix"><div class="t">Cách giải</div><p>Trạng thái lấy từ <strong>hook của Claude Code</strong>, không phải đoán qua đầu ra terminal. Chấm màu trong cây, badge ở header, thông báo hệ điều hành, và một hộp thư liệt kê mọi phiên đang chờ.</p></div>
+    </div>
+    <figure class="demo">
+      <div class="demo-frame"><span class="lbl">Chèn GIF</span><span class="file">assets/demo-01-attention.gif</span></div>
+      <figcaption>Quay: ba phiên chạy, một cái chuyển sang chờ, chấm đổi màu, badge nhảy số, bấm badge nhảy tới đúng phiên đó.</figcaption>
+    </figure>
+  </div>
+  <div class="foot"><span>Phần 4 &nbsp;·&nbsp; Case study</span><span class="pg"></span></div>
+  <aside class="notes">
+    <p>Đây là tính năng đầu tiên và cũng là lý do app tồn tại. Nếu chỉ được demo một thứ thì demo cái này.</p>
+    <p>Điểm kỹ thuật đáng nói vì nó chuyển giao được: <strong>chờ là một sự kiện, không phải một suy đoán.</strong> Nhìn đầu ra terminal thì chỉ biết "có chữ chạy" hay "im lặng", mà im lặng có thể là đang nghĩ, cũng có thể là đang chờ. Hook nói thẳng cái nào là cái nào. Ai tự dựng công cụ cũng nên bắt đầu từ hook.</p>
+  </aside>
+</section>
+
+<!-- 22 ────────────────────────────────────────────────────────────────────── -->
+<section class="slide" data-t="Đau 2: mất phiên">
+  <div class="two-a grow">
+    <div class="stack center">
+      <div class="pain"><div class="t">Cái đau</div><p>Đóng nhầm tab terminal là mất cả cuộc hội thoại. Cả buổi sáng bối cảnh đi theo.</p></div>
+      <div class="pain fix"><div class="t">Cách giải</div><p>PTY sống ở tiến trình chính của app, không sống trong tab. Chuyển tab chỉ gắn hoặc gỡ phần hiển thị. Đóng tab không giết phiên, và khởi động lại app thì lấy lại hội thoại qua <code>--resume</code>.</p></div>
+    </div>
+    <figure class="demo">
+      <div class="demo-frame"><span class="lbl">Chèn GIF</span><span class="file">assets/demo-02-session-alive.gif</span></div>
+      <figcaption>Quay: đóng tab của một phiên đang chạy, phiên vẫn ở trong sidebar và vẫn chạy, mở lại thấy nguyên vẹn.</figcaption>
+    </figure>
+  </div>
+  <div class="foot"><span>Phần 4 &nbsp;·&nbsp; Case study</span><span class="pg"></span></div>
+  <aside class="notes">
+    <p>Bài học chuyển giao được: <strong>vòng đời của tiến trình không nên gắn với vòng đời của cái khung nhìn.</strong> Đây là lỗi thiết kế mà rất nhiều công cụ tự dựng mắc phải, kể cả script tmux tự viết.</p>
+  </aside>
+</section>
+
+<!-- 23 ────────────────────────────────────────────────────────────────────── -->
+<section class="slide" data-t="Đau 3: nhánh giẫm nhau">
+  <div class="two-a grow">
+    <div class="stack center">
+      <div class="pain"><div class="t">Cái đau</div><p>Hai agent trên cùng một repo, cùng một thư mục. Cái này sửa file cái kia đang đọc. Kết quả là hai nhánh dở dang trộn vào nhau.</p></div>
+      <div class="pain fix"><div class="t">Cách giải</div><p>Tạo git worktree ngay trong cây dự án. Worktree nằm lồng dưới dự án cha, có nhánh riêng và phiên riêng. Repo đã có sẵn worktree thì nhận diện và đưa vào cây.</p></div>
+    </div>
+    <figure class="demo">
+      <div class="demo-frame"><span class="lbl">Chèn GIF</span><span class="file">assets/demo-03-worktree.gif</span></div>
+      <figcaption>Quay: tạo worktree mới từ menu chuột phải trên dự án, worktree hiện lồng bên dưới, mở phiên trong đó.</figcaption>
+    </figure>
+  </div>
+  <div class="foot"><span>Phần 4 &nbsp;·&nbsp; Case study</span><span class="pg"></span></div>
+  <aside class="notes">
+    <p>Nhắc lại câu ở phần 2: cô lập là điều kiện, không phải tính năng. Đây là chỗ nó thành hình.</p>
+    <p>Nếu phòng chưa quen worktree, đây là lúc giải thích kỹ hơn slide 14: cùng một <code>.git</code>, nhiều thư mục làm việc, mỗi thư mục một nhánh. Rẻ hơn clone rất nhiều.</p>
+  </aside>
+</section>
+
+<!-- 24 ────────────────────────────────────────────────────────────────────── -->
+<section class="slide" data-t="Đau 4: review">
+  <div class="two-a grow">
+    <div class="stack center">
+      <div class="pain"><div class="t">Cái đau</div><p>Agent xong. Giờ tôi phải nhảy ra ngoài, mở một app khác, để trả lời một câu duy nhất: nó vừa đổi cái gì.</p></div>
+      <div class="pain fix"><div class="t">Cách giải</div><p>Diff mở như một tab editor, ngồi cạnh chính file nó nói về, chia đôi màn hình được, và ở nguyên đó trong lúc bạn làm việc tiếp. Lịch sử commit cũng vậy, kèm tìm theo message và đọc bất kỳ nhánh nào mà không cần checkout.</p></div>
+    </div>
+    <figure class="demo">
+      <div class="demo-frame"><span class="lbl">Chèn GIF</span><span class="file">assets/demo-04-diff-history.gif</span></div>
+      <figcaption>Quay: mở diff bằng phím tắt, chia đôi màn hình đặt cạnh file, rồi mở lịch sử commit và tìm một commit theo chữ trong message.</figcaption>
+    </figure>
+  </div>
+  <div class="foot"><span>Phần 4 &nbsp;·&nbsp; Case study</span><span class="pg"></span></div>
+  <aside class="notes">
+    <p>Nối lại với DORA ở phần 1: <strong>kiểm tra lại là nút thắt mới.</strong> Đây là tính năng phục vụ đúng cái nút thắt đó, và cũng là tính năng tôi làm sau cùng, sau khi đã đau đủ lâu.</p>
+    <p>Đó cũng là ví dụ cho quy tắc 2 ở slide 18: tôi không làm nó vì "app quản lý nào cũng có diff", mà vì tôi đã alt-tab ra ngoài đủ nhiều lần.</p>
+  </aside>
+</section>
+
+<!-- 25 ────────────────────────────────────────────────────────────────────── -->
+<section class="slide" data-t="Đau 5: rời máy">
+  <div class="two-a grow">
+    <div class="stack center">
+      <div class="pain"><div class="t">Cái đau</div><p>Rời bàn mười lăm phút là mù hoàn toàn. Về tới nơi thì ba agent đã đứng chờ từ lâu, và thời gian đó mất trắng.</p></div>
+      <div class="pain fix"><div class="t">Cách giải</div><p>Máy chạy app tự phục vụ chính giao diện của nó qua HTTP cho thiết bị khác trong mạng. Điện thoại mở trình duyệt là thấy đủ trạng thái và trả lời được. Kênh nào đi qua được là một danh sách trắng khai báo tường minh, có mức token chỉ đọc.</p></div>
+    </div>
+    <figure class="demo">
+      <div class="demo-frame"><span class="lbl">Chèn GIF hoặc video quay màn hình điện thoại</span><span class="file">assets/demo-05-mobile.gif</span></div>
+      <figcaption>Quay: điện thoại mở địa chỉ máy bàn, thấy danh sách phiên, một phiên đang chờ, gõ trả lời từ điện thoại và thấy máy bàn nhận.</figcaption>
+    </figure>
+  </div>
+  <div class="foot"><span>Phần 4 &nbsp;·&nbsp; Case study</span><span class="pg"></span></div>
+  <aside class="notes">
+    <p>Đây là tính năng làm khán giả nhớ nhất, nhưng phải nói kèm phần bảo mật, nếu không sẽ có người hỏi ngay và bạn mất thế chủ động.</p>
+    <p>Nói trước: mặc định tắt, chỉ trong mạng nội bộ, có token, và có mức token chỉ đọc cho trường hợp muốn cho người khác xem mà không cho gõ.</p>
+  </aside>
+</section>
+
+<!-- 26 ────────────────────────────────────────────────────────────────────── -->
+<section class="slide" data-t="Đau 6: không nhớ app làm được gì">
+  <div class="two-a grow">
+    <div class="stack center">
+      <div class="pain"><div class="t">Cái đau</div><p>App có quá nhiều thứ. Tôi tự làm mà còn quên phím tắt và quên cả tính năng mình đã viết.</p></div>
+      <div class="pain fix"><div class="t">Cách giải</div><p>Một trợ lý ngay trong app trả lời "làm thế nào để..." bằng chính user guide của app. Nó chạy với mọi công cụ bị tắt: không đọc file của bạn, không thấy phiên của bạn, không chạy được gì. Nó chỉ biết cách dùng app.</p></div>
+    </div>
+    <figure class="demo">
+      <div class="demo-frame"><span class="lbl">Chèn GIF</span><span class="file">assets/demo-06-help.gif</span></div>
+      <figcaption>Quay: bấm dấu hỏi ở header, gõ một câu hỏi kiểu "làm sao lưu cách chia màn hình", nhận câu trả lời kèm đúng phím tắt.</figcaption>
+    </figure>
+  </div>
+  <div class="foot"><span>Phần 4 &nbsp;·&nbsp; Case study</span><span class="pg"></span></div>
+  <aside class="notes">
+    <p>Bài học chuyển giao được, và là bài học tôi thích nhất: <strong>tài liệu không phải thứ viết sau cho có. Nó là thứ duy nhất con bot biết.</strong> Trong repo có một luật: PR nào đổi giao diện thì phải cập nhật user guide trong cùng PR đó, vì nếu không, bot sẽ tự tin nói với người dùng rằng tính năng đó không tồn tại.</p>
+    <p>Đó là một cách buộc tài liệu không bị mục mà không cần ai nhắc.</p>
+  </aside>
+</section>
+
+<!-- 27 ────────────────────────────────────────────────────────────────────── -->
+<section class="slide" data-t="Số liệu dự án">
+  <h2>Dự án này, bằng số</h2>
+  <div class="three" style="margin-top:34px">
+    <div class="stat"><span class="n hot">48</span><span class="l">ngày, từ commit đầu tới hôm nay</span></div>
+    <div class="stat"><span class="n">727</span><span class="l">commit</span></div>
+    <div class="stat"><span class="n">72.212</span><span class="l">dòng TypeScript</span></div>
+  </div>
+  <div class="three" style="margin-top:34px">
+    <div class="stat"><span class="n">2.708</span><span class="l">test tự động</span></div>
+    <div class="stat"><span class="n">51</span><span class="l">phiên bản đã phát hành</span></div>
+    <div class="stat"><span class="n">3</span><span class="l">nền tảng chạy trong CI</span></div>
+  </div>
+  <p class="sub" style="margin-top:auto">Đo trực tiếp từ repo ngày 05/08/2026. Phần lớn mã do Claude Code viết, dưới điều hướng và kiểm tra.</p>
+  <div class="foot"><span>Phần 4 &nbsp;·&nbsp; Case study</span><span class="pg"></span></div>
+  <aside class="notes">
+    <p><strong>Đừng khoe.</strong> Nói con số rồi lập tức đóng khung nó lại, bằng chính slide sau.</p>
+    <p>Con số đáng nói nhất không phải 72 nghìn dòng, mà là <strong>2.708 test</strong>. Giải thích tại sao: khi agent viết phần lớn code, cái bạn cần không phải đọc từng dòng, mà là một cái lưới bắt được lúc nó sai. Test là hợp đồng bạn viết, code là thứ agent điền vào.</p>
+    <p>Nối thẳng về DORA: đây chính là "nền tốt thì AI tăng tốc". Không có cái lưới đó thì 727 commit trong 48 ngày là một thảm họa chứ không phải một thành tích.</p>
+  </aside>
+</section>
+
+<!-- 28 ────────────────────────────────────────────────────────────────────── -->
+<section class="slide" data-t="Cái giá phải trả">
+  <h2>Và đây là phần tôi không muốn kể</h2>
+  <div class="stack grow" style="margin-top:30px">
+    <div class="pain"><div class="t">Cái giá 1</div><p>Tự làm công cụ là <strong>một dự án thứ hai</strong>. Nó có bug, có CI hỏng, có việc bảo trì. Thời gian tôi tiết kiệm được ở việc chính, một phần không nhỏ chảy ngược vào đây.</p></div>
+      <div class="pain"><div class="t">Cái giá 2</div><p>Tôi là người dùng duy nhất. Mọi lựa chọn thiết kế đều vừa vặn với tôi, và đó vừa là điểm mạnh vừa là lý do nó có thể không hợp với bạn.</p></div>
+      <div class="pain"><div class="t">Cái giá 3</div><p>Con số 48 ngày nghe ấn tượng, nhưng nó không nói gì về việc <strong>công việc chính của tôi có nhanh hơn không</strong>. Đó là hai đại lượng khác nhau, và tôi chưa đo được cái thứ hai một cách tử tế.</p></div>
+  </div>
+  <div class="foot"><span>Phần 4 &nbsp;·&nbsp; Case study</span><span class="pg"></span></div>
+  <aside class="notes">
+    <p>Slide này quan trọng ngang slide số 2. Nó là thứ giữ cho cả bài không thành quảng cáo.</p>
+    <p>Cái giá 3 nối thẳng về METR ở phần 1: tôi cũng đang có đúng cái cảm giác mà nghiên cứu đó cảnh báo. Nói ra được điều đó về chính mình thì mọi thứ khác bạn nói đều đáng tin hơn.</p>
+    <p>Khuyến nghị thật lòng cho phòng: <strong>đừng tự làm.</strong> Hãy dùng cái có sẵn, trừ khi nhu cầu của bạn thật sự không có cái nào vừa, và bạn thấy việc làm công cụ tự nó đã vui.</p>
+  </aside>
+</section>
+
+<!-- 29 ────────────────────────────────────────────────────────────────────── -->
+<section class="slide divider" data-t="Phần 5">
+  <p class="n">PHẦN 5</p>
+  <h2 style="margin-top:16px">Rút ra, và bắt đầu thế nào</h2>
+  <aside class="notes"><p>Chuyển: "Bỏ app của tôi sang một bên. Năm điều sau đúng với mọi lựa chọn."</p></aside>
+</section>
+
+<!-- 30 ────────────────────────────────────────────────────────────────────── -->
+<section class="slide" data-t="Năm điều rút ra">
+  <h2>Năm điều, không phụ thuộc công cụ nào</h2>
+  <div class="stack grow" style="margin-top:26px;gap:14px">
+    <div class="q"><span class="i">01</span><div><h3>Đo bằng độ trễ, không bằng số tính năng</h3><p>Chỉ số đáng theo dõi: bao lâu kể từ lúc agent cần bạn tới lúc bạn biết.</p></div></div>
+    <div class="q"><span class="i">02</span><div><h3>Song song chỉ có lãi khi có cách điều hướng chú ý</h3><p>Không có tín hiệu gọi thì song song chỉ là tự ngắt quãng mình nhiều hơn.</p></div></div>
+    <div class="q"><span class="i">03</span><div><h3>Cô lập là điều kiện, không phải tính năng</h3><p>Không có worktree hoặc tương đương thì công cụ đó chỉ phục vụ một agent.</p></div></div>
+    <div class="q"><span class="i">04</span><div><h3>Kiểm tra lại là nút thắt mới</h3><p>DORA đã đo. Công cụ nào rút ngắn được vòng review sẽ thắng công cụ nào chỉ chạy được nhiều agent hơn.</p></div></div>
+    <div class="q"><span class="i">05</span><div><h3>Công cụ tốt nhất là cái bạn còn dùng sau hai tuần</h3><p>Mọi thứ khác là cảm giác mới lạ, và cảm giác thì METR đã nói rồi.</p></div></div>
+  </div>
+  <div class="foot"><span>Phần 5 &nbsp;·&nbsp; Rút ra</span><span class="pg"></span></div>
+  <aside class="notes">
+    <p>Đây là slide để chụp màn hình. Nói chậm, mỗi ý một câu, đừng thêm ví dụ mới ở đây.</p>
+  </aside>
+</section>
+
+<!-- 31 ────────────────────────────────────────────────────────────────────── -->
+<section class="slide" data-t="Bắt đầu thế nào">
+  <h2>Nếu muốn thử, làm theo thứ tự này</h2>
+  <div class="two grow" style="margin-top:32px">
+    <div class="stack">
+      <div class="panel accent">
+        <h3>Tuần 1: không cài gì cả</h3>
+        <p>Chỉ dùng Claude Code với <code>--worktree</code>. Mỗi ngày ghi lại ba lần: agent cần bạn lúc mấy giờ, bạn biết lúc mấy giờ. Cuối tuần bạn có một con số thật.</p>
+      </div>
+    </div>
+    <div class="stack">
+      <div class="panel">
+        <h3>Tuần 2: thêm đúng một lớp</h3>
+        <p>Chọn một hình dạng từ bản đồ, dựa trên con số tuần 1. Đo lại đúng cách đó. Nếu con số không giảm, bỏ nó đi mà không tiếc.</p>
+      </div>
+    </div>
+  </div>
+  <div class="panel" style="margin-top:auto">
+    <p>Đừng đổi hai thứ cùng lúc, và đừng đánh giá bằng cảm giác của ngày đầu tiên.</p>
+  </div>
+  <div class="foot"><span>Phần 5 &nbsp;·&nbsp; Rút ra</span><span class="pg"></span></div>
+  <aside class="notes">
+    <p>Đây là phần hành động. Nếu ai đó chỉ làm được một việc sau buổi này, thì là việc ở tuần 1.</p>
+    <p>Nhắc: cách đo này rẻ tới mức không có lý do gì để không làm, và nó biến một cuộc tranh luận về sở thích thành một con số.</p>
+  </aside>
+</section>
+
+<!-- 32 ────────────────────────────────────────────────────────────────────── -->
+<section class="slide mid" data-t="Kết">
+  <h2 style="max-width:22ch">Không có công cụ tốt nhất. Chỉ có công cụ vừa tay.</h2>
+  <p class="lead" style="margin-top:26px">Sáu câu hỏi ở phần 2 quan trọng hơn toàn bộ phần còn lại của buổi này.</p>
+  <p class="sub mono" style="margin-top:44px">Slide, script và nguồn dẫn: github.com/minhdevtree/csm-workshop</p>
+  <aside class="notes">
+    <p>Dừng ở đây, đừng chuyển tiếp sang slide hỏi đáp ngay. Để câu này đứng một mình vài giây.</p>
+    <p>Rồi mở hỏi đáp bằng một câu mồi, đừng hỏi "có ai hỏi gì không" (thường sẽ im lặng). Hỏi thẳng: <strong>"Ai đang ở dòng thứ tư của cái bảng lúc nãy, chạy từ năm agent trở lên?"</strong> hoặc <strong>"Có ai vừa nhận ra mình đang ở dòng một mà lâu nay tưởng mình ở dòng ba không?"</strong></p>
+  </aside>
+</section>
+
+<!-- 33 ────────────────────────────────────────────────────────────────────── -->
+<section class="slide" data-t="Hỏi đáp">
+  <h2>Hỏi đáp</h2>
+  <div class="two grow" style="margin-top:30px">
+    <div class="stack">
+      <p class="kicker">Câu hay được hỏi</p>
+      <div class="panel"><p><strong>Chạy nhiều agent có tốn nhiều token hơn không?</strong><br><span class="sub">Có. Song song không làm mỗi lượt rẻ đi, nó chỉ làm nhiều lượt xảy ra cùng lúc.</span></p></div>
+      <div class="panel"><p><strong>Bao nhiêu agent là quá nhiều?</strong><br><span class="sub">Khi hàng đợi review của bạn dài hơn thời gian bạn có để review. Con số đó khác nhau ở mỗi người.</span></p></div>
+    </div>
+    <div class="stack">
+      <p class="kicker">Chỗ tôi sẽ nói "tôi không biết"</p>
+      <div class="panel"><p><strong>Cách này có mở rộng cho cả team không?</strong><br><span class="sub">Tôi mới chỉ chạy một người. Mọi câu trả lời của tôi về quy mô team đều là suy đoán.</span></p></div>
+      <div class="panel"><p><strong>Nó có làm tôi làm việc nhanh hơn không?</strong><br><span class="sub">Tôi chưa đo được một cách tử tế. Xem lại slide 28.</span></p></div>
+    </div>
+  </div>
+  <div class="foot"><span>Hỏi đáp</span><span class="pg"></span></div>
+  <aside class="notes">
+    <p>Chuẩn bị sẵn hai ô bên phải là cách tốt nhất để giữ tín nhiệm. Khi bị hỏi thứ mình không biết, có sẵn câu trả lời "tôi không biết, và đây là lý do tôi không biết" nghe mạnh hơn nhiều so với việc ứng biến.</p>
+    <p>Nếu phòng im, quay lại slide 13 và hỏi từng dòng của bảng.</p>
+  </aside>
+</section>
+
+</div></div>
+
+<div id="notes"></div>
+<div id="grid"></div>
+<div id="help">← → di chuyển · S ghi chú · O tổng quan · T sáng tối · F toàn màn hình</div>
+
+<script>
+(function () {
+  'use strict';
+
+  var slides  = Array.prototype.slice.call(document.querySelectorAll('.slide'));
+  var scaler  = document.getElementById('scaler');
+  var bar     = document.getElementById('bar');
+  var notesEl = document.getElementById('notes');
+  var gridEl  = document.getElementById('grid');
+  var help    = document.getElementById('help');
+  var i = 0;
+  var notesOn = false;
+
+  /* Khớp khung 1280x720 vào cửa sổ bằng transform, nên mọi kích thước bên trong
+     slide là tuyệt đối và không phụ thuộc cỡ màn hình phòng họp. */
+  function fit() {
+    var pad = notesOn ? window.innerHeight * 0.42 : 0;
+    var k = Math.min(window.innerWidth / 1280, (window.innerHeight - pad) / 720);
+    scaler.style.transform = 'scale(' + k + ')';
+    scaler.style.marginBottom = pad ? (pad / k) + 'px' : '0';
+  }
+
+  function paintNotes() {
+    var n = slides[i].querySelector('.notes');
+    notesEl.innerHTML = '<h4>Ghi chú &nbsp;·&nbsp; slide ' + (i + 1) + ' / ' + slides.length + ' &nbsp;·&nbsp; ' +
+      (slides[i].dataset.t || '') + '</h4>' + (n ? n.innerHTML : '<p>Không có ghi chú.</p>');
+  }
+
+  function show(n, push) {
+    i = Math.max(0, Math.min(slides.length - 1, n));
+    slides.forEach(function (s, k) { s.classList.toggle('is-current', k === i); });
+    var pg = slides[i].querySelector('.pg');
+    if (pg) pg.textContent = (i + 1) + ' / ' + slides.length;
+    bar.style.width = ((i + 1) / slides.length * 100) + '%';
+    if (notesOn) paintNotes();
+    if (push !== false) history.replaceState(null, '', '#' + (i + 1));
+  }
+
+  function buildGrid() {
+    gridEl.innerHTML = '';
+    slides.forEach(function (s, k) {
+      var b = document.createElement('button');
+      b.innerHTML = '<span class="gi">' + (k + 1) + '</span><span>' + (s.dataset.t || '') + '</span>';
+      b.onclick = function () { gridEl.classList.remove('on'); show(k); };
+      gridEl.appendChild(b);
+    });
+  }
+
+  document.addEventListener('keydown', function (e) {
+    if (e.metaKey || e.ctrlKey || e.altKey) return;
+    var k = e.key;
+    if (k === 'ArrowRight' || k === 'PageDown' || k === ' ') { e.preventDefault(); show(i + 1); }
+    else if (k === 'ArrowLeft' || k === 'PageUp') { e.preventDefault(); show(i - 1); }
+    else if (k === 'Home') { e.preventDefault(); show(0); }
+    else if (k === 'End') { e.preventDefault(); show(slides.length - 1); }
+    else if (k === 's' || k === 'S') { notesOn = !notesOn; notesEl.classList.toggle('on', notesOn); if (notesOn) paintNotes(); fit(); }
+    else if (k === 'o' || k === 'O') { gridEl.classList.toggle('on'); }
+    else if (k === 't' || k === 'T') {
+      var next = document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark';
+      document.documentElement.dataset.theme = next;
+      try { localStorage.setItem('deck-theme', next); } catch (err) {}
+    }
+    else if (k === 'f' || k === 'F') {
+      if (document.fullscreenElement) document.exitFullscreen();
+      else document.documentElement.requestFullscreen();
+    }
+    else if (k === 'Escape') { gridEl.classList.remove('on'); }
+  });
+
+  /* Bấm nửa phải để tiến, nửa trái để lùi. Dùng khi trình chiếu bằng chuột hoặc
+     khi mở trên máy tính bảng. */
+  document.getElementById('stage').addEventListener('click', function (e) {
+    show(e.clientX > window.innerWidth / 2 ? i + 1 : i - 1);
+  });
+
+  window.addEventListener('resize', fit);
+  window.addEventListener('hashchange', function () {
+    var n = parseInt(location.hash.slice(1), 10);
+    if (n) show(n - 1, false);
+  });
+
+  try {
+    var saved = localStorage.getItem('deck-theme');
+    if (saved) document.documentElement.dataset.theme = saved;
+  } catch (err) {}
+
+  buildGrid();
+  fit();
+  var start = parseInt(location.hash.slice(1), 10);
+  show(start ? start - 1 : 0);
+  setTimeout(function () { help.style.opacity = '0'; help.style.transition = 'opacity .6s'; }, 4200);
+})();
+</script>
+</body>
+</html>
