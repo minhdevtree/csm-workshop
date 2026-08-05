@@ -6,6 +6,8 @@ Luận điểm của buổi này không phải "công cụ nào tốt hơn", mà
 cần gì** trước khi chọn bất cứ công cụ nào. Case study là một app tôi tự viết, kể
 cả phần dở của nó.
 
+**Xem thẳng trên web**: <https://minhdevtree.github.io/csm-workshop/slides/>
+
 ## Mở slide
 
 ```bash
