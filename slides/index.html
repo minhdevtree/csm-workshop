@@ -268,11 +268,14 @@ tbody tr + tr td { border-top: 1px solid var(--line); }
 <!-- 1 ────────────────────────────────────────────────────────────────────── -->
 <section class="slide title" data-t="Tiêu đề">
   <p class="kicker"><span class="dot working spin"></span> &nbsp;Claude Session Manager</p>
-  <h1>Mình làm một app để chạy nhiều Claude Code cùng lúc</h1>
+  <h1>Một app để chạy nhiều Claude Code cùng lúc</h1>
   <p class="lead" style="margin-top:22px">Hôm nay kể xem nó có gì, nó hoạt động thế nào, và ai thì hợp kiểu này.</p>
-  <p class="sub mono" style="margin-top:30px">07/08/2026</p>
+  <!-- Ghi công: repo có nhiều hơn một người. Thay handle GitHub bằng tên thật
+       trước khi trình chiếu. -->
+  <p class="sub mono" style="margin-top:30px">minhdevtree &amp; taing &nbsp;·&nbsp; 07/08/2026</p>
   <aside class="notes">
     <p>Đừng đọc slide. Hỏi phòng trước, đếm tay: <strong>"Ai đang chạy từ 2 con Claude Code trở lên cùng lúc?"</strong> rồi <strong>"Ai từng đóng nhầm terminal rồi mất luôn cả cuộc chat?"</strong></p>
+    <p><strong>Ghi công cho đúng ngay từ slide đầu.</strong> Nói một câu: "App này không phải một mình mình làm, có <span style="color:var(--ink)">[tên đồng nghiệp]</span> đóng góp một phần, và phần lớn code là Claude Code viết dưới sự dẫn dắt của tụi mình." Nói trước thì cả buổi sau đó nói "mình" thoải mái mà không ai hiểu nhầm.</p>
     <p>Hai câu đó cho mình biết phòng đang ở đâu. Nếu đa số chỉ chạy 1 con thì lát nữa lướt nhanh phần tính năng nâng cao, tập trung vào phần cấu trúc cây và phần trạng thái.</p>
   </aside>
 </section>
@@ -313,53 +316,39 @@ tbody tr + tr td { border-top: 1px solid var(--line); }
 </section>
 
 <!-- 4 ────────────────────────────────────────────────────────────────────── -->
-<section class="slide" data-t="Chờ và bị ngắt">
-  <div class="two-b grow">
-    <div class="vcen">
-      <div class="stat"><span class="n hot" style="font-size:80px">23 phút</span><span class="l" style="font-size:16.5px">để quay lại đúng mạch sau MỘT lần bị ngắt</span></div>
-      <p class="sub mono" style="margin-top:14px">Gloria Mark, UC Irvine</p>
+<section class="slide" data-t="Được gì mất gì">
+  <h2>Chạy nhiều con thì được gì, mất gì</h2>
+  <div class="two grow" style="margin-top:26px">
+    <div class="stack">
+      <p class="kicker">Được</p>
+      <div class="panel"><p>Mỗi lượt Claude chạy 3 tới 10 phút. Chạy nhiều con thì <strong>không phải ngồi chờ</strong> khoảng đó nữa.</p></div>
     </div>
-    <div class="vcen stack">
-      <p>Mỗi lượt Claude chạy 3 tới 10 phút. Trong lúc đó làm gì cũng được, trừ một việc: <strong>ngồi canh nó</strong>.</p>
-      <p>Nhưng không canh thì phải có cái gọi mình về. Không có thì cứ vài phút lại tự đi kiểm tra, mà mỗi lần đi kiểm tra là một lần tự ngắt mình.</p>
-      <div class="panel accent"><p><strong>Chạy song song mà không có cái gọi mình về thì không phải làm được nhiều việc hơn. Chỉ là tự ngắt mình nhiều hơn.</strong></p></div>
+    <div class="stack">
+      <p class="kicker">Mất</p>
+      <div class="panel"><p><strong>Phải review nhiều hơn.</strong> Chờ ngắn lại thì phần đọc và kiểm tra dài ra.</p></div>
+      <div class="panel"><p><strong>Dễ bị ngắt liên tục.</strong> Không biết con nào đang gọi mình thì cứ vài phút lại tự đi kiểm tra.</p></div>
     </div>
+  </div>
+  <div class="panel accent" style="margin-top:auto">
+    <p>Nên thứ quyết định không phải là <strong>chạy được mấy con</strong>, mà là <strong>bạn có biết con nào đang cần mình hay không</strong>.</p>
   </div>
   <div class="foot"><span>Phần 1</span><span class="pg"></span></div>
   <aside class="notes">
-    <p>Kể chuyện thật cho gần: buổi chiều mở 3 terminal, cứ vài phút alt-tab qua từng cái xem xong chưa. Cuối buổi 3 con đều xong việc, còn mình thì chả làm được gì ra hồn.</p>
-    <p>Slide này dẫn thẳng vào phần trạng thái ở sau. Nói xong câu in đậm là chuyển.</p>
+    <p>Slide này thay cho hai slide lý thuyết ở bản trước. Nói 60 giây, đừng giảng.</p>
+    <p>Kể chuyện thật cho gần: buổi chiều mở 3 terminal, cứ vài phút alt-tab qua từng cái xem xong chưa. Cuối buổi cả 3 con đều xong việc, còn mình thì chả làm được gì ra hồn.</p>
+    <p>Nếu ai hỏi "có số liệu gì không": có một nghiên cứu hay được trích của Gloria Mark, sau một lần bị ngắt thì trung bình mất 23 phút mới quay lại đúng mạch cũ. Nhưng <strong>chỉ nói khi được hỏi</strong>, đừng đưa lên slide, vì nó kéo buổi thành bài giảng.</p>
+    <p>Câu cuối là bản lề dẫn thẳng sang phần cấu trúc và cái chấm trạng thái.</p>
   </aside>
 </section>
 
 <!-- 5 ────────────────────────────────────────────────────────────────────── -->
-<section class="slide" data-t="Cái bẫy">
-  <h2>Nhưng có một cái bẫy, nói luôn cho sòng phẳng</h2>
-  <div class="two grow" style="margin-top:22px">
-    <div class="stack">
-      <div class="panel"><p>Báo cáo DORA 2025, khảo sát gần 5.000 người: dùng AI thì <strong style="color:var(--st-done)">throughput tăng</strong>, nhưng <strong style="color:var(--st-waiting)">tỉ lệ hỏng và phải làm lại cũng tăng</strong>.</p></div>
-      <div class="panel"><p>Câu chốt của họ: <strong>AI không phải giải pháp đóng hộp, nó là cái khuếch đại.</strong> Nền tốt thì nhanh hơn. Nền lộn xộn thì lộn xộn nhanh hơn.</p></div>
-    </div>
-    <div class="vcen">
-      <p>Áp vào chuyện hôm nay: chạy 10 con song song trên repo không có test là cách nhanh nhất để tạo ra 10 thứ phải sửa.</p>
-      <p style="margin-top:14px">Chạy nhiều làm phần <strong>chờ</strong> ngắn lại, nhưng làm phần <strong>kiểm tra lại</strong> dài ra. Lát nữa có mấy tính năng sinh ra chỉ để lo phần đó.</p>
-    </div>
-  </div>
-  <div class="foot"><span>Phần 1</span><span class="pg"></span></div>
-  <aside class="notes">
-    <p>Đừng biến slide này thành bài giảng. Nói 30 giây rồi đi. Ý duy nhất cần đọng: <strong>song song không miễn phí, cái giá là review nhiều hơn.</strong></p>
-    <p>Ai hỏi kỹ về DORA thì có link trong repo, file research/sources.md.</p>
-  </aside>
-</section>
-
-<!-- 6 ────────────────────────────────────────────────────────────────────── -->
 <section class="slide divider" data-t="Phần 2">
   <p class="n">PHẦN 2</p>
   <h2 style="margin-top:12px">CSM nhìn từ trên xuống</h2>
   <aside class="notes"><p>Chuyển: "Giờ mình chỉ cho mọi người app được xếp thế nào. Hiểu cái này rồi thì phần tính năng ở sau chỉ là chi tiết."</p></aside>
 </section>
 
-<!-- 7 ────────────────────────────────────────────────────────────────────── -->
+<!-- 6 ────────────────────────────────────────────────────────────────────── -->
 <section class="slide" data-t="Bố cục cửa sổ">
   <h2>Cửa sổ chia làm ba phần</h2>
   <div class="two-b grow" style="margin-top:18px">
@@ -379,7 +368,7 @@ tbody tr + tr td { border-top: 1px solid var(--line); }
   <aside class="notes"><p>Slide này chỉ để định vị, 30 giây. Đây là sơ đồ chứ không phải ảnh chụp, nên đừng chỉ trỏ chi tiết, lát nữa có GIF thật.</p></aside>
 </section>
 
-<!-- 8 ────────────────────────────────────────────────────────────────────── -->
+<!-- 7 ────────────────────────────────────────────────────────────────────── -->
 <section class="slide" data-t="Cây bốn tầng">
   <h2>Cây trong sidebar có bốn tầng</h2>
   <div class="two-a grow" style="margin-top:16px">
@@ -407,30 +396,32 @@ tbody tr + tr td { border-top: 1px solid var(--line); }
   </aside>
 </section>
 
-<!-- 9 ────────────────────────────────────────────────────────────────────── -->
+<!-- 8 ────────────────────────────────────────────────────────────────────── -->
 <section class="slide" data-t="Vì sao bốn tầng">
   <h2>Vì sao lại cần tới bốn tầng</h2>
   <div class="two grow" style="margin-top:20px">
     <div class="stack">
-      <p class="kicker">Phần lớn app quản lý agent</p>
-      <div class="panel"><p style="font-family:var(--mono);font-size:16.5px;color:var(--ink)">workspace → agent</p><p style="margin-top:9px">Hai tầng. Mỗi workspace một nhánh, mỗi nhánh một agent. Gọn, và hợp nếu bạn làm một việc một lúc.</p></div>
-      <p>Nhưng mình hay có <strong>ba session trong cùng một nhánh</strong>: một con viết code, một con viết test, một con đọc log. Chúng nó cùng thư mục, không cần tách nhánh.</p>
+      <p class="kicker">Nói rõ trước một chuyện</p>
+      <div class="panel"><p>Claude Code <strong>tự nó đã chạy song song được</strong>: nó đẻ subagent trong cùng một session, và có cả agent team. Nên đây <strong>không phải</strong> chuyện làm được hay không làm được.</p></div>
+      <p>Cái khác nhau là <strong>ranh giới</strong>: subagent nằm trong cùng một cuộc hội thoại, dùng chung context, chung luồng duyệt quyền, và xong việc là tan.</p>
     </div>
     <div class="stack">
-      <p class="kicker">CSM</p>
-      <div class="panel accent"><p style="font-family:var(--mono);font-size:16.5px;color:var(--ink)">folder → project → worktree → session</p><p style="margin-top:9px">Tách <strong>chỗ làm việc</strong> ra khỏi <strong>số con đang chạy</strong>. Cần nhánh riêng thì đẻ worktree. Cần thêm một con trong cùng nhánh thì chỉ đẻ session.</p></div>
-      <p>Và vì có folder, hai chục repo vẫn xếp gọn: việc công ty một hộp, việc cá nhân một hộp.</p>
+      <p class="kicker">Session riêng thì khác ở đâu</p>
+      <div class="feat"><span class="k">◆</span><p>Context riêng, lịch sử riêng, sống qua nhiều ngày.</p></div>
+      <div class="feat"><span class="k">◆</span><p>Duyệt quyền riêng, nên biết đúng <b>con nào</b> đang hỏi.</p></div>
+      <div class="feat"><span class="k">◆</span><p>Bỏ một con đi không ảnh hưởng con kia.</p></div>
+      <div class="panel accent"><p>Bốn tầng là để <strong>quản lý mấy session riêng đó</strong>, không phải để thay subagent. Hai thứ dùng cùng lúc được, và mình dùng cả hai.</p></div>
     </div>
   </div>
   <div class="foot"><span>Phần 2 &nbsp;·&nbsp; Cấu trúc</span><span class="pg"></span></div>
   <aside class="notes">
-    <p>Đây là chỗ CSM khác các app khác rõ nhất, nên nói kỹ. Ý cốt lõi: <strong>"cần nhánh riêng" và "cần thêm một con chạy" là hai nhu cầu khác nhau, không nên bắt dùng chung một cơ chế.</strong></p>
-    <p>Ví dụ cho dễ hình dung: đang sửa bug ở nhánh mr-2103, mở thêm một con trong cùng nhánh đó để nó đọc log production. Không cần worktree.</p>
-    <p>Cái này mang về được kể cả không dùng CSM: khi tự dựng tmux hay script, cũng nên tách hai khái niệm đó ra.</p>
+    <p><strong>Slide này phải nói cẩn thận, dễ bị bắt bẻ đúng.</strong> Nếu trình bày kiểu "Claude không chạy song song được nên mình làm cái này" thì sai, và trong phòng chắc chắn có người biết.</p>
+    <p>Cách nói đúng: <strong>subagent và session riêng giải hai bài toán khác nhau.</strong> Subagent hợp khi một việc chia được thành mấy việc con rồi gộp kết quả lại. Session riêng hợp khi đó là <strong>mấy việc không liên quan tới nhau</strong>, mỗi việc một mạch hội thoại, kéo dài nhiều ngày.</p>
+    <p>Ví dụ cụ thể: sửa bug ở nhánh mr-2103. Việc "đọc log production để tìm nguyên nhân" là một mạch riêng, hôm sau vẫn còn dùng tới. Đưa vào subagent thì xong lượt là mất, mà nó cũng ăn chung context với việc sửa code.</p>
+    <p>Còn folder thì đơn giản: hai chục repo vẫn xếp gọn, việc công ty một hộp, việc cá nhân một hộp.</p>
   </aside>
 </section>
 
-<!-- 10 ───────────────────────────────────────────────────────────────────── -->
 <section class="slide" data-t="Chấm trạng thái">
   <div class="two-a grow">
     <div class="vcen">
@@ -459,7 +450,7 @@ tbody tr + tr td { border-top: 1px solid var(--line); }
   </aside>
 </section>
 
-<!-- 11 ───────────────────────────────────────────────────────────────────── -->
+<!-- 10 ───────────────────────────────────────────────────────────────────── -->
 <section class="slide" data-t="Session sống độc lập">
   <div class="two-a grow">
     <div class="vcen stack">
@@ -480,14 +471,14 @@ tbody tr + tr td { border-top: 1px solid var(--line); }
   </aside>
 </section>
 
-<!-- 12 ───────────────────────────────────────────────────────────────────── -->
+<!-- 11 ───────────────────────────────────────────────────────────────────── -->
 <section class="slide divider" data-t="Phần 3">
   <p class="n">PHẦN 3</p>
   <h2 style="margin-top:12px">Trong đó có gì</h2>
   <aside class="notes"><p>Chuyển: "Hiểu cấu trúc rồi thì phần này đi nhanh. Mình gom theo nhóm nhu cầu, không theo menu."</p></aside>
 </section>
 
-<!-- 13 ───────────────────────────────────────────────────────────────────── -->
+<!-- 12 ───────────────────────────────────────────────────────────────────── -->
 <section class="slide" data-t="Nhóm 1: biết con nào chờ">
   <div class="two-a grow">
     <div class="vcen stack">
@@ -511,7 +502,7 @@ tbody tr + tr td { border-top: 1px solid var(--line); }
   </aside>
 </section>
 
-<!-- 14 ───────────────────────────────────────────────────────────────────── -->
+<!-- 13 ───────────────────────────────────────────────────────────────────── -->
 <section class="slide" data-t="Hộp thư chú ý">
   <div class="two-b grow">
     <div class="vcen stack">
@@ -529,7 +520,7 @@ tbody tr + tr td { border-top: 1px solid var(--line); }
   <aside class="notes"><p>Nếu đang chạy dưới 3 session thì cái này hơi thừa. Nói thẳng vậy. Nó chỉ có nghĩa từ khoảng 4 con trở lên.</p></aside>
 </section>
 
-<!-- 15 ───────────────────────────────────────────────────────────────────── -->
+<!-- 14 ───────────────────────────────────────────────────────────────────── -->
 <section class="slide" data-t="Nhóm 2: chia màn hình">
   <div class="two-a grow">
     <div class="vcen stack">
@@ -553,7 +544,7 @@ tbody tr + tr td { border-top: 1px solid var(--line); }
   </aside>
 </section>
 
-<!-- 16 ───────────────────────────────────────────────────────────────────── -->
+<!-- 15 ───────────────────────────────────────────────────────────────────── -->
 <section class="slide" data-t="Nhóm 3: ô nhập prompt">
   <div class="two grow">
     <div class="vcen stack">
@@ -579,7 +570,7 @@ tbody tr + tr td { border-top: 1px solid var(--line); }
   </aside>
 </section>
 
-<!-- 17 ───────────────────────────────────────────────────────────────────── -->
+<!-- 16 ───────────────────────────────────────────────────────────────────── -->
 <section class="slide" data-t="Xem dạng hội thoại">
   <div class="two-b grow">
     <div class="vcen stack">
@@ -597,7 +588,7 @@ tbody tr + tr td { border-top: 1px solid var(--line); }
   <aside class="notes"><p>Cái này hợp với người không sống trong terminal. Phòng toàn dev quen terminal thì lướt nhanh.</p></aside>
 </section>
 
-<!-- 18 ───────────────────────────────────────────────────────────────────── -->
+<!-- 17 ───────────────────────────────────────────────────────────────────── -->
 <section class="slide" data-t="Nhóm 4: worktree">
   <div class="two-a grow">
     <div class="vcen stack">
@@ -619,7 +610,7 @@ tbody tr + tr td { border-top: 1px solid var(--line); }
   </aside>
 </section>
 
-<!-- 19 ───────────────────────────────────────────────────────────────────── -->
+<!-- 18 ───────────────────────────────────────────────────────────────────── -->
 <section class="slide" data-t="Nhóm 4: diff">
   <div class="two-a grow">
     <div class="vcen stack">
@@ -641,7 +632,7 @@ tbody tr + tr td { border-top: 1px solid var(--line); }
   </aside>
 </section>
 
-<!-- 20 ───────────────────────────────────────────────────────────────────── -->
+<!-- 19 ───────────────────────────────────────────────────────────────────── -->
 <section class="slide" data-t="Nhóm 4: lịch sử">
   <div class="two-b grow">
     <div class="vcen stack">
@@ -664,7 +655,7 @@ tbody tr + tr td { border-top: 1px solid var(--line); }
   </aside>
 </section>
 
-<!-- 21 ───────────────────────────────────────────────────────────────────── -->
+<!-- 20 ───────────────────────────────────────────────────────────────────── -->
 <section class="slide" data-t="Nhóm 5: editor">
   <div class="two grow">
     <div class="vcen stack">
@@ -691,7 +682,7 @@ tbody tr + tr td { border-top: 1px solid var(--line); }
   </aside>
 </section>
 
-<!-- 22 ───────────────────────────────────────────────────────────────────── -->
+<!-- 21 ───────────────────────────────────────────────────────────────────── -->
 <section class="slide" data-t="Nhóm 6: điện thoại">
   <div class="two-a grow">
     <div class="vcen stack">
@@ -712,7 +703,7 @@ tbody tr + tr td { border-top: 1px solid var(--line); }
   </aside>
 </section>
 
-<!-- 23 ───────────────────────────────────────────────────────────────────── -->
+<!-- 22 ───────────────────────────────────────────────────────────────────── -->
 <section class="slide" data-t="Nhóm 7: hỏi app">
   <div class="two-a grow">
     <div class="vcen stack">
@@ -733,7 +724,7 @@ tbody tr + tr td { border-top: 1px solid var(--line); }
   </aside>
 </section>
 
-<!-- 24 ───────────────────────────────────────────────────────────────────── -->
+<!-- 23 ───────────────────────────────────────────────────────────────────── -->
 <section class="slide" data-t="Nhóm 7: còn lại">
   <h2>Mấy thứ còn lại, gom một slide</h2>
   <div class="three grow" style="margin-top:22px">
@@ -758,7 +749,7 @@ tbody tr + tr td { border-top: 1px solid var(--line); }
   </aside>
 </section>
 
-<!-- 25 ───────────────────────────────────────────────────────────────────── -->
+<!-- 24 ───────────────────────────────────────────────────────────────────── -->
 <section class="slide" data-t="Phím tắt">
   <h2>Phím tắt hay dùng</h2>
   <div class="two grow" style="margin-top:22px">
@@ -787,14 +778,14 @@ tbody tr + tr td { border-top: 1px solid var(--line); }
   </aside>
 </section>
 
-<!-- 26 ───────────────────────────────────────────────────────────────────── -->
+<!-- 25 ───────────────────────────────────────────────────────────────────── -->
 <section class="slide divider" data-t="Phần 4">
   <p class="n">PHẦN 4</p>
   <h2 style="margin-top:12px">Một ngày mình dùng nó ra sao</h2>
   <aside class="notes"><p>Chuyển: "Liệt kê tính năng thì khô. Kể một ngày thật cho dễ hình dung hơn."</p></aside>
 </section>
 
-<!-- 27 ───────────────────────────────────────────────────────────────────── -->
+<!-- 26 ───────────────────────────────────────────────────────────────────── -->
 <section class="slide" data-t="Một buổi sáng">
   <h2>Một buổi sáng điển hình</h2>
   <table style="margin-top:16px">
@@ -814,7 +805,7 @@ tbody tr + tr td { border-top: 1px solid var(--line); }
   </aside>
 </section>
 
-<!-- 28 ───────────────────────────────────────────────────────────────────── -->
+<!-- 27 ───────────────────────────────────────────────────────────────────── -->
 <section class="slide" data-t="Dùng nhiều dùng ít">
   <h2>Nói thật: cái nào mình dùng, cái nào không</h2>
   <div class="two grow" style="margin-top:22px">
@@ -836,14 +827,14 @@ tbody tr + tr td { border-top: 1px solid var(--line); }
   </aside>
 </section>
 
-<!-- 29 ───────────────────────────────────────────────────────────────────── -->
+<!-- 28 ───────────────────────────────────────────────────────────────────── -->
 <section class="slide divider" data-t="Phần 5">
   <p class="n">PHẦN 5</p>
   <h2 style="margin-top:12px">Ai thì hợp kiểu này</h2>
   <aside class="notes"><p>Chuyển: "Phần cuối, và là phần mình nghĩ đáng nghe nhất kể cả khi bạn không định cài gì."</p></aside>
 </section>
 
-<!-- 30 ───────────────────────────────────────────────────────────────────── -->
+<!-- 29 ───────────────────────────────────────────────────────────────────── -->
 <section class="slide" data-t="Bốn câu tự hỏi">
   <h2>Bốn câu tự hỏi trước khi cài bất cứ thứ gì</h2>
   <div class="stack grow" style="margin-top:20px;gap:15px">
@@ -860,7 +851,7 @@ tbody tr + tr td { border-top: 1px solid var(--line); }
   </aside>
 </section>
 
-<!-- 31 ───────────────────────────────────────────────────────────────────── -->
+<!-- 30 ───────────────────────────────────────────────────────────────────── -->
 <section class="slide" data-t="Có sẵn gì rồi">
   <h2>Có sẵn kha khá thứ, kiểm tra trước khi cài thêm</h2>
   <div class="two grow" style="margin-top:20px">
@@ -888,7 +879,7 @@ tbody tr + tr td { border-top: 1px solid var(--line); }
   </aside>
 </section>
 
-<!-- 32 ───────────────────────────────────────────────────────────────────── -->
+<!-- 31 ───────────────────────────────────────────────────────────────────── -->
 <section class="slide" data-t="Cái giá tự làm">
   <h2>Và cái giá của việc tự làm</h2>
   <div class="three grow" style="margin-top:22px">
@@ -904,7 +895,7 @@ tbody tr + tr td { border-top: 1px solid var(--line); }
   </aside>
 </section>
 
-<!-- 33 ───────────────────────────────────────────────────────────────────── -->
+<!-- 32 ───────────────────────────────────────────────────────────────────── -->
 <section class="slide" data-t="Muốn thử thì">
   <h2>Muốn thử thì làm theo thứ tự này</h2>
   <div class="two grow" style="margin-top:22px">
@@ -924,7 +915,7 @@ tbody tr + tr td { border-top: 1px solid var(--line); }
   </aside>
 </section>
 
-<!-- 34 ───────────────────────────────────────────────────────────────────── -->
+<!-- 33 ───────────────────────────────────────────────────────────────────── -->
 <section class="slide mid" data-t="Kết">
   <h2 style="max-width:21ch">Không có công cụ tốt nhất. Chỉ có công cụ vừa tay.</h2>
   <p class="lead" style="margin-top:22px">Bốn câu hỏi lúc nãy quan trọng hơn cả buổi nói này.</p>
@@ -935,7 +926,7 @@ tbody tr + tr td { border-top: 1px solid var(--line); }
   </aside>
 </section>
 
-<!-- 35 ───────────────────────────────────────────────────────────────────── -->
+<!-- 34 ───────────────────────────────────────────────────────────────────── -->
 <section class="slide" data-t="Hỏi đáp">
   <h2>Hỏi đáp</h2>
   <div class="two grow" style="margin-top:20px">

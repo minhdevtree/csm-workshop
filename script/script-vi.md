@@ -1,9 +1,9 @@
 # Kịch bản nói
 
-50 phút nói + 10 phút hỏi đáp. 35 slide.
+50 phút nói + 10 phút hỏi đáp. 34 slide.
 
-Cách dùng: cột thời gian là mốc tính từ lúc bắt đầu. Tới slide 12 mà đồng hồ đã quá
-17 phút thì lướt nhanh phần tính năng, bỏ slide 14, 17, 20.
+Cách dùng: cột thời gian là mốc tính từ lúc bắt đầu. Tới slide 11 mà đồng hồ đã quá
+17 phút thì lướt nhanh phần tính năng, bỏ slide 13, 16, 19.
 
 Chữ **in đậm** là chỗ nhấn giọng. Chữ trong ngoặc vuông là chỉ dẫn cho mình, không
 đọc ra.
@@ -20,10 +20,10 @@ Giọng: kể chuyện cho đồng nghiệp nghe, không phải thuyết trình.
       lúc đang đứng trên bục.**
 - [ ] Bấm `S` xem ghi chú có nằm ở màn hình của mình không. Chỉ có một màn hình thì
       đừng bấm, cầm bản in file này.
-- [ ] Kiểm tra 7 GIF đã nằm trong `assets/`, slide 11, 13, 15, 18, 19, 22, 23 hiện
+- [ ] Kiểm tra 7 GIF đã nằm trong `assets/`, slide 10, 12, 14, 17, 18, 21, 22 hiện
       ảnh chứ không phải khung nét đứt.
 - [ ] Mở sẵn một terminal ở tab khác, đã `cd` vào một repo thật, để chạy
-      `claude --help` ở slide 31.
+      `claude --help` ở slide 30.
 - [ ] Tắt thông báo trên máy. Buổi này nói về việc bị ngắt quãng, đừng để bị ngắt.
 
 ---
@@ -42,7 +42,14 @@ Giọng: kể chuyện cho đồng nghiệp nghe, không phải thuyết trình.
 >
 > [Đếm. Thường có tiếng cười.]
 >
-> Được rồi. Hôm nay mình kể về cái app mình làm để xử mấy chuyện đó.
+> Được rồi. Hôm nay mình kể về một cái app tụi mình làm để xử mấy chuyện đó.
+>
+> [**Ghi công cho đúng ngay từ đầu, đừng để cuối buổi.**]
+>
+> Nói trước cho rõ: app này không phải một mình mình làm. Có **[tên đồng nghiệp]**
+> đóng góp một phần, và phần lớn code là Claude Code viết dưới sự dẫn dắt của tụi
+> mình. Nói xong câu này thì cả buổi sau đó mình xưng "mình" cho gọn, không ai hiểu
+> nhầm.
 
 [Nếu đa số chỉ chạy 1 con: nói thêm "phần cấu trúc ở giữa vẫn đáng nghe kể cả khi
 bạn không định dùng app", rồi lát nữa lướt nhanh phần tính năng nâng cao.]
@@ -71,53 +78,44 @@ bạn không định dùng app", rồi lát nữa lướt nhanh phần tính nă
 
 ---
 
-## Phần 1: đau ở đâu (0:04 → 0:09)
+## Phần 1: được gì mất gì (0:04 → 0:07)
 
-**Slide 4.**
+**Slide 4.** [Một slide, 60 giây. Đừng giảng.]
 
-> Mỗi lượt Claude chạy 3 tới 10 phút. Trong lúc đó làm gì cũng được, **trừ một việc
-> là ngồi canh nó**.
+> Chạy nhiều con thì được gì, mất gì.
 >
-> Nhưng không canh thì phải có cái gọi mình về. Không có thì cứ vài phút lại tự đi
-> kiểm tra. Mà mỗi lần đi kiểm tra là **một lần tự ngắt mình**.
+> **Được**: mỗi lượt Claude chạy 3 tới 10 phút, chạy nhiều con thì không phải ngồi
+> chờ khoảng đó nữa.
 >
-> Có một nghiên cứu hay được trích: sau một lần bị ngắt, trung bình mất **23 phút**
-> mới quay lại đúng mạch cũ.
+> **Mất** hai thứ. Một là **phải review nhiều hơn**: chờ ngắn lại thì phần đọc và
+> kiểm tra dài ra. Hai là **dễ bị ngắt liên tục**: không biết con nào đang gọi mình
+> thì cứ vài phút lại tự đi kiểm tra.
 >
-> [Kể chuyện thật, ngắn.]
+> [Kể chuyện thật cho gần.]
 >
 > Mình từng có buổi chiều mở 3 terminal, cứ vài phút alt-tab qua từng cái xem xong
 > chưa. Cuối buổi cả 3 con đều xong việc, còn mình thì chả làm được gì ra hồn.
 >
-> **Chạy song song mà không có cái gọi mình về thì không phải làm được nhiều việc
-> hơn. Chỉ là tự ngắt mình nhiều hơn.**
+> [Câu chốt, dẫn thẳng sang phần cấu trúc.]
+>
+> **Nên thứ quyết định không phải là chạy được mấy con, mà là bạn có biết con nào
+> đang cần mình hay không.**
 
-**Slide 5.** [Nói 30 giây rồi đi, đừng biến thành bài giảng]
-
-> Nhưng có một cái bẫy, nói luôn cho sòng phẳng.
->
-> Báo cáo DORA năm ngoái khảo sát gần 5.000 người: dùng AI thì throughput tăng thật,
-> **nhưng tỉ lệ hỏng và phải làm lại cũng tăng**.
->
-> Câu chốt của họ mình thích: **AI không phải giải pháp đóng hộp, nó là cái khuếch
-> đại.** Nền tốt thì nhanh hơn, nền lộn xộn thì lộn xộn nhanh hơn.
->
-> Áp vào chuyện hôm nay: chạy 10 con song song trên repo không có test là cách nhanh
-> nhất để tạo ra 10 thứ phải sửa.
->
-> Nói cách khác: chạy nhiều làm phần **chờ** ngắn lại, nhưng làm phần **kiểm tra
-> lại** dài ra. Lát nữa có mấy tính năng sinh ra chỉ để lo phần đó.
+[Nếu có người hỏi số liệu: có nghiên cứu của Gloria Mark, sau một lần bị ngắt thì
+trung bình mất 23 phút mới quay lại đúng mạch cũ. **Chỉ nói khi được hỏi.** Bản
+trước để nó lên slide và bị phản hồi là khó hiểu, vì nó kéo buổi thành bài giảng
+về năng suất.]
 
 ---
 
-## Phần 2: cấu trúc (0:09 → 0:19)
+## Phần 2: cấu trúc (0:07 → 0:18)
 
-**Slide 6.** [Phân đoạn]
+**Slide 5.** [Phân đoạn]
 
 > Giờ mình chỉ cho mọi người app được xếp thế nào. Hiểu cái này rồi thì phần tính
 > năng ở sau chỉ là chi tiết.
 
-**Slide 7.** [30 giây, chỉ để định vị]
+**Slide 6.** [30 giây, chỉ để định vị]
 
 > Cửa sổ chia ba phần. **Sidebar** bên trái, cái này đáng nói nhất, slide sau nói
 > riêng. **Thanh tab** giống trình duyệt, mỗi tab là một session hoặc một file hoặc
@@ -125,7 +123,7 @@ bạn không định dùng app", rồi lát nữa lướt nhanh phần tính nă
 >
 > Bấm `⌘B` là giấu sidebar cho terminal rộng ra.
 
-**Slide 8.** [**Slide quan trọng nhất phần này. Đứng lại lâu.** Chỉ vào cây bên trái.]
+**Slide 7.** [**Slide quan trọng nhất phần này. Đứng lại lâu.** Chỉ vào cây bên trái.]
 
 > Cây trong sidebar có bốn tầng. Mình đi từ trên xuống.
 >
@@ -146,29 +144,43 @@ bạn không định dùng app", rồi lát nữa lướt nhanh phần tính nă
 > Mấy cái chấm này đang chạy thật trên slide luôn. Con vàng là đang chờ mình, con
 > xanh là đang làm. Trong app nó cũng nhảy y hệt vậy.
 
-**Slide 9.** [Chỗ CSM khác các app khác rõ nhất, nói kỹ]
+**Slide 8.** [**Chỗ dễ bị bắt bẻ nhất cả buổi. Nói cẩn thận.**]
 
-> Vì sao lại cần tới bốn tầng, trong khi phần lớn app quản lý agent chỉ có hai:
-> workspace rồi tới agent. Mỗi workspace một nhánh, mỗi nhánh một agent. Gọn, và hợp
-> nếu bạn làm một việc một lúc.
+> Vì sao lại cần tới bốn tầng.
 >
-> Nhưng mình hay có **ba session trong cùng một nhánh**. Ví dụ đang sửa bug ở nhánh
-> mr-2103: một con viết code, một con viết test, một con đọc log production. Ba con
-> đó **cùng thư mục, không cần tách nhánh**.
+> [**Nói phần này TRƯỚC, đừng để ai phải giơ tay hỏi.**]
 >
-> Nếu công cụ bắt mỗi agent phải có một worktree riêng thì mình phải đẻ ra ba nhánh
-> vô nghĩa.
+> Nói rõ một chuyện trước đã: **Claude Code tự nó đã chạy song song được rồi.** Nó
+> đẻ subagent trong cùng một session, và giờ còn có cả agent team. Nên đây **không
+> phải** chuyện làm được hay không làm được. Ai nghĩ mình đang nói "Claude không làm
+> được nên phải có app" thì hiểu sai.
 >
-> **Ý cốt lõi: "cần nhánh riêng" và "cần thêm một con chạy" là hai nhu cầu khác nhau.
-> Không nên bắt chúng dùng chung một cơ chế.**
+> Cái khác nhau là **ranh giới**.
 >
-> Cái này mang về được kể cả không dùng app của mình: ai tự dựng tmux hay viết script
-> cũng nên tách hai khái niệm đó ra.
+> Subagent nằm trong **cùng một cuộc hội thoại**: dùng chung context, chung luồng
+> duyệt quyền, và xong việc là tan.
 >
-> Còn folder thì đơn giản là để hai chục repo vẫn xếp gọn: việc công ty một hộp, việc
-> cá nhân một hộp.
+> Còn session riêng thì có context riêng, lịch sử riêng, sống qua nhiều ngày. Duyệt
+> quyền riêng nên mình biết đúng **con nào** đang hỏi. Và bỏ một con đi không ảnh
+> hưởng con kia.
+>
+> [Ví dụ cụ thể, đây là chỗ làm người nghe hiểu.]
+>
+> Ví dụ mình đang sửa bug ở nhánh mr-2103. Việc "đọc log production để tìm nguyên
+> nhân" là **một mạch riêng**, hôm sau vẫn còn dùng tới. Nếu đưa vào subagent thì
+> xong lượt là mất, mà nó còn ăn chung context với việc sửa code.
+>
+> Nói gọn: **subagent hợp khi một việc chia được thành mấy việc con rồi gộp kết quả
+> lại. Session riêng hợp khi đó là mấy việc không liên quan tới nhau, mỗi việc một
+> mạch, kéo dài nhiều ngày.**
+>
+> Bốn tầng là để **quản lý mấy session riêng đó**, không phải để thay subagent. Hai
+> thứ dùng cùng lúc được, và mình dùng cả hai.
+>
+> Còn folder thì đơn giản: hai chục repo vẫn xếp gọn, việc công ty một hộp, việc cá
+> nhân một hộp.
 
-**Slide 10.**
+**Slide 9.**
 
 > Cái chấm bên trái mỗi session có 5 trạng thái. Xám là đang chạy nhưng im. Xanh dương
 > là đang làm việc. **Vàng là đang chờ mình trả lời**, đây là cái quan trọng nhất.
@@ -188,7 +200,7 @@ bạn không định dùng app", rồi lát nữa lướt nhanh phần tính nă
 > Nên ai định tự dựng công cụ: **bắt đầu từ hook, đừng parse output terminal.** Parse
 > output là ngõ cụt.
 
-**Slide 11.** [Có GIF]
+**Slide 10.** [Có GIF]
 
 > Còn một chuyện về cấu trúc: **session không sống trong tab.**
 >
@@ -208,17 +220,17 @@ bạn không định dùng app", rồi lát nữa lướt nhanh phần tính nă
 
 ---
 
-## Phần 3: tính năng (0:19 → 0:41)
+## Phần 3: tính năng (0:18 → 0:41)
 
 Nhịp chung: mỗi slide 60 tới 90 giây. Nói cái đau trước, rồi cách giải, rồi để GIF
 chạy. Đừng đọc hết gạch đầu dòng, chỉ nhấn 2 ý mỗi slide.
 
-**Slide 12.** [Phân đoạn]
+**Slide 11.** [Phân đoạn]
 
 > Hiểu cấu trúc rồi thì phần này đi nhanh. Mình gom theo nhóm nhu cầu chứ không theo
 > menu.
 
-**Slide 13. Biết con nào đang chờ.** [Có GIF. **Nếu chỉ kịp chiếu một GIF thì chiếu cái này.**]
+**Slide 12. Biết con nào đang chờ.** [Có GIF. **Nếu chỉ kịp chiếu một GIF thì chiếu cái này.**]
 
 > Nhóm một, và cũng là lý do app tồn tại. Có bốn đường báo.
 >
@@ -231,7 +243,7 @@ chạy. Đừng đọc hết gạch đầu dòng, chỉ nhấn 2 ý mỗi slide.
 > Bật tắt riêng từng cái được. Có người ghét chuông, có người ghét thông báo. Cái đó
 > là chuyện phải có chứ không phải tính năng để khoe.
 
-**Slide 14. Hộp thư chú ý.** [Bỏ được nếu trễ giờ]
+**Slide 13. Hộp thư chú ý.** [Bỏ được nếu trễ giờ]
 
 > `⇧⌘A` mở một danh sách gom mọi session đang chờ, từ tất cả dự án.
 >
@@ -241,7 +253,7 @@ chạy. Đừng đọc hết gạch đầu dòng, chỉ nhấn 2 ý mỗi slide.
 > Nói thật là chạy dưới 3 con thì cái này hơi thừa. Từ khoảng 4 con trở lên mới có
 > nghĩa.
 
-**Slide 15. Chia màn hình.** [Có GIF]
+**Slide 14. Chia màn hình.** [Có GIF]
 
 > Chia dọc chia ngang tuỳ ý, lồng nhau được, kéo tab từ ô này sang ô kia.
 >
@@ -255,7 +267,7 @@ chạy. Đừng đọc hết gạch đầu dòng, chỉ nhấn 2 ý mỗi slide.
 >
 > Áp template **không bao giờ đóng hay xoá session nào**. Nó chỉ xếp lại thôi.
 
-**Slide 16. Ô nhập prompt.**
+**Slide 15. Ô nhập prompt.**
 
 > Gõ thẳng vào terminal thì hay mất chữ lúc Claude đang in ra, và không dán ảnh được.
 > Nên có ô nhập riêng. Dán ảnh được, chạy cả trên điện thoại, gõ `/` là hiện slash
@@ -269,14 +281,14 @@ chạy. Đừng đọc hết gạch đầu dòng, chỉ nhấn 2 ý mỗi slide.
 >
 > Ví dụ thật: tối trước khi về xếp 3 việc, sáng ra đọc kết quả.
 
-**Slide 17. Xem dạng hội thoại.** [Bỏ được nếu trễ giờ]
+**Slide 16. Xem dạng hội thoại.** [Bỏ được nếu trễ giờ]
 
 > Terminal thô thì quen mắt với dân dev, nhưng cuộn ngược lại tìm một câu Claude nói
 > lúc nãy thì khổ. Bật chế độ hội thoại là nó hiện ra như một cuộc chat, tìm kiếm được.
 >
 > Chat cũ vẫn đọc lại được kể cả khi session đã tắt, vì nó nằm trong file trên máy.
 
-**Slide 18. Worktree.** [Có GIF]
+**Slide 17. Worktree.** [Có GIF]
 
 > Nhóm git. Worktree là nhiều thư mục làm việc trên cùng một repo, mỗi thư mục một
 > nhánh, **dùng chung lịch sử git**. Không phải clone lại, nên rẻ hơn nhiều.
@@ -289,7 +301,7 @@ chạy. Đừng đọc hết gạch đầu dòng, chỉ nhấn 2 ý mỗi slide.
 > Cái này `claude --worktree` cũng làm được mà không cần app nào. Thứ app thêm vào là
 > nó **nằm trong cây, nhìn thấy được**, và có session riêng.
 
-**Slide 19. Diff.** [Có GIF]
+**Slide 18. Diff.** [Có GIF]
 
 > `⇧⌘D`. Diff mở ra như một tab, ngồi cạnh chính file nó nói về, chia đôi màn được,
 > và ở nguyên đó trong lúc mình làm việc tiếp.
@@ -302,7 +314,7 @@ chạy. Đừng đọc hết gạch đầu dòng, chỉ nhấn 2 ý mỗi slide.
 > Nói thật là mình làm nó gần như sau cùng, sau khi alt-tab ra ngoài đủ nhiều lần.
 > Không phải làm vì "app nào cũng có diff".
 
-**Slide 20. Lịch sử commit.** [Bỏ được nếu trễ giờ]
+**Slide 19. Lịch sử commit.** [Bỏ được nếu trễ giờ]
 
 > `⇧⌘H`. Danh sách commit, chọn một cái để xem nó đổi file nào, chọn file để xem đổi
 > chỗ nào.
@@ -314,7 +326,7 @@ chạy. Đừng đọc hết gạch đầu dòng, chỉ nhấn 2 ý mỗi slide.
 > Không có đồ thị nhánh, và đó là cố ý. Vẽ đồ thị là một đống việc để trả lời câu hỏi
 > mà mình gần như không bao giờ hỏi.
 
-**Slide 21. Editor.**
+**Slide 20. Editor.**
 
 > Có editor bên trong, nhưng **không phải để thay VS Code**. Mục đích hẹp thôi: sửa
 > nhanh một dòng, đọc file Claude vừa nhắc tới, sửa `CLAUDE.md`.
@@ -325,7 +337,7 @@ chạy. Đừng đọc hết gạch đầu dòng, chỉ nhấn 2 ý mỗi slide.
 > Cây file cũng tự mở tới file đang xem, y như cây session tự cuộn tới session đang
 > mở. Hai cây hành xử giống nhau, đó là chủ ý.
 
-**Slide 22. Điện thoại.** [Có GIF. **Nói phần bảo mật ngay, đừng chờ bị hỏi.**]
+**Slide 21. Điện thoại.** [Có GIF. **Nói phần bảo mật ngay, đừng chờ bị hỏi.**]
 
 > Máy chạy app tự phục vụ luôn giao diện của nó qua HTTP cho thiết bị khác trong mạng.
 > Điện thoại mở trình duyệt là thấy đủ trạng thái và trả lời được.
@@ -337,7 +349,7 @@ chạy. Đừng đọc hết gạch đầu dòng, chỉ nhấn 2 ý mỗi slide.
 >
 > Đây cũng là nhu cầu khiến mình không dùng được mấy app có sẵn. Lát nữa nói lại.
 
-**Slide 23. Hỏi thẳng app.** [Có GIF]
+**Slide 22. Hỏi thẳng app.** [Có GIF]
 
 > App nhiều thứ quá, mình tự làm mà còn quên phím tắt. Nên có một chỗ chat để hỏi
 > "làm sao để...".
@@ -354,7 +366,7 @@ chạy. Đừng đọc hết gạch đầu dòng, chỉ nhấn 2 ý mỗi slide.
 >
 > Đó là cách bắt tài liệu không bị mục mà không cần ai đi nhắc.
 
-**Slide 24. Còn lại.** [Lướt nhanh, chỉ dừng 2 chỗ]
+**Slide 23. Còn lại.** [Lướt nhanh, chỉ dừng 2 chỗ]
 
 > Mấy thứ còn lại gom một slide. Ba bảng màu sáng tối. Tag và lọc. Xem usage token.
 > `⌘K` tìm mọi thứ.
@@ -370,7 +382,7 @@ chạy. Đừng đọc hết gạch đầu dòng, chỉ nhấn 2 ý mỗi slide.
 > Và có một con pet pixel trong sidebar. Nó chả có tác dụng gì cả. Đó là lý do nó ở
 > lại: app dùng cả ngày thì cần một chỗ không nghiêm túc.
 
-**Slide 25. Phím tắt.** [Để mọi người chụp màn hình]
+**Slide 24. Phím tắt.** [Để mọi người chụp màn hình]
 
 > Slide này để mọi người chụp lại. Mình chỉ nhấn ba cái hay nhất: `⌘K` bảng lệnh,
 > `⇧⌘A` hộp thư, `⇧⌘L` template.
@@ -382,11 +394,11 @@ chạy. Đừng đọc hết gạch đầu dòng, chỉ nhấn 2 ý mỗi slide.
 
 ## Phần 4: một ngày (0:41 → 0:46)
 
-**Slide 26.** [Phân đoạn]
+**Slide 25.** [Phân đoạn]
 
 > Liệt kê tính năng thì khô. Kể một ngày thật cho dễ hình dung hơn.
 
-**Slide 27.** [Kể như kể chuyện, đừng đọc bảng]
+**Slide 26.** [Kể như kể chuyện, đừng đọc bảng]
 
 > Mở máy: bấm `⇧⌘L`, mở template quen. Bên trái session chính của repo đang làm, bên
 > phải một con để hỏi vặt.
@@ -408,7 +420,7 @@ chạy. Đừng đọc hết gạch đầu dòng, chỉ nhấn 2 ý mỗi slide.
 > Cái dòng "đi pha cà phê" là cả điểm của app. Mọi thứ khác chỉ phục vụ để dòng đó
 > thành sự thật.
 
-**Slide 28.** [Slide mua tín nhiệm. Nói thẳng.]
+**Slide 27.** [Slide mua tín nhiệm. Nói thẳng.]
 
 > Nói thật cái nào mình dùng cái nào không.
 >
@@ -425,11 +437,11 @@ chạy. Đừng đọc hết gạch đầu dòng, chỉ nhấn 2 ý mỗi slide.
 
 ## Phần 5: ai thì hợp (0:46 → 0:54)
 
-**Slide 29.** [Phân đoạn]
+**Slide 28.** [Phân đoạn]
 
 > Phần cuối, và là phần mình nghĩ đáng nghe nhất kể cả khi bạn không định cài gì.
 
-**Slide 30.**
+**Slide 29.**
 
 > Bốn câu tự hỏi trước khi cài bất cứ thứ gì.
 >
@@ -449,7 +461,7 @@ chạy. Đừng đọc hết gạch đầu dòng, chỉ nhấn 2 ý mỗi slide.
 > Bốn: **bạn có hay rời khỏi máy không?** Câu này ít người hỏi, mà nó lại là câu quyết
 > định với mình. Chính vì nó mà mấy app có sẵn không vừa.
 
-**Slide 31.** [**Chạy `claude --help` ngay tại chỗ.** Slide này gây "ồ" to nhất buổi.]
+**Slide 30.** [**Chạy `claude --help` ngay tại chỗ.** Slide này gây "ồ" to nhất buổi.]
 
 > Trước khi cài thêm gì, kiểm tra thứ mình đã có. Claude Code tự nó đã kha khá.
 >
@@ -471,7 +483,7 @@ chạy. Đừng đọc hết gạch đầu dòng, chỉ nhấn 2 ý mỗi slide.
 > phát triển hồi tháng 2. Chọn công cụ trong thị trường mới thì cái mình chọn hôm nay
 > có thể biến mất.
 
-**Slide 32.** [Giữ cho cả buổi không thành quảng cáo. Nói thẳng, đừng làm nhẹ.]
+**Slide 31.** [Giữ cho cả buổi không thành quảng cáo. Nói thẳng, đừng làm nhẹ.]
 
 > Và cái giá của việc tự làm.
 >
@@ -488,7 +500,7 @@ chạy. Đừng đọc hết gạch đầu dòng, chỉ nhấn 2 ý mỗi slide.
 > Nên khuyên thật lòng: **đừng tự làm.** Dùng cái có sẵn, trừ khi nhu cầu của bạn
 > không có cái nào vừa, và bạn thấy việc làm công cụ tự nó đã vui.
 
-**Slide 33.**
+**Slide 32.**
 
 > Muốn thử thì làm theo thứ tự này.
 >
@@ -500,7 +512,7 @@ chạy. Đừng đọc hết gạch đầu dòng, chỉ nhấn 2 ý mỗi slide.
 >
 > Đừng đổi hai thứ cùng lúc, và đừng đánh giá bằng cảm giác ngày đầu tiên.
 
-**Slide 34.**
+**Slide 33.**
 
 > **Không có công cụ tốt nhất. Chỉ có công cụ vừa tay.**
 >
@@ -514,7 +526,7 @@ chạy. Đừng đọc hết gạch đầu dòng, chỉ nhấn 2 ý mỗi slide.
 
 ## Hỏi đáp (0:54 → 1:04)
 
-**Slide 35.**
+**Slide 34.**
 
 Đừng hỏi "có ai hỏi gì không", thường sẽ im. Mở bằng câu cụ thể:
 
@@ -524,7 +536,7 @@ hoặc
 
 > Có ai vừa nhận ra mình chỉ cần một con thôi không?
 
-Phòng vẫn im thì quay lại slide 30, hỏi từng câu.
+Phòng vẫn im thì quay lại slide 29, hỏi từng câu.
 
 ### Câu chuẩn bị sẵn
 
@@ -535,6 +547,11 @@ trần gói thì song song chạm nhanh hơn.
 **Bao nhiêu con là quá nhiều?**
 Khi hàng chờ review dài hơn thời gian mình có để review. Con số đó thấp hơn số con
 chạy được về mặt kỹ thuật nhiều.
+
+**Claude tự đẻ subagent được mà, sao còn cần nhiều session?**
+Hai thứ khác nhau chứ không thay nhau. Subagent chia một việc thành mấy việc con rồi
+gộp kết quả, chung context, xong là tan. Session riêng là mấy việc không liên quan
+nhau, mỗi cái một mạch hội thoại, sống qua nhiều ngày. Mình dùng cả hai cùng lúc.
 
 **Sao không xài tmux cho xong?**
 Được chứ, và nếu đã sống trong tmux thì đó là lựa chọn rẻ nhất. Cái tmux không cho là
@@ -548,7 +565,7 @@ là đủ.
 Mới chạy một người. Nói gì về quy mô team cũng là đoán, nên mình không đoán.
 
 **Nó làm anh nhanh hơn bao nhiêu?**
-Chưa đo được tử tế. Xem lại slide 32. Mình biết mình đang có đúng cái cảm giác mà
+Chưa đo được tử tế. Xem lại slide 31. Mình biết mình đang có đúng cái cảm giác mà
 nghiên cứu người ta cảnh báo.
 
 **Sao không dùng Conductor cho rồi?**
@@ -561,8 +578,8 @@ người không cần hai thứ đó thì Conductor là lựa chọn hợp lý h
 
 | Đang ở | Đồng hồ | Làm gì |
 |---|---|---|
-| Slide 12 | quá 20 phút | Bỏ slide 14, 17, 20 |
-| Slide 26 | quá 43 phút | Bỏ slide 28, kể luôn vào phần 5 |
-| Slide 30 | quá 50 phút | Bỏ slide 33, nói kế hoạch 2 tuần bằng lời trong 20 giây |
+| Slide 11 | quá 20 phút | Bỏ slide 13, 16, 19 |
+| Slide 25 | quá 43 phút | Bỏ slide 27, kể luôn vào phần 5 |
+| Slide 29 | quá 50 phút | Bỏ slide 32, nói kế hoạch 2 tuần bằng lời trong 20 giây |
 
-Không bao giờ cắt: slide 2, 8, 9, 10, 13, 28, 30, 32.
+Không bao giờ cắt: slide 2, 7, 8, 9, 12, 27, 29, 31.

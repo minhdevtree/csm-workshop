@@ -36,7 +36,7 @@ không phải lúc đang đứng trên bục.
 ## Trong repo có gì
 
 ```
-slides/index.html          Deck 35 slide, tự chứa, có ghi chú diễn giả
+slides/index.html          Deck 34 slide, tự chứa, có ghi chú diễn giả
 script/script-vi.md        Kịch bản nói chi tiết, có mốc thời gian và chỉ dẫn sân khấu
 script/demo-checklist.md   Sáu đoạn demo cần quay, và cách chèn vào slide
 context/                   Bối cảnh về app được lấy làm case study
@@ -46,7 +46,7 @@ assets/                    Chỗ bỏ GIF demo vào
 
 ## Còn thiếu
 
-Bảy khung demo ở slide 11, 13, 15, 18, 19, 22 và 23 đang để trống có chủ đích, chờ
+Bảy khung demo ở slide 10, 12, 14, 17, 18, 21 và 22 đang để trống có chủ đích, chờ
 GIF quay màn hình. Xem `script/demo-checklist.md` để biết cần quay gì và đặt tên file
 thế nào. Slide vẫn trình chiếu được khi chưa có, khung sẽ hiện tên file cần bỏ vào.
 
@@ -55,9 +55,14 @@ thế nào. Slide vẫn trình chiếu được khi chưa có, khung sẽ hiện
 Mọi con số nói trên sân khấu đều có nguồn trong `research/sources.md`. Hai chỗ cần
 đặc biệt cẩn thận khi trình bày:
 
-1. **Báo cáo DORA** (slide 5) là số liệu duy nhất còn dẫn trong deck. Nguồn nằm ở
-   `research/sources.md`. Bản trước có thêm nghiên cứu METR, đã bỏ vì nó kéo buổi
-   chia sẻ thành một bài giảng về năng suất, và vì chính METR đã gắn nhãn kết quả đó
-   là lịch sử.
-2. **Số liệu dự án** trong `context/04-numbers.md` đo ngày 05/08/2026. Đo lại bằng
+1. **Không còn số liệu nghiên cứu nào trên slide.** METR và DORA đều đã bỏ ra khỏi
+   deck vì chúng kéo buổi chia sẻ thành bài giảng về năng suất. Nguồn vẫn giữ trong
+   `research/sources.md` để trả lời khi được hỏi.
+2. **Ghi công.** Repo `csm-next` có nhiều hơn một người đóng góp. Slide đầu và kịch
+   bản đều nói rõ chuyện đó. Nhớ thay handle GitHub bằng tên thật của đồng nghiệp
+   trước khi trình chiếu.
+3. **Subagent.** Slide 8 nói rõ Claude Code tự nó đã chạy song song được, và cây bốn
+   tầng không phải để thay subagent. Đừng trình bày nó như một thứ Claude không làm
+   được, vì không đúng.
+4. **Số liệu dự án** trong `context/04-numbers.md` đo ngày 05/08/2026. Đo lại bằng
    lệnh trong đó nếu định nhắc tới.
