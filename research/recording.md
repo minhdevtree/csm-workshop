@@ -74,6 +74,18 @@ Cần hai tiến trình: app làm host, và một trình duyệt làm client. Ba
    trong panel Remote.
 2. **Token phải đọc SAU khi host chạy.** Đọc từ `state.json` của lần chạy trước
    thì nhận "this link's token is invalid or was regenerated".
-3. **Ghép hai clip.** Quay host bằng `_electron.launch`, quay client bằng
-   `chromium.launch`, rồi nối bằng `concat` của ffmpeg. Phải chuẩn hoá cùng độ
-   phân giải trước khi nối.
+3. **Ghép nhiều clip.** Chuẩn hoá cùng độ phân giải và fps rồi mới `concat`.
+
+## Quay phần nối app sang app
+
+Cần hai instance với hai `userData` khác nhau. Instance client để `state.json`
+rỗng project, như vậy nhìn là biết ngay nó đang xem máy khác chứ không phải máy
+mình.
+
+Bấm Connect thì app mở một **cửa sổ mới**. Playwright quay mỗi page một file, nên
+sau khi chạy xong có hai `.webm`. Phân biệt bằng ĐỘ DÀI: cửa sổ chính chạy suốt
+nên dài hơn, cửa sổ remote mở sau nên ngắn hơn. Đừng dựa vào thứ tự file, `ls -tr`
+cho kết quả ngược.
+
+Cắt đoạn giữa phải theo mốc thật: phần điền form nằm ở GIỮA clip của cửa sổ
+chính, lấy "N giây cuối" là trượt mất.

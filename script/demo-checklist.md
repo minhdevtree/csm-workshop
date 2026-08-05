@@ -30,7 +30,7 @@ là slide tự nhận.
 |---|---|---|---|
 | ✅ đã có Bắt buộc | `demo-01-session-alive.gif` | 11 | Đóng tab một session đang chạy. Nó vẫn nằm trong sidebar, chấm vẫn nhảy. Mở lại thấy nguyên. |
 | ✅ đã có Bắt buộc | `demo-02-attention.gif` | 13 | 3 session chạy, một con chuyển sang chờ, chấm đổi vàng, badge nhảy số, bấm badge nhảy tới đúng con đó. |
-| ✅ đã có Bắt buộc | `demo-06-remote.gif` | 23 | Hai phía ghép lại: bật host mode ở máy chủ, rồi một máy khác mở bằng trình duyệt và thấy đúng cây session của máy đó. |
+| ✅ đã có Bắt buộc | `demo-06-remote.gif` | 23 | Ba đoạn ghép lại: bật host mode ở máy chủ; một app CSM khác thêm host vào Remote hosts (tên, URL, token, ô tunnel command); cửa sổ remote mở ra với đúng cây session của máy chủ. |
 | ✅ đã có Nên có | `demo-03-split-layout.gif` | 15 | Chia màn thành 3 ô, kéo một tab sang ô khác, lưu thành template, đóng hết rồi mở template ra lại. |
 | ✅ đã có Nên có | `demo-04-worktree.gif` | 19 | Chuột phải lên project, tạo worktree, nó hiện lồng bên dưới, mở một session trong đó. |
 | ✅ đã có Nên có | `demo-05-diff.gif` | 20 | Bấm ⇧⌘D, diff mở thành tab, chia đôi màn đặt cạnh file gốc. |
