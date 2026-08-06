@@ -271,16 +271,20 @@ chạy. Đừng đọc hết gạch đầu dòng, chỉ nhấn 2 ý mỗi slide.
 
 **Slide 14. Thông báo hệ điều hành.** [Ảnh thật. Chỉ vào ảnh, đừng đọc từng dòng.]
 
-> Đây là trung tâm thông báo máy mình sau một buổi sáng. Chụp nguyên, không dựng.
+> Đây là trung tâm thông báo máy mình. Ảnh thật, ghép từ hai lần chụp.
 >
-> Hai loại dòng thôi. **Waiting for your input** là con đó đang hỏi và đứng chờ.
-> **Finished** là con đó chạy xong. Chữ đậm là tên session mình tự đặt, chữ sau là
-> tên dự án, nên nhìn dòng thông báo là biết con nào.
+> [Chỉ vào hai dòng trên cùng.] Chỗ đáng nói là đây. Thông báo **chép luôn câu
+> Claude đang hỏi**, chứ không phải một dòng chung chung kiểu "có việc cần bạn".
+> Đọc "Phạm vi ngôn ngữ bật shiki?" là mình biết ngay con đó vướng chỗ nào. Nhiều
+> lúc đọc xong quyết được luôn trong đầu, mở app ra chỉ để gõ một chữ.
+>
+> Mấy dòng dưới là báo trạng thái: con nào đứng chờ, con nào chạy xong. Chữ đậm là
+> tên session mình tự đặt, chữ sau là tên dự án, nên nhìn là biết con nào.
 >
 > Bấm vào một dòng là app mở thẳng đúng session đó.
 >
-> Sáu dòng này trong 25 phút, từ hai con. Ý mình muốn nói là: mình không ngồi canh
-> cái nào cả. Đi làm việc khác, con nào cần thì nó tự gọi.
+> Ý mình muốn nói là: mình không ngồi canh cái nào cả. Đi làm việc khác, con nào
+> cần thì nó tự gọi, và gọi kèm luôn lý do.
 
 **Slide 15. Hộp thư chú ý.** [Bỏ được nếu trễ giờ]
 
