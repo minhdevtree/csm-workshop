@@ -125,6 +125,7 @@ code {
 /* Slide có khung demo: ảnh chụp app là hình rất rộng nên cột ảnh phải rộng hơn cột chữ. */
 .two-demo { display: grid; grid-template-columns: .82fr 1.18fr; gap: 34px; }
 .three { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+/* align-items mặc định là stretch nên các thẻ trong cùng một hàng cao bằng nhau. */
 .four  { display: grid; grid-template-columns: 1fr 1fr; gap: 16px 20px; }
 .stack { display: flex; flex-direction: column; gap: 13px; }
 .mid   { justify-content: center; }
@@ -226,8 +227,9 @@ tbody tr + tr td { border-top: 1px solid var(--line); }
   object-fit: contain;
 }
 
-.feat { display: grid; grid-template-columns: 22px 1fr; gap: 12px; align-items: start; }
-.feat .k { color: var(--accent); font-family: var(--mono); font-size: 14.5px; padding-top: 4px; }
+/* align-items:center — số thứ tự căn giữa khối chữ của nó, không dính lên dòng đầu. */
+.feat { display: grid; grid-template-columns: 22px 1fr; gap: 12px; align-items: center; }
+.feat .k { color: var(--accent); font-family: var(--mono); font-size: 14.5px; }
 .feat p { font-size: 18px; }
 .feat b { color: var(--ink); font-weight: 600; }
 
@@ -389,36 +391,36 @@ html.laser-on, html.laser-on * { cursor: none !important; }
   <h2>Buổi nay đi theo thứ tự này</h2>
   <table style="margin-top:20px">
     <tbody>
-      <tr><td>1</td><td>Chạy nhiều con thì đau ở đâu</td><td class="mono sub" style="text-align:right">5 phút</td></tr>
-      <tr><td>2</td><td>CSM nhìn từ trên xuống: cửa sổ, cây, trạng thái</td><td class="mono sub" style="text-align:right">10 phút</td></tr>
-      <tr><td>3</td><td>Trong đó có gì, đi từng nhóm</td><td class="mono sub" style="text-align:right">22 phút</td></tr>
-      <tr><td>4</td><td>Một ngày mình dùng nó ra sao</td><td class="mono sub" style="text-align:right">5 phút</td></tr>
-      <tr><td>5</td><td>Ai thì hợp kiểu này, ai thì không</td><td class="mono sub" style="text-align:right">8 phút</td></tr>
+      <tr><td>1</td><td>Vì sao cần quản lý nhiều session Claude Code</td><td class="mono sub" style="text-align:right">5 phút</td></tr>
+      <tr><td>2</td><td>CSM tổ chức mọi thứ như thế nào</td><td class="mono sub" style="text-align:right">10 phút</td></tr>
+      <tr><td>3</td><td>Các tính năng chính của app</td><td class="mono sub" style="text-align:right">22 phút</td></tr>
+      <tr><td>4</td><td>Một ngày làm việc thực tế với app</td><td class="mono sub" style="text-align:right">5 phút</td></tr>
+      <tr><td>5</td><td>App này hợp với ai, và không hợp với ai</td><td class="mono sub" style="text-align:right">8 phút</td></tr>
       <tr><td>6</td><td>Hỏi đáp</td><td class="mono sub" style="text-align:right">10 phút</td></tr>
     </tbody>
   </table>
-  <p class="sub" style="margin-top:auto">Phần 2 đáng nghe nhất kể cả khi bạn không định dùng app. Cấu trúc cây ở đó áp dụng được cho bất kỳ cách quản lý session nào.</p>
+  <p class="sub" style="margin-top:auto">Phần 2 là phần đáng nghe nhất kể cả khi bạn không định cài app: cách tổ chức ở đó áp dụng được cho bất kỳ công cụ nào.</p>
   <div class="foot"><span>CSM</span><span class="pg"></span></div>
   <aside class="notes"><p>Lướt nhanh. Chỉ dừng ở dòng cuối để nói: phần 2 là phần mang về được, kể cả khi không dùng app.</p></aside>
 </section>
 
 <!-- 4 ────────────────────────────────────────────────────────────────────── -->
 <section class="slide" data-t="Được gì mất gì">
-  <h2>Chạy nhiều con thì được gì, mất gì</h2>
+  <h2>Chạy nhiều session cùng lúc: được gì, mất gì</h2>
   <div class="two grow" style="margin-top:22px">
     <div class="stack">
       <p class="kicker">Được</p>
-      <div class="panel"><p>Mỗi lượt Claude chạy 3 tới 10 phút. Chạy nhiều con thì <strong>không phải ngồi chờ</strong> khoảng đó nữa.</p></div>
+      <div class="panel"><p>Mỗi lần giao việc, Claude chạy 3 tới 10 phút. Chạy nhiều session thì <strong>không phải ngồi chờ</strong> khoảng thời gian đó.</p></div>
     </div>
     <div class="stack">
       <p class="kicker">Mất</p>
-      <div class="panel"><p><strong>Phải review nhiều hơn.</strong> Chờ ngắn lại thì phần đọc và kiểm tra dài ra.</p></div>
-      <div class="panel"><p><strong>Dễ bị ngắt liên tục.</strong> Không biết con nào đang gọi mình thì cứ vài phút lại tự đi kiểm tra.</p></div>
-      <div class="panel"><p><strong>Quá tay thì chính mình thành chỗ nghẽn.</strong> Sáu con cùng chờ không phải là sáu việc chạy song song. Đó là một hàng sáu người đang đứng chờ mình, và mình thì căng.</p></div>
+      <div class="panel"><p><strong>Phải đọc và kiểm tra nhiều hơn.</strong> Ba session làm xong cùng lúc là ba đống code chờ bạn duyệt.</p></div>
+      <div class="panel"><p><strong>Bị ngắt liên tục.</strong> Không biết session nào đang cần mình, nên cứ vài phút lại phải mở từng cái ra xem.</p></div>
+      <div class="panel"><p><strong>Mở quá nhiều thì chính mình là chỗ tắc.</strong> Sáu session cùng chờ trả lời không phải là sáu việc đang chạy, mà là sáu việc đang dừng để đợi bạn.</p></div>
     </div>
   </div>
   <div class="panel accent" style="margin-top:auto">
-    <p><strong>Nhiều hơn không tự động là tốt hơn.</strong> Số con hợp lý là số con mình review kịp, và con số đó thấp hơn số con máy chạy nổi rất nhiều.</p>
+    <p><strong>Nhiều hơn không tự động là tốt hơn.</strong> Số session hợp lý là số mà bạn còn kịp đọc kết quả, và con số đó thấp hơn số máy chạy nổi rất nhiều.</p>
   </div>
   <div class="foot"><span>Phần 1</span><span class="pg"></span></div>
   <aside class="notes">
@@ -521,27 +523,29 @@ html.laser-on, html.laser-on * { cursor: none !important; }
 
 <!-- 9 ────────────────────────────────────────────────────────────────────── -->
 <section class="slide" data-t="Vì sao bốn tầng">
-  <h2>Vì sao lại cần tới bốn tầng</h2>
-  <div class="two grow" style="margin-top:20px">
+  <h2>Bốn tầng đó để làm gì</h2>
+  <div class="two grow" style="margin-top:18px">
     <div class="stack">
-      <p class="kicker">Nói rõ trước một chuyện</p>
-      <div class="panel"><p>Claude Code <strong>tự nó đã chạy song song được</strong>: nó đẻ subagent trong cùng một session, và có cả agent team. Nên đây <strong>không phải</strong> chuyện làm được hay không làm được.</p></div>
-      <p>Cái khác nhau là <strong>ranh giới</strong>: subagent nằm trong cùng một cuộc hội thoại, dùng chung context, chung luồng duyệt quyền, và xong việc là tan.</p>
+      <div class="feat"><span class="k">1</span><p><b>Folder</b> gom dự án cho gọn. Hai chục repo vẫn xếp được: việc công ty một hộp, việc cá nhân một hộp.</p></div>
+      <div class="feat"><span class="k">2</span><p><b>Project</b> nhớ bộ cờ chạy <code>claude</code> của riêng nó, nên mỗi repo có thể có mức duyệt quyền khác nhau.</p></div>
+      <div class="feat"><span class="k">3</span><p><b>Worktree</b> cho phép làm nhiều việc trên cùng repo mà không đụng nhau.</p></div>
+      <div class="feat"><span class="k">4</span><p><b>Session</b> là một tiến trình <code>claude</code>. Một worktree chứa được nhiều session.</p></div>
+      <div class="panel accent"><p>Lợi ích khi dùng hằng ngày: <strong>nhìn một cái là biết mình đang có bao nhiêu việc chạy, ở repo nào, nhánh nào, và cái nào đang cần mình.</strong></p></div>
     </div>
-    <div class="stack">
-      <p class="kicker">Session riêng thì khác ở đâu</p>
-      <div class="feat"><span class="k">◆</span><p><b>Context riêng</b>, nên một con mới tinh vẫn là ý kiến độc lập. Subagent thì thừa hưởng context của con mẹ.</p></div>
-      <div class="feat"><span class="k">◆</span><p>Lịch sử riêng, sống qua nhiều ngày, mai mở lại vẫn còn.</p></div>
-      <div class="feat"><span class="k">◆</span><p>Duyệt quyền riêng, nên biết đúng <b>con nào</b> đang hỏi.</p></div>
-      <div class="panel accent"><p>Bốn tầng là để <strong>quản lý mấy session riêng đó</strong>, không phải để thay subagent. Hai thứ dùng cùng lúc được, và mình dùng cả hai.</p></div>
+    <div class="vcen stack">
+      <p class="kicker">Nói rõ một chuyện, kẻo hiểu nhầm</p>
+      <div class="panel"><p>Claude Code <strong>tự nó đã chạy song song được</strong>: nó đẻ subagent trong cùng một session, và có cả agent team. Nên đây không phải chuyện làm được hay không.</p></div>
+      <p>Khác nhau ở <strong>ranh giới</strong>. Subagent nằm trong cùng một cuộc hội thoại: chung context, chung luồng duyệt quyền, xong việc là tan.</p>
+      <p>Session riêng có context riêng, lịch sử riêng, sống qua nhiều ngày, và duyệt quyền riêng nên biết đúng <strong>session nào</strong> đang hỏi.</p>
+      <div class="panel accent"><p>Bốn tầng là để <strong>quản lý mấy session riêng đó</strong>, không phải để thay subagent. Dùng cả hai cùng lúc được.</p></div>
     </div>
   </div>
   <div class="foot"><span>Phần 2 &nbsp;·&nbsp; Cấu trúc</span><span class="pg"></span></div>
   <aside class="notes">
-    <p><strong>Slide này phải nói cẩn thận, dễ bị bắt bẻ đúng.</strong> Nếu trình bày kiểu "Claude không chạy song song được nên mình làm cái này" thì sai, và trong phòng chắc chắn có người biết.</p>
-    <p>Cách nói đúng: <strong>subagent và session riêng giải hai bài toán khác nhau.</strong> Subagent hợp khi một việc chia được thành mấy việc con rồi gộp kết quả lại. Session riêng hợp khi đó là <strong>mấy việc không liên quan tới nhau</strong>, mỗi việc một mạch hội thoại, kéo dài nhiều ngày.</p>
-    <p>Ví dụ cụ thể, nối thẳng về slide 5: muốn <strong>verify bằng context sạch</strong> thì subagent không làm được, vì subagent thừa hưởng context của con mẹ. Nó đã đọc chính đoạn code đó rồi, nên nó không còn là ý kiến độc lập nữa. Phải là một session mới hẳn.</p>
-    <p>Còn folder thì đơn giản: hai chục repo vẫn xếp gọn, việc công ty một hộp, việc cá nhân một hộp.</p>
+    <p>Cột trái đi từ trên xuống, mỗi tầng một câu. <strong>Nhấn câu trong khung cam</strong>: đó là lợi ích thật khi dùng hằng ngày, không phải lý thuyết.</p>
+    <p>Cột phải <strong>phải nói, và nói cẩn thận</strong>. Nếu trình bày kiểu "Claude không chạy song song được nên phải có app" thì sai, và trong phòng chắc chắn có người biết.</p>
+    <p>Ví dụ cụ thể: muốn <strong>verify bằng context sạch</strong> thì subagent không làm được, vì nó thừa hưởng context của con mẹ, đã đọc chính đoạn code đó rồi nên không còn là ý kiến độc lập.</p>
+    <p>Nói gọn: <strong>subagent hợp khi một việc chia được thành mấy việc con rồi gộp kết quả. Session riêng hợp khi cần một mạch tách hẳn ra.</strong></p>
   </aside>
 </section>
 
@@ -724,24 +728,24 @@ html.laser-on, html.laser-on * { cursor: none !important; }
   <div class="two-demo grow">
     <div class="vcen stack">
       <p class="kicker">Nhóm 3</p>
-      <h2 style="font-size:33px">Xem session dạng hội thoại</h2>
-    </div>
-    <div class="vcen stack">
-      <p>Terminal thô thì quen mắt với dân dev, nhưng cuộn ngược lại tìm một câu Claude nói lúc nãy thì khổ.</p>
-      <p>Bật chế độ hội thoại là nó hiện ra như một cuộc chat: từng lượt, từng khối, tìm kiếm được.</p>
-      <div class="panel"><p>Chat cũ vẫn đọc lại được kể cả khi session đã tắt, vì nó nằm trong file transcript trên máy chứ không phải trong bộ nhớ app.</p></div>
+      <h2 style="font-size:32px">Đọc session dưới dạng hội thoại</h2>
+      <div class="feat"><span class="k">◆</span><p><b>Tìm lại một câu trong chat cũ.</b> Cuộn ngược trong terminal rất khổ; ở đây từng lượt là một khối, tìm kiếm được.</p></div>
+      <div class="feat"><span class="k">◆</span><p><b>Dùng trên điện thoại.</b> Giao diện terminal trên màn hình nhỏ khá bất tiện, chế độ này dễ đọc hơn nhiều.</p></div>
+      <div class="feat"><span class="k">◆</span><p>Chat cũ vẫn đọc lại được kể cả khi session đã tắt, vì nó nằm trong file transcript trên máy.</p></div>
       <p class="sub">Đổi qua lại giữa hai chế độ bằng nút trên thanh tab.</p>
     </div>
     <figure class="demo">
       <div class="demo-frame"><span class="lbl">Chèn GIF</span><span class="file">assets/demo-10-conversation.gif</span></div>
-      <figcaption>Quay: đổi từ terminal sang chế độ hội thoại, cuộn lại và tìm một câu Claude nói lúc nãy.</figcaption>
+      <figcaption>Quay: đổi từ terminal sang chế độ hội thoại, đọc lại lượt đã chạy.</figcaption>
     </figure>
   </div>
   <div class="foot"><span>Phần 3 &nbsp;·&nbsp; Tính năng</span><span class="pg"></span></div>
-  <aside class="notes"><p>Cái này hợp với người không sống trong terminal. Phòng toàn dev quen terminal thì lướt nhanh.</p></aside>
+  <aside class="notes">
+    <p>Hai công dụng thật, nói theo thứ tự: <strong>tìm lại một câu Claude nói lúc nãy</strong>, và <strong>đọc trên điện thoại</strong>. Ai từng mở terminal trên điện thoại sẽ gật ngay ở ý thứ hai.</p>
+    <p>Ý thứ ba là hệ quả kỹ thuật, chỉ nói nếu có người hỏi "tắt session rồi còn đọc được không".</p>
+  </aside>
 </section>
 
-<!-- 17 ───────────────────────────────────────────────────────────────────── -->
 <section class="slide" data-t="Nhóm 4: worktree">
   <div class="two-demo grow">
     <div class="vcen stack">
@@ -831,7 +835,7 @@ html.laser-on, html.laser-on * { cursor: none !important; }
         <span class="k">⌘W</span><span class="v">Đóng tab đang mở</span>
         <span class="k">⇧⌘T</span><span class="v">Mở lại tab vừa đóng</span>
       </div>
-      <div class="panel" style="margin-top:20px"><p>Bôi đen một từ rồi bấm <code>⇧⌘F</code> là nó tìm luôn từ đó, khỏi copy paste.</p></div>
+
     </div>
   </div>
   <div class="foot"><span>Phần 3 &nbsp;·&nbsp; Tính năng</span><span class="pg"></span></div>
@@ -894,7 +898,7 @@ html.laser-on, html.laser-on * { cursor: none !important; }
       <div class="panel"><h3>Tag và màu</h3><p>Gắn tag cho dự án và session, tô màu folder, lọc cây theo tag.</p></div>
     </div>
     <div class="stack">
-      <div class="panel"><h3>Usage</h3><p>Xem đã xài bao nhiêu token, còn bao nhiêu trong gói.</p></div>
+      <div class="panel"><h3>Usage và đổi tài khoản</h3><p>Xem đã xài bao nhiêu token, còn bao nhiêu trong gói. Nếu dùng <code>claude-swap</code> thì <strong>đổi tài khoản Claude ngay trong app</strong>, và đặt tự đổi khi chạm ngưỡng phần trăm.</p></div>
       <div class="panel"><h3>Tìm mọi thứ</h3><p><code>⌘K</code> mở bảng lệnh: tìm session, dự án, hành động. <code>⌘F</code> tìm trong cây, hoặc tìm trong scrollback terminal, tuỳ đang đứng ở đâu.</p></div>
       <div class="panel"><h3>Profile cờ</h3><p>Bộ cờ hay dùng lưu lại đặt tên, gán cho dự án bằng một cú bấm.</p></div>
     </div>
@@ -1001,14 +1005,14 @@ html.laser-on, html.laser-on * { cursor: none !important; }
 
 <!-- 29 ───────────────────────────────────────────────────────────────────── -->
 <section class="slide" data-t="Bốn câu tự hỏi">
-  <h2>Bốn câu tự hỏi trước khi cài bất cứ thứ gì</h2>
+  <h2>Bốn câu nên tự trả lời trước khi cài thêm công cụ</h2>
   <div class="stack grow" style="margin-top:20px;gap:15px">
-    <div class="feat"><span class="k">1</span><p><b>Bạn chạy mấy con một lúc?</b> Nếu là một, thì thôi, không cần gì cả. Đó là câu trả lời hợp lệ.</p></div>
-    <div class="feat"><span class="k">2</span><p><b>Trong lúc chờ bạn làm gì?</b> Ngồi canh thì không cần gì. Làm việc khác thì cần cái gọi mình về. Chạy con thứ hai thì cần thêm cô lập.</p></div>
-    <div class="feat"><span class="k">3</span><p><b>Bạn chịu được bao lâu mới biết nó gọi?</b> Vài giây, hay vài phút, hay không quan trọng.</p></div>
-    <div class="feat"><span class="k">4</span><p><b>Bạn có hay rời khỏi máy không?</b> Câu này ít người hỏi, mà nó lại là câu quyết định với mình.</p></div>
+    <div class="feat"><span class="k">1</span><p><b>Bạn chạy mấy session cùng lúc?</b> Nếu chỉ một thì không cần công cụ nào cả, và đó là câu trả lời hoàn toàn hợp lý.</p></div>
+    <div class="feat"><span class="k">2</span><p><b>Trong lúc chờ Claude chạy, bạn làm gì?</b> Ngồi xem thì không cần gì thêm. Làm việc khác thì cần thứ báo cho bạn biết khi nó xong. Mở thêm session thì cần cách cô lập chúng.</p></div>
+    <div class="feat"><span class="k">3</span><p><b>Chậm biết bao lâu thì bạn thấy phiền?</b> Vài giây, vài phút, hay không quan trọng. Trả lời được câu này là chọn được công cụ.</p></div>
+    <div class="feat"><span class="k">4</span><p><b>Bạn có hay rời khỏi máy không?</b> Ít người nghĩ tới câu này, nhưng nó chính là lý do mình không dùng được mấy app có sẵn.</p></div>
   </div>
-  <div class="panel accent"><p>Bốn câu này quan trọng hơn mọi bảng so sánh tính năng.</p></div>
+  <div class="panel accent"><p>Trả lời xong bốn câu này là biết mình cần gì. Nó quan trọng hơn mọi bảng so sánh tính năng.</p></div>
   <div class="foot"><span>Phần 5</span><span class="pg"></span></div>
   <aside class="notes">
     <p>Nói câu 1 bằng giọng thật: <strong>"nếu bạn chạy một con và thấy ổn thì buổi nay không có gì cho bạn cả, và mình thấy vậy là tốt."</strong> Câu này mua được rất nhiều tín nhiệm.</p>
@@ -1018,15 +1022,16 @@ html.laser-on, html.laser-on * { cursor: none !important; }
 
 <!-- 30 ───────────────────────────────────────────────────────────────────── -->
 <section class="slide" data-t="Có sẵn gì rồi">
-  <h2>Có sẵn kha khá thứ, kiểm tra trước khi cài thêm</h2>
-  <div class="two grow" style="margin-top:20px">
+  <h2>Nhiều thứ bạn cần có thể đã có sẵn rồi</h2>
+  <p class="lead" style="margin-top:12px">Trước khi cài thêm gì, thử chạy <code>claude --help</code> một lần. Rất nhiều người dùng hằng ngày mà chưa mở nó bao giờ.</p>
+  <div class="two grow" style="margin-top:18px">
     <div class="stack">
-      <p class="kicker">Claude Code tự nó đã có</p>
+      <p class="kicker">Có sẵn trong Claude Code, không cần cài gì</p>
       <div class="panel"><p><code>claude --worktree</code> khởi động ngay trong worktree cô lập. Thêm <code>--tmux</code> thì có luôn phiên tmux.</p></div>
       <div class="panel"><p><code>--resume</code> lấy lại đúng cuộc chat cũ. <code>--permission-mode</code> chỉnh mức hỏi, chọn đúng là bớt hẳn số lần bị gọi.</p></div>
     </div>
     <div class="stack">
-      <p class="kicker">Và mấy hình dạng khác</p>
+      <p class="kicker">Nếu vẫn cần thêm, đây là các lựa chọn</p>
       <table style="font-size:16.5px">
         <tbody>
           <tr><td>tmux, zellij</td><td>tự dựng, hợp người sống trong terminal</td></tr>
@@ -1047,12 +1052,12 @@ html.laser-on, html.laser-on * { cursor: none !important; }
 <!-- 31 ───────────────────────────────────────────────────────────────────── -->
 <section class="slide" data-t="Cái giá tự làm">
   <h2>Và cái giá của việc tự làm</h2>
-  <div class="three grow" style="margin-top:22px">
+  <div class="three" style="margin-top:22px;align-items:start">
     <div class="panel"><h3>Nó là dự án thứ hai</h3><p>Có bug, có CI hỏng, có việc bảo trì. Thời gian tiết kiệm ở việc chính chảy ngược một phần vào đây.</p></div>
-    <div class="panel"><h3>Mình là người dùng duy nhất</h3><p>Mọi lựa chọn đều vừa vặn với mình. Vừa là điểm mạnh, vừa là lý do nó có thể không hợp với bạn.</p></div>
+    <div class="panel"><h3>Nó làm cho một nhóm rất nhỏ</h3><p>Ban đầu chỉ một hai người dùng, và mọi lựa chọn đều nhắm đúng thứ nhóm đó cần. Vừa là điểm mạnh, vừa là lý do nó có thể không vừa với bạn.</p></div>
     <div class="panel"><h3>Mình chưa đo được</h3><p>Không biết công việc chính có nhanh hơn thật không. Cảm giác thì có, số liệu thì chưa.</p></div>
   </div>
-  <div class="panel accent" style="margin-top:auto"><p><strong>Nên khuyên thật lòng: đừng tự làm.</strong> Dùng cái có sẵn, trừ khi nhu cầu của bạn không có cái nào vừa, và bạn thấy việc làm công cụ tự nó đã vui.</p></div>
+  <div class="panel accent" style="margin-top:26px"><p><strong>Nên khuyên thật lòng: đừng tự làm.</strong> Dùng cái có sẵn, trừ khi nhu cầu của bạn không có cái nào vừa, và bạn thấy việc làm công cụ tự nó đã vui.</p></div>
   <div class="foot"><span>Phần 5</span><span class="pg"></span></div>
   <aside class="notes">
     <p>Slide này giữ cho cả buổi không thành quảng cáo. Nói thẳng, đừng làm nhẹ đi.</p>
@@ -1062,18 +1067,19 @@ html.laser-on, html.laser-on * { cursor: none !important; }
 
 <!-- 32 ───────────────────────────────────────────────────────────────────── -->
 <section class="slide" data-t="Muốn thử thì">
-  <h2>Muốn thử thì làm theo thứ tự này</h2>
-  <div class="two grow" style="margin-top:22px">
+  <h2>Cách tự kiểm chứng xem mình có cần công cụ không</h2>
+  <p class="lead" style="margin-top:12px">Thay vì tranh luận công cụ nào hay hơn, đo một con số: <strong>Claude cần bạn lúc mấy giờ, và bạn biết lúc mấy giờ.</strong> Khoảng cách giữa hai mốc đó là thứ công cụ có thể rút ngắn.</p>
+  <div class="two" style="margin-top:20px;align-items:start">
     <div class="panel accent">
-      <h3>Tuần 1: không cài gì</h3>
-      <p>Chỉ dùng Claude Code với <code>--worktree</code>. Mỗi ngày ghi 3 lần: nó cần mình lúc mấy giờ, mình biết lúc mấy giờ. Cuối tuần có một con số thật.</p>
+      <h3>Tuần 1: chưa cài gì cả</h3>
+      <p>Chỉ dùng Claude Code như bình thường. Mỗi ngày ghi lại 3 lần hai mốc giờ đó. Cuối tuần bạn có một con số thật của chính mình.</p>
     </div>
     <div class="panel">
-      <h3>Tuần 2: thêm đúng một thứ</h3>
-      <p>Chọn một công cụ dựa trên con số tuần 1. Đo lại y hệt. Con số không giảm thì bỏ, đừng tiếc.</p>
+      <h3>Tuần 2: thêm đúng một công cụ</h3>
+      <p>Chọn theo con số tuần 1, rồi đo lại y hệt cách đó. Con số không giảm thì bỏ công cụ đi, đừng tiếc.</p>
     </div>
   </div>
-  <p style="margin-top:auto"><strong>Đừng đổi hai thứ cùng lúc</strong>, và đừng đánh giá bằng cảm giác của ngày đầu tiên.</p>
+  <div class="panel" style="margin-top:26px"><p><strong>Đừng đổi hai thứ cùng lúc</strong>, và đừng đánh giá bằng cảm giác của ngày đầu tiên. Cái gì cũng mới mẻ trong ngày đầu.</p></div>
   <div class="foot"><span>Phần 5</span><span class="pg"></span></div>
   <aside class="notes">
     <p>Ai chỉ làm được một việc sau buổi này thì là việc tuần 1. Nó rẻ tới mức không có lý do gì để không làm, và nó biến tranh luận sở thích thành một con số.</p>
@@ -1099,6 +1105,7 @@ html.laser-on, html.laser-on * { cursor: none !important; }
       <p class="kicker">Hay được hỏi</p>
       <div class="panel"><p><strong>Chạy nhiều con có tốn token hơn không?</strong><br><span class="sub">Có. Song song không làm mỗi lượt rẻ đi, chỉ làm nhiều lượt xảy ra cùng lúc.</span></p></div>
       <div class="panel"><p><strong>Bao nhiêu con là quá nhiều?</strong><br><span class="sub">Khi hàng chờ review dài hơn thời gian mình có để review. Con số đó thấp hơn số con chạy được về mặt kỹ thuật nhiều.</span></p></div>
+      <div class="panel"><p><strong>Warp mạnh vậy sao còn dùng cái này?</strong><br><span class="sub">Warp mạnh ở terminal: block, AI trong dòng lệnh, workflow. CSM không cạnh tranh chỗ đó. Nó lo phần điều phối nhiều session Claude. <strong>Quen Warp và thấy ổn thì cứ ở lại.</strong></span></p></div>
       <div class="panel"><p><strong>Sao không xài tmux cho xong?</strong><br><span class="sub">Được chứ. Cái tmux không cho là tín hiệu "đang chờ" và cái diff. Không đau hai chỗ đó thì tmux là đủ.</span></p></div>
     </div>
     <div class="stack">

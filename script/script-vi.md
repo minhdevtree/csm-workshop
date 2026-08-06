@@ -347,6 +347,21 @@ chạy. Đừng đọc hết gạch đầu dòng, chỉ nhấn 2 ý mỗi slide.
 > Chuột phải lên project, tạo worktree, đặt tên nhánh. Nó hiện lồng ngay dưới project
 > cha.
 >
+> [**Chỗ này chắc chắn có người phản biện, nói trước cho chủ động.**]
+>
+> Có người sẽ hỏi: Claude tự tạo worktree được mà, giao nhiều task một lúc là nó
+> tự tách ra. Đúng, nó có làm vậy khi thấy các task đụng nhau. **Nhưng đó là nó
+> tự xử lý xung đột, còn worktree ở đây là mình chủ động chia việc.**
+>
+> Khác nhau ở ba chỗ. Một, **mình quyết định** cái nào tách nhánh chứ không phải
+> chờ nó thấy xung đột rồi mới tách. Hai, **một worktree chứa được nhiều session**:
+> một con code, một con đọc log, một con verify, tất cả trên cùng một nhánh. Chỗ
+> Claude tự tạo thì mỗi worktree gắn với đúng một mạch làm việc. Ba, **nhìn thấy
+> được**: worktree nằm trong cây, biết ngay đang có bao nhiêu nhánh chạy song song
+> và mỗi nhánh có mấy session, thay vì nằm đâu đó trong thư mục ẩn.
+>
+> Nói gọn: hai thứ không loại trừ nhau. Cái của Claude là phản ứng, cái này là chủ động.
+>
 > [Nhắc lại tình huống ba ở slide 5.]
 >
 > Worktree phục vụ hai ca đã nói ở slide 5. Ca hằng ngày là **làm nhiều việc cùng
@@ -622,6 +637,18 @@ việc chạy nhanh hơn: sáu con cùng chờ là sáu người đứng chờ m
 Hai thứ khác nhau chứ không thay nhau. Subagent chia một việc thành mấy việc con rồi
 gộp kết quả, chung context, xong là tan. Session riêng là mấy việc không liên quan
 nhau, mỗi cái một mạch hội thoại, sống qua nhiều ngày. Mình dùng cả hai cùng lúc.
+
+**Warp mạnh như vậy thì sao còn dùng app này?**
+Câu này gần như chắc chắn sẽ có. Trả lời sòng phẳng: **Warp mạnh ở phần terminal** —
+block, AI ngay trong dòng lệnh, workflow, chia pane. Nếu bạn sống trong terminal thì
+Warp là một trong những cái tốt nhất.
+
+**CSM không cạnh tranh ở chỗ đó.** Nó không cố làm terminal tốt hơn. Nó lo phần
+khác: điều phối nhiều session Claude, biết cái nào đang chờ, cô lập bằng worktree,
+đọc diff, mở từ máy khác.
+
+Và nói thẳng: **nếu bạn đã quen Warp và thấy ổn, không cần chuyển.** Ghép cả hai
+cũng được, vì hai cái giải hai bài toán khác nhau.
 
 **Sao không xài tmux cho xong?**
 Được chứ, và nếu đã sống trong tmux thì đó là lựa chọn rẻ nhất. Cái tmux không cho là
