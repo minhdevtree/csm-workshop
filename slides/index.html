@@ -1179,6 +1179,7 @@ html.laser-on, html.laser-on * { cursor: none !important; }
     else if (k === 'o' || k === 'O') { gridEl.classList.toggle('on'); }
     else if (k === 'l' || k === 'L') {
       var on = document.documentElement.classList.toggle('laser-on');
+      try { localStorage.setItem('deck-laser', on ? 'on' : 'off'); } catch (err) {}
       if (on) { laserSeed(); laserPut(); }
     }
     else if (k === 't' || k === 'T') {
@@ -1247,6 +1248,16 @@ html.laser-on, html.laser-on * { cursor: none !important; }
     var saved = localStorage.getItem('deck-theme');
     if (saved) document.documentElement.dataset.theme = saved;
   } catch (err) {}
+
+  /* Laser BẬT SẴN khi mở deck.
+     Lúc đầu nó mặc định tắt và phải bấm L. Nhưng lúc đang trình chiếu thì không
+     ai nhớ có cái phím đó, nên trên thực tế tính năng như không tồn tại. Ai không
+     muốn thì bấm L một lần, và lựa chọn đó được nhớ lại y như nền sáng hay tối. */
+  try {
+    if (localStorage.getItem('deck-laser') !== 'off') document.documentElement.classList.add('laser-on');
+  } catch (err) { document.documentElement.classList.add('laser-on'); }
+  laserSeed();
+  laserPut();
 
   /* Khung demo tự nhận ảnh.
      Trước đây khung nét đứt là HTML tĩnh, phải chạy một lệnh riêng mới đổi thành

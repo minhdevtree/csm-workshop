@@ -18,8 +18,8 @@ Giọng: kể chuyện cho đồng nghiệp nghe, không phải thuyết trình.
 - [ ] Mở `slides/index.html`, bấm `F` cho toàn màn hình.
 - [ ] Bấm `T` xem thử nền sáng. Phòng sáng thì dùng nền sáng. **Chốt trước, đừng đổi
       lúc đang đứng trên bục.**
-- [ ] Thử phím `L` một lần: nó bật con trỏ laser (chấm đỏ) và ẩn con trỏ chuột
-      thật. Bấm lại là tắt. Mặc định tắt.
+- [ ] Con trỏ laser **bật sẵn**: chuột thành chấm đỏ, con trỏ hệ thống ẩn đi. Không
+      muốn thì bấm `L` một lần, deck nhớ lựa chọn đó cho lần sau.
 - [ ] Bấm `S` xem ghi chú có nằm ở màn hình của mình không. Chỉ có một màn hình thì
       đừng bấm, cầm bản in file này.
 - [ ] Kiểm tra GIF đã nằm trong `assets/`. Bỏ file vào là slide tự nhận, không cần
