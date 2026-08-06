@@ -635,7 +635,7 @@ gộp kết quả, chung context, xong là tan. Session riêng là mấy việc 
 nhau, mỗi cái một mạch hội thoại, sống qua nhiều ngày. Mình dùng cả hai cùng lúc.
 
 **Warp mạnh như vậy thì sao còn dùng app này?**
-Câu này gần như chắc chắn sẽ có. Trả lời sòng phẳng: **Warp mạnh ở phần terminal** —
+Câu này gần như chắc chắn sẽ có. Trả lời sòng phẳng: **Warp mạnh ở phần terminal**:
 block, AI ngay trong dòng lệnh, workflow, chia pane. Nếu bạn sống trong terminal thì
 Warp là một trong những cái tốt nhất.
 
