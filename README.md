@@ -37,7 +37,7 @@ không phải lúc đang đứng trên bục.
 ## Trong repo có gì
 
 ```
-slides/index.html          Deck 36 slide, tự chứa, có ghi chú diễn giả
+slides/index.html          Deck 37 slide, tự chứa, có ghi chú diễn giả
 script/script-vi.md        Kịch bản nói chi tiết, có mốc thời gian và chỉ dẫn sân khấu
 script/demo-checklist.md   Mười một đoạn demo, đã quay xong, và cách thay ảnh mới
 context/                   Bối cảnh về app được lấy làm case study

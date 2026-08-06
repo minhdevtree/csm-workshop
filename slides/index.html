@@ -216,6 +216,23 @@ tbody tr + tr td { border-top: 1px solid var(--line); }
    thừa chỗ trên dưới. Nếu chỗ thừa đó có nền riêng thì nó hiện thành hai dải đen.
    Để trong suốt thì phần thừa trùng luôn với nền slide và biến mất. Bản ghi màn
    hình vốn đã có khung cửa sổ của chính nó nên không cần viền thêm. */
+/* Ảnh chụp trung tâm thông báo: hình dọc và hẹp. Phải cho nó gần đúng chiều rộng
+   thật của ảnh thì chữ bên trong mới đọc được từ cuối phòng; thu nhỏ thêm nữa là
+   nó thành hoạ tiết trang trí, không còn là bằng chứng. Vì vậy ảnh đã được cắt
+   sẵn còn 6 thông báo thay vì cả chồng. */
+.noti { display: flex; flex-direction: column; justify-content: center; gap: 10px; height: 100%; min-height: 0; }
+.noti-shot { position: relative; }
+.noti-shot img { display: block; width: 100%; height: auto; border-radius: 12px; }
+/* Ảnh bị cắt ngang ở đáy. Mờ dần về đúng màu nền slide thì vết cắt đọc thành
+   "danh sách còn dài nữa", đúng ý muốn nói. Dùng gradient thật chứ không dùng
+   mask: nó phải đổi theo nền sáng hay tối, và phải in ra PDF được. */
+.noti-shot::after {
+  content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 52px;
+  border-radius: 0 0 12px 12px;
+  background: linear-gradient(to bottom, transparent, var(--bg));
+}
+.noti figcaption { font-size: 14px; color: var(--ink-faint); }
+
 .demo img {
   /* height:auto nên hộp ảnh cao ĐÚNG bằng ảnh, dòng chú thích bám sát ngay dưới.
      Dùng flex:1 thì hộp cao hết phần trống, ảnh nằm giữa, và chú thích bị đẩy
@@ -577,7 +594,7 @@ html.laser-on, html.laser-on * { cursor: none !important; }
   </aside>
 </section>
 
-<!-- 10 ───────────────────────────────────────────────────────────────────── -->
+<!-- 11 ───────────────────────────────────────────────────────────────────── -->
 <section class="slide" data-t="Session sống độc lập">
   <div class="two-demo grow">
     <div class="vcen stack">
@@ -598,7 +615,7 @@ html.laser-on, html.laser-on * { cursor: none !important; }
   </aside>
 </section>
 
-<!-- 11 ───────────────────────────────────────────────────────────────────── -->
+<!-- 12 ───────────────────────────────────────────────────────────────────── -->
 <section class="slide divider" data-t="Phần 3">
   <p class="n">PHẦN 3</p>
   <h2 style="margin-top:12px">Trong đó có gì</h2>
@@ -607,7 +624,7 @@ html.laser-on, html.laser-on * { cursor: none !important; }
   <aside class="notes"><p>Chuyển: "Hiểu cấu trúc rồi thì phần này đi nhanh. Mình gom theo nhóm nhu cầu, không theo menu."</p></aside>
 </section>
 
-<!-- 12 ───────────────────────────────────────────────────────────────────── -->
+<!-- 13 ───────────────────────────────────────────────────────────────────── -->
 <section class="slide" data-t="Nhóm 1: biết con nào chờ">
   <div class="two-demo grow">
     <div class="vcen stack">
@@ -631,7 +648,31 @@ html.laser-on, html.laser-on * { cursor: none !important; }
   </aside>
 </section>
 
-<!-- 13 ───────────────────────────────────────────────────────────────────── -->
+<!-- 14 ────────────────────────────────────────────────────────────────────── -->
+<section class="slide" data-t="Thông báo hệ điều hành">
+  <div class="two-demo grow" style="grid-template-columns:1fr 350px">
+    <div class="vcen stack">
+      <p class="kicker">Nhóm 1</p>
+      <h2 style="font-size:33px">Không ngồi canh thì nó tự gọi</h2>
+      <p>Bên cạnh là trung tâm thông báo của máy sau một buổi sáng. Ảnh chụp nguyên, không dựng.</p>
+      <div class="feat"><span class="k">◆</span><p><b>Claude is waiting for your input</b>: con đó đang hỏi, và nó đứng chờ tới lúc mình trả lời.</p></div>
+      <div class="feat"><span class="k">◆</span><p><b>Finished</b>: con đó chạy xong, tới lượt mình đọc.</p></div>
+      <div class="feat"><span class="k">◆</span><p>Bấm vào một dòng là app <b>mở thẳng đúng session đó</b>, không phải đi tìm lại trong cây.</p></div>
+      <p class="sub">Chữ đậm là tên session mình tự đặt, chữ sau là tên dự án. Nhìn dòng thông báo là biết con nào, khỏi đoán.</p>
+    </div>
+    <figure class="noti">
+      <div class="noti-shot"><img src="../assets/noti-stack.png" alt="Trung tâm thông báo của macOS xếp chồng các thông báo từ Claude Session Manager"></div>
+      <figcaption>Sáu thông báo trong 25 phút, từ hai session của cùng một dự án.</figcaption>
+    </figure>
+  </div>
+  <div class="foot"><span>Phần 3 &nbsp;·&nbsp; Tính năng</span><span class="pg"></span></div>
+  <aside class="notes">
+    <p>Đây là chỗ trả lời câu "chạy bốn con thì canh kiểu gì". Không canh. Đi làm việc khác, con nào cần thì nó tự gọi.</p>
+    <p>Nếu có người hỏi kỹ: mấy dòng này do Claude Code báo cho app qua hook, nên là trạng thái thật, không phải đoán theo thời gian.</p>
+  </aside>
+</section>
+
+<!-- 15 ───────────────────────────────────────────────────────────────────── -->
 <section class="slide" data-t="Hộp thư chú ý">
   <div class="two-demo grow">
     <div class="vcen stack">
@@ -653,7 +694,7 @@ html.laser-on, html.laser-on * { cursor: none !important; }
   <aside class="notes"><p>Nếu đang chạy dưới 3 session thì cái này hơi thừa. Nói thẳng vậy. Nó chỉ có nghĩa từ khoảng 4 con trở lên.</p></aside>
 </section>
 
-<!-- 14 ───────────────────────────────────────────────────────────────────── -->
+<!-- 16 ───────────────────────────────────────────────────────────────────── -->
 <section class="slide" data-t="Nhóm 2: chia màn hình">
   <div class="two-demo grow">
     <div class="vcen stack">
@@ -677,7 +718,7 @@ html.laser-on, html.laser-on * { cursor: none !important; }
   </aside>
 </section>
 
-<!-- 15 ───────────────────────────────────────────────────────────────────── -->
+<!-- 17 ───────────────────────────────────────────────────────────────────── -->
 <section class="slide" data-t="Nhóm 3: ô nhập prompt">
   <div class="two-demo grow">
     <div class="vcen stack">
@@ -702,7 +743,7 @@ html.laser-on, html.laser-on * { cursor: none !important; }
   </aside>
 </section>
 
-<!-- 16 ───────────────────────────────────────────────────────────────────── -->
+<!-- 18 ───────────────────────────────────────────────────────────────────── -->
 <section class="slide" data-t="Prompt nâng cao">
   <p class="kicker">Nhóm 3 &nbsp;·&nbsp; mấy thứ chỉ ô nhập mới làm được</p>
   <h2>Bốn thứ terminal không làm thay được</h2>
@@ -767,7 +808,7 @@ html.laser-on, html.laser-on * { cursor: none !important; }
   </aside>
 </section>
 
-<!-- 18 ───────────────────────────────────────────────────────────────────── -->
+<!-- 21 ───────────────────────────────────────────────────────────────────── -->
 <section class="slide" data-t="Nhóm 4: diff">
   <div class="two-demo grow">
     <div class="vcen stack">
@@ -789,7 +830,7 @@ html.laser-on, html.laser-on * { cursor: none !important; }
   </aside>
 </section>
 
-<!-- 19 ───────────────────────────────────────────────────────────────────── -->
+<!-- 22 ───────────────────────────────────────────────────────────────────── -->
 <section class="slide" data-t="Nhóm 4: lịch sử">
   <div class="two-demo grow">
     <div class="vcen stack">
@@ -816,7 +857,7 @@ html.laser-on, html.laser-on * { cursor: none !important; }
   </aside>
 </section>
 
-<!-- 20 ───────────────────────────────────────────────────────────────────── -->
+<!-- 23 ───────────────────────────────────────────────────────────────────── -->
 <section class="slide" data-t="Nhóm 5: editor">
   <div class="two grow">
     <div class="vcen stack">
@@ -843,7 +884,7 @@ html.laser-on, html.laser-on * { cursor: none !important; }
   </aside>
 </section>
 
-<!-- 21 ───────────────────────────────────────────────────────────────────── -->
+<!-- 24 ───────────────────────────────────────────────────────────────────── -->
 <section class="slide" data-t="Nhóm 6: truy cập từ xa">
   <div class="two-demo grow">
     <div class="vcen stack">
@@ -888,7 +929,7 @@ html.laser-on, html.laser-on * { cursor: none !important; }
   </aside>
 </section>
 
-<!-- 23 ───────────────────────────────────────────────────────────────────── -->
+<!-- 26 ───────────────────────────────────────────────────────────────────── -->
 <section class="slide" data-t="Nhóm 7: còn lại">
   <h2>Mấy thứ còn lại, gom một slide</h2>
   <div class="three grow" style="margin-top:22px">
@@ -913,7 +954,7 @@ html.laser-on, html.laser-on * { cursor: none !important; }
   </aside>
 </section>
 
-<!-- 24 ───────────────────────────────────────────────────────────────────── -->
+<!-- 27 ───────────────────────────────────────────────────────────────────── -->
 <section class="slide" data-t="Phím tắt">
   <h2>Phím tắt hay dùng</h2>
   <div class="two grow" style="margin-top:22px">
@@ -942,7 +983,7 @@ html.laser-on, html.laser-on * { cursor: none !important; }
   </aside>
 </section>
 
-<!-- 25 ───────────────────────────────────────────────────────────────────── -->
+<!-- 28 ───────────────────────────────────────────────────────────────────── -->
 <section class="slide divider" data-t="Phần 4">
   <p class="n">PHẦN 4</p>
   <h2 style="margin-top:12px">Một ngày mình dùng nó ra sao</h2>
@@ -951,7 +992,7 @@ html.laser-on, html.laser-on * { cursor: none !important; }
   <aside class="notes"><p>Chuyển: "Liệt kê tính năng thì khô. Kể một ngày thật cho dễ hình dung hơn."</p></aside>
 </section>
 
-<!-- 26 ───────────────────────────────────────────────────────────────────── -->
+<!-- 29 ───────────────────────────────────────────────────────────────────── -->
 <section class="slide" data-t="Một buổi sáng">
   <h2>Một buổi sáng điển hình</h2>
   <table style="margin-top:16px">
@@ -971,7 +1012,7 @@ html.laser-on, html.laser-on * { cursor: none !important; }
   </aside>
 </section>
 
-<!-- 27 ───────────────────────────────────────────────────────────────────── -->
+<!-- 30 ───────────────────────────────────────────────────────────────────── -->
 <section class="slide" data-t="Dùng nhiều dùng ít">
   <h2>Nói thật: cái nào mình dùng, cái nào không</h2>
   <div class="two grow" style="margin-top:22px">
@@ -993,7 +1034,7 @@ html.laser-on, html.laser-on * { cursor: none !important; }
   </aside>
 </section>
 
-<!-- 28 ───────────────────────────────────────────────────────────────────── -->
+<!-- 31 ───────────────────────────────────────────────────────────────────── -->
 <section class="slide divider" data-t="Phần 5">
   <p class="n">PHẦN 5</p>
   <h2 style="margin-top:12px">Ai thì hợp kiểu này</h2>
@@ -1002,7 +1043,7 @@ html.laser-on, html.laser-on * { cursor: none !important; }
   <aside class="notes"><p>Chuyển: "Phần cuối, và là phần mình nghĩ đáng nghe nhất kể cả khi bạn không định cài gì."</p></aside>
 </section>
 
-<!-- 29 ───────────────────────────────────────────────────────────────────── -->
+<!-- 32 ───────────────────────────────────────────────────────────────────── -->
 <section class="slide" data-t="Bốn câu tự hỏi">
   <h2>Bốn câu nên tự trả lời trước khi cài thêm công cụ</h2>
   <div class="stack grow" style="margin-top:20px;gap:15px">
@@ -1019,7 +1060,7 @@ html.laser-on, html.laser-on * { cursor: none !important; }
   </aside>
 </section>
 
-<!-- 30 ───────────────────────────────────────────────────────────────────── -->
+<!-- 33 ───────────────────────────────────────────────────────────────────── -->
 <section class="slide" data-t="Có sẵn gì rồi">
   <h2>Nhiều thứ bạn cần có thể đã có sẵn rồi</h2>
   <p class="lead" style="margin-top:12px">Trước khi cài thêm gì, thử chạy <code>claude --help</code> một lần. Rất nhiều người dùng hằng ngày mà chưa mở nó bao giờ.</p>
@@ -1048,7 +1089,7 @@ html.laser-on, html.laser-on * { cursor: none !important; }
   </aside>
 </section>
 
-<!-- 31 ───────────────────────────────────────────────────────────────────── -->
+<!-- 34 ───────────────────────────────────────────────────────────────────── -->
 <section class="slide" data-t="Cái giá tự làm">
   <h2>Và cái giá của việc tự làm</h2>
   <div class="three" style="margin-top:22px;align-items:start">
@@ -1064,7 +1105,7 @@ html.laser-on, html.laser-on * { cursor: none !important; }
   </aside>
 </section>
 
-<!-- 32 ───────────────────────────────────────────────────────────────────── -->
+<!-- 35 ───────────────────────────────────────────────────────────────────── -->
 <section class="slide" data-t="Muốn thử thì">
   <h2>Cách tự kiểm chứng xem mình có cần công cụ không</h2>
   <p class="lead" style="margin-top:12px">Thay vì tranh luận công cụ nào hay hơn, đo một con số: <strong>Claude cần bạn lúc mấy giờ, và bạn biết lúc mấy giờ.</strong> Khoảng cách giữa hai mốc đó là thứ công cụ có thể rút ngắn.</p>
@@ -1085,7 +1126,7 @@ html.laser-on, html.laser-on * { cursor: none !important; }
   </aside>
 </section>
 
-<!-- 33 ───────────────────────────────────────────────────────────────────── -->
+<!-- 36 ───────────────────────────────────────────────────────────────────── -->
 <section class="slide mid" data-t="Kết">
   <h2 style="max-width:21ch">Không có công cụ tốt nhất. Chỉ có công cụ vừa tay.</h2>
   <p class="lead" style="margin-top:22px">Bốn câu hỏi lúc nãy quan trọng hơn cả buổi nói này.</p>
@@ -1096,7 +1137,7 @@ html.laser-on, html.laser-on * { cursor: none !important; }
   </aside>
 </section>
 
-<!-- 34 ───────────────────────────────────────────────────────────────────── -->
+<!-- 37 ───────────────────────────────────────────────────────────────────── -->
 <section class="slide" data-t="Hỏi đáp">
   <h2>Hỏi đáp</h2>
   <!-- Lưới 3 cột: sau khi thêm câu về Warp thì cột trái có 4 thẻ và tràn xuống

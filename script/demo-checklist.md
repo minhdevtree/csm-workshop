@@ -30,15 +30,15 @@ là slide tự nhận.
 |---|---|---|---|
 | ✅ đã có Bắt buộc | `demo-01-session-alive.gif` | 11 | Đóng tab một session đang chạy. Nó vẫn nằm trong sidebar, chấm vẫn nhảy. Mở lại thấy nguyên. |
 | ✅ đã có Bắt buộc | `demo-02-attention.gif` | 13 | 3 session chạy, một con chuyển sang chờ, chấm đổi vàng, badge nhảy số, bấm badge nhảy tới đúng con đó. |
-| ✅ đã có Bắt buộc | `demo-06-remote.gif` | 23 | Ba đoạn ghép lại: bật host mode ở máy chủ; một app CSM khác thêm host vào Remote hosts (tên, URL, token, ô tunnel command); cửa sổ remote mở ra với đúng cây session của máy chủ. |
-| ✅ đã có Nên có | `demo-03-split-layout.gif` | 15 | Chia màn thành 3 ô, kéo một tab sang ô khác, lưu thành template, đóng hết rồi mở template ra lại. |
-| ✅ đã có Nên có | `demo-04-worktree.gif` | 19 | Chuột phải lên project, tạo worktree, nó hiện lồng bên dưới, mở một session trong đó. |
-| ✅ đã có Nên có | `demo-05-diff.gif` | 20 | Bấm ⇧⌘D, diff mở thành tab, chia đôi màn đặt cạnh file gốc. |
-| ✅ đã có Nên có | `demo-07-help.gif` | 24 | Bấm dấu hỏi ở header, hỏi "làm sao lưu cách chia màn hình", nhận câu trả lời kèm đúng phím tắt. |
-| ✅ đã có Có thì tốt | `demo-08-inbox.gif` | 14 | Bấm ⇧⌘A, danh sách hiện mọi session đang chờ từ nhiều dự án, chọn một cái là nhảy tới đó. |
-| ✅ đã có Có thì tốt | `demo-09-prompt.gif` | 16 | **Bật chế độ hội thoại trước**, rồi gõ prompt vào ô nhập và gửi. Ở chế độ terminal thì chữ hiện trong dòng nhập của Claude, nhìn không ra là có ô riêng. |
-| ✅ đã có Có thì tốt | `demo-10-conversation.gif` | 18 | Đổi từ terminal sang chế độ hội thoại, cuộn lại và tìm một câu Claude nói lúc nãy. |
-| ✅ đã có Có thì tốt | `demo-11-history.gif` | 21 | Bấm ⇧⌘H, gõ chữ vào ô tìm để lọc commit, chọn một commit rồi chọn file để xem thay đổi. |
+| ✅ đã có Bắt buộc | `demo-06-remote.gif` | 24 | Ba đoạn ghép lại: bật host mode ở máy chủ; một app CSM khác thêm host vào Remote hosts (tên, URL, token, ô tunnel command); cửa sổ remote mở ra với đúng cây session của máy chủ. |
+| ✅ đã có Nên có | `demo-03-split-layout.gif` | 16 | Chia màn thành 3 ô, kéo một tab sang ô khác, lưu thành template, đóng hết rồi mở template ra lại. |
+| ✅ đã có Nên có | `demo-04-worktree.gif` | 20 | Chuột phải lên project, tạo worktree, nó hiện lồng bên dưới, mở một session trong đó. |
+| ✅ đã có Nên có | `demo-05-diff.gif` | 21 | Bấm ⇧⌘D, diff mở thành tab, chia đôi màn đặt cạnh file gốc. |
+| ✅ đã có Nên có | `demo-07-help.gif` | 25 | Bấm dấu hỏi ở header, hỏi "làm sao lưu cách chia màn hình", nhận câu trả lời kèm đúng phím tắt. |
+| ✅ đã có Có thì tốt | `demo-08-inbox.gif` | 15 | Bấm ⇧⌘A, danh sách hiện mọi session đang chờ từ nhiều dự án, chọn một cái là nhảy tới đó. |
+| ✅ đã có Có thì tốt | `demo-09-prompt.gif` | 17 | **Bật chế độ hội thoại trước**, rồi gõ prompt vào ô nhập và gửi. Ở chế độ terminal thì chữ hiện trong dòng nhập của Claude, nhìn không ra là có ô riêng. |
+| ✅ đã có Có thì tốt | `demo-10-conversation.gif` | 19 | Đổi từ terminal sang chế độ hội thoại, cuộn lại và tìm một câu Claude nói lúc nãy. |
+| ✅ đã có Có thì tốt | `demo-11-history.gif` | 22 | Bấm ⇧⌘H, gõ chữ vào ô tìm để lọc commit, chọn một commit rồi chọn file để xem thay đổi. |
 
 ### Mẹo dựng cảnh cho demo-02
 
