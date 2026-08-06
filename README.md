@@ -39,18 +39,18 @@ không phải lúc đang đứng trên bục.
 ```
 slides/index.html          Deck 36 slide, tự chứa, có ghi chú diễn giả
 script/script-vi.md        Kịch bản nói chi tiết, có mốc thời gian và chỉ dẫn sân khấu
-script/demo-checklist.md   Sáu đoạn demo cần quay, và cách chèn vào slide
+script/demo-checklist.md   Mười một đoạn demo, đã quay xong, và cách thay ảnh mới
 context/                   Bối cảnh về app được lấy làm case study
 research/sources.md        Mọi con số dẫn trong bài, kèm link gốc
 assets/                    Chỗ bỏ GIF demo vào
 ```
 
-## Còn thiếu
+## GIF demo
 
-Mười một khung demo đang để trống có chủ đích, chờ GIF quay màn hình. Xem `script/demo-checklist.md` để biết cần quay gì và đặt tên file
-thế nào. **Bỏ file vào `assets/` là slide tự nhận**, không phải chạy lệnh gì. Chưa
-có file thì khung ở nguyên và ghi rõ tên file cần bỏ vào, nên deck vẫn trình chiếu
-được bình thường.
+Cả 11 khung demo đã có ảnh, quay tự động từ app thật bằng harness Playwright, xem
+`research/recording.md`. Muốn thay cái nào thì quay lại rồi bỏ file mới vào
+`assets/` đè lên: **slide tự nhận, không phải chạy lệnh gì.** Xoá file đi thì khung
+nét đứt quay lại và ghi rõ tên file cần bỏ vào, nên deck không bao giờ vỡ.
 
 ## Ghi chú về tính trung thực
 

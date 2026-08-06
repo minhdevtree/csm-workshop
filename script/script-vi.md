@@ -84,29 +84,28 @@ bạn không định dùng app", rồi lát nữa lướt nhanh phần tính nă
 
 **Slide 4.** [Một slide, 60 giây. Đừng giảng.]
 
-> Chạy nhiều con thì được gì, mất gì.
+> Chạy nhiều session cùng lúc thì được gì, mất gì.
 >
-> **Được**: mỗi lượt Claude chạy 3 tới 10 phút, chạy nhiều con thì không phải ngồi
-> chờ khoảng đó nữa.
+> **Được**: mỗi lần giao việc, Claude chạy 3 tới 10 phút. Chạy nhiều session thì
+> không phải ngồi chờ khoảng thời gian đó.
 >
-> **Mất** hai thứ. Một là **phải review nhiều hơn**: chờ ngắn lại thì phần đọc và
-> kiểm tra dài ra. Hai là **dễ bị ngắt liên tục**: không biết con nào đang gọi mình
-> thì cứ vài phút lại tự đi kiểm tra.
+> **Mất ba thứ.** Một, **phải đọc và kiểm tra nhiều hơn**: ba session xong cùng lúc
+> là ba đống code chờ mình duyệt. Hai, **bị ngắt liên tục**: không biết session nào
+> đang cần mình nên cứ vài phút lại mở từng cái ra xem. Ba, và đây là cái ít người
+> nói: **mở quá nhiều thì chính mình là chỗ tắc.**
 >
 > [Kể chuyện thật cho gần.]
 >
 > Mình từng có buổi chiều mở 3 terminal, cứ vài phút alt-tab qua từng cái xem xong
 > chưa. Cuối buổi cả 3 con đều xong việc, còn mình thì chả làm được gì ra hồn.
 >
-> [Câu chốt, dẫn thẳng sang phần cấu trúc.]
+> [Câu chốt.]
 >
-> **Nên thứ quyết định không phải là chạy được mấy con, mà là bạn có biết con nào
-> đang cần mình hay không.**
+> **Nhiều hơn không tự động là tốt hơn.** Số session hợp lý là số mà mình còn kịp
+> đọc kết quả, và con số đó thấp hơn số máy chạy nổi rất nhiều.
 
 [Nếu có người hỏi số liệu: có nghiên cứu của Gloria Mark, sau một lần bị ngắt thì
-trung bình mất 23 phút mới quay lại đúng mạch cũ. **Chỉ nói khi được hỏi.** Bản
-trước để nó lên slide và bị phản hồi là khó hiểu, vì nó kéo buổi thành bài giảng
-về năng suất.]
+trung bình mất 23 phút mới quay lại đúng mạch cũ. **Chỉ nói khi được hỏi.**]
 
 **Slide 5.** [Slide trả lời cho slide vừa rồi. 90 giây.]
 
@@ -175,40 +174,37 @@ về năng suất.]
 
 **Slide 9.** [**Chỗ dễ bị bắt bẻ nhất cả buổi. Nói cẩn thận.**]
 
-> Vì sao lại cần tới bốn tầng.
+> Bốn tầng đó để làm gì. Đi cột trái trước.
 >
-> [**Nói phần này TRƯỚC, đừng để ai phải giơ tay hỏi.**]
+> **Folder** gom dự án cho gọn, hai chục repo vẫn xếp được. **Project** nhớ bộ cờ
+> chạy `claude` của riêng nó, nên mỗi repo có mức duyệt quyền khác nhau được.
+> **Worktree** cho phép làm nhiều việc trên cùng repo mà không đụng nhau.
+> **Session** là một tiến trình `claude`, và một worktree chứa được nhiều session.
 >
-> Nói rõ một chuyện trước đã: **Claude Code tự nó đã chạy song song được rồi.** Nó
-> đẻ subagent trong cùng một session, và giờ còn có cả agent team. Nên đây **không
-> phải** chuyện làm được hay không làm được. Ai nghĩ mình đang nói "Claude không làm
-> được nên phải có app" thì hiểu sai.
+> [Nhấn câu trong khung cam, đây mới là lợi ích thật.]
 >
-> Cái khác nhau là **ranh giới**.
+> Lợi ích khi dùng hằng ngày là câu này: **nhìn một cái là biết mình đang có bao
+> nhiêu việc chạy, ở repo nào, nhánh nào, và cái nào đang cần mình.**
 >
-> Subagent nằm trong **cùng một cuộc hội thoại**: dùng chung context, chung luồng
-> duyệt quyền, và xong việc là tan.
+> [**Cột phải phải nói, và nói TRƯỚC khi ai kịp giơ tay.**]
 >
-> Còn session riêng thì có context riêng, lịch sử riêng, sống qua nhiều ngày. Duyệt
-> quyền riêng nên mình biết đúng **con nào** đang hỏi. Và bỏ một con đi không ảnh
-> hưởng con kia.
+> Nói rõ một chuyện kẻo hiểu nhầm: **Claude Code tự nó đã chạy song song được rồi.**
+> Nó đẻ subagent trong cùng một session, và giờ còn có cả agent team. Nên đây
+> **không phải** chuyện làm được hay không làm được.
 >
-> [Ví dụ cụ thể, nối thẳng về slide 5.]
+> Cái khác nhau là **ranh giới**. Subagent nằm trong cùng một cuộc hội thoại: chung
+> context, chung luồng duyệt quyền, xong việc là tan. Còn session riêng có context
+> riêng, lịch sử riêng, sống qua nhiều ngày, duyệt quyền riêng nên biết đúng
+> **session nào** đang hỏi.
+>
+> [Ví dụ cụ thể, nối về slide 5.]
 >
 > Nhớ cái "verify bằng context sạch" lúc nãy không. **Subagent không làm được việc
-> đó**, vì subagent thừa hưởng context của con mẹ. Nó đã đọc chính đoạn code đó rồi,
-> nên nó không còn là ý kiến độc lập nữa. Muốn ý kiến độc lập thì phải là một session
-> mới hẳn.
+> đó**, vì nó thừa hưởng context của con mẹ, đã đọc chính đoạn code đó rồi nên không
+> còn là ý kiến độc lập.
 >
-> Nói gọn: **subagent hợp khi một việc chia được thành mấy việc con rồi gộp kết quả
-> lại. Session riêng hợp khi cần một mạch tách hẳn ra: context sạch, lịch sử riêng,
-> sống qua nhiều ngày.**
->
-> Bốn tầng là để **quản lý mấy session riêng đó**, không phải để thay subagent. Hai
-> thứ dùng cùng lúc được, và mình dùng cả hai.
->
-> Còn folder thì đơn giản: hai chục repo vẫn xếp gọn, việc công ty một hộp, việc cá
-> nhân một hộp.
+> Nói gọn: **subagent hợp khi một việc chia được thành mấy việc con rồi gộp kết quả.
+> Session riêng hợp khi cần một mạch tách hẳn ra.** Hai thứ dùng cùng lúc được.
 
 **Slide 10.**
 

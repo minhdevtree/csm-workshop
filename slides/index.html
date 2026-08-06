@@ -227,7 +227,7 @@ tbody tr + tr td { border-top: 1px solid var(--line); }
   object-fit: contain;
 }
 
-/* align-items:center — số thứ tự căn giữa khối chữ của nó, không dính lên dòng đầu. */
+/* align-items:center - số thứ tự căn giữa khối chữ của nó, không dính lên dòng đầu. */
 .feat { display: grid; grid-template-columns: 22px 1fr; gap: 12px; align-items: center; }
 .feat .k { color: var(--accent); font-family: var(--mono); font-size: 14.5px; }
 .feat p { font-size: 18px; }
@@ -706,15 +706,14 @@ html.laser-on, html.laser-on * { cursor: none !important; }
 <section class="slide" data-t="Prompt nâng cao">
   <p class="kicker">Nhóm 3 &nbsp;·&nbsp; mấy thứ chỉ ô nhập mới làm được</p>
   <h2>Bốn thứ terminal không làm thay được</h2>
-  <div class="two grow" style="margin-top:24px">
-    <div class="stack">
-      <div class="panel"><h3>Xếp hàng nhiều prompt</h3><p>Viết sẵn 3 việc, xong cái này nó tự chạy cái kia. Tối trước khi về xếp việc, sáng ra đọc kết quả.</p></div>
-      <div class="panel"><h3>Hẹn giờ</h3><p>Đặt giờ chạy một prompt. Sáng mai 8h tự chạy.</p></div>
-    </div>
-    <div class="stack">
-      <div class="panel"><h3>Thư viện prompt</h3><p>Prompt hay dùng thì lưu lại, gọi ra bằng tên. Dùng chung được giữa các máy.</p></div>
-      <div class="panel"><h3>Gửi một lượt cho nhiều session</h3><p>Kiểu "cả 4 con cùng chạy test đi". Chọn session nào nhận thì tick session đó.</p></div>
-    </div>
+  <!-- Lưới 2x2 chứ không phải hai cột stack: trong stack mỗi thẻ cao theo nội dung
+       của nó nên hai thẻ cạnh nhau lệch chiều cao. Lưới thì các ô cùng hàng tự
+       kéo bằng nhau. -->
+  <div class="four" style="margin-top:24px">
+    <div class="panel"><h3>Xếp hàng nhiều prompt</h3><p>Viết sẵn 3 việc, xong cái này nó tự chạy cái kia. Tối trước khi về xếp việc, sáng ra đọc kết quả.</p></div>
+    <div class="panel"><h3>Thư viện prompt</h3><p>Prompt hay dùng thì lưu lại, gọi ra bằng tên. Dùng chung được giữa các máy.</p></div>
+    <div class="panel"><h3>Hẹn giờ</h3><p>Đặt giờ chạy một prompt. Sáng mai 8h tự chạy.</p></div>
+    <div class="panel"><h3>Gửi một lượt cho nhiều session</h3><p>Kiểu "cả 4 con cùng chạy test đi". Chọn session nào nhận thì tick session đó.</p></div>
   </div>
   <div class="foot"><span>Phần 3 &nbsp;·&nbsp; Tính năng</span><span class="pg"></span></div>
   <aside class="notes">
@@ -1183,7 +1182,7 @@ html.laser-on, html.laser-on * { cursor: none !important; }
     else if (k === 'o' || k === 'O') { gridEl.classList.toggle('on'); }
     else if (k === 'l' || k === 'L') {
       var on = document.documentElement.classList.toggle('laser-on');
-      if (on) laser.style.transform = 'translate(' + lx + 'px,' + ly + 'px)';
+      if (on) { laserSeed(); laserPut(); }
     }
     else if (k === 't' || k === 'T') {
       var next = document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark';
@@ -1200,13 +1199,33 @@ html.laser-on, html.laser-on * { cursor: none !important; }
   /* Laser: một phần tử, cập nhật bằng transform trong requestAnimationFrame, nên
      con chuột kéo nhanh mấy cũng chỉ vẽ lại một lần mỗi khung hình. */
   var laser = document.getElementById('laser');
-  var lx = 0, ly = 0, lqueued = false;
-  document.addEventListener('mousemove', function (e) {
-    lx = e.clientX; ly = e.clientY;
+  var lx = 0, ly = 0, lseen = false, lqueued = false;
+
+  function laserPut() {
+    laser.style.transform = 'translate(' + lx + 'px,' + ly + 'px)';
+  }
+
+  /* Người thuyết trình lật slide bằng phím mũi tên hoặc bút trình chiếu, nên từ
+     lúc mở deck tới lúc bấm L con chuột có thể chưa hề nhúc nhích. Trước đây toạ
+     độ chỉ đến từ sự kiện di chuột, chưa di thì nó vẫn là 0,0: chấm đỏ nằm ở góc
+     trên bên trái và mất 3/4 ra ngoài khung, còn trình duyệt thì chưa có cớ để
+     vẽ lại con trỏ nên con trỏ hệ thống vẫn nguyên. Nhìn vào chỉ thấy bấm L
+     không ăn gì. Chưa biết chuột ở đâu thì đặt chấm giữa màn hình, để bấm L lúc
+     nào cũng có phản hồi thấy được rồi mới rê tới chỗ cần chỉ. */
+  function laserSeed() {
+    if (lseen) return;
+    lx = window.innerWidth / 2;
+    ly = window.innerHeight / 2;
+  }
+
+  /* pointermove chứ không phải mousemove: bút trình chiếu và trackpad trên máy
+     lai cảm ứng báo về dạng pointer, mousemove bỏ sót mấy thứ đó. */
+  document.addEventListener('pointermove', function (e) {
+    lx = e.clientX; ly = e.clientY; lseen = true;
     if (lqueued || !document.documentElement.classList.contains('laser-on')) return;
     lqueued = true;
     requestAnimationFrame(function () {
-      laser.style.transform = 'translate(' + lx + 'px,' + ly + 'px)';
+      laserPut();
       lqueued = false;
     });
   });
@@ -1215,7 +1234,13 @@ html.laser-on, html.laser-on * { cursor: none !important; }
     show(e.clientX > window.innerWidth / 2 ? i + 1 : i - 1);
   });
 
-  window.addEventListener('resize', fit);
+  /* Bấm F vào toàn màn hình cũng là một lần đổi kích thước khung. Chấm đang nằm
+     giữa vì chưa biết chuột ở đâu thì phải giữa lại theo khung mới, không thì nó
+     lệch hẳn sang một bên đúng lúc người ta vừa bật laser lên. */
+  window.addEventListener('resize', function () {
+    fit();
+    if (!lseen && document.documentElement.classList.contains('laser-on')) { laserSeed(); laserPut(); }
+  });
   window.addEventListener('hashchange', function () {
     var n = parseInt(location.hash.slice(1), 10);
     if (n) show(n - 1, false);
